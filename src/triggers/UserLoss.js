@@ -19,14 +19,14 @@ class UserLoss extends EventEmitter {
     constructor() {
         super()
         this.interval = 60 //sec
-        this.desciption = 'Detect users with abnormal amount of profit in last 24 hours'
+        this.description = 'Detect users with abnormal amount of profit in last 24 hours'
     }
     
     
     
     async exec(operator, from, to){
         console.log('---------------------------------------------------------------------------')
-        console.log(this.desciption)
+        console.log(this.description)
         console.log({operator, from, to})
         
         console.log('Executing testTotalLoss..')

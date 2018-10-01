@@ -1,61 +1,46 @@
 'use strict'
 
 const Database = require('../lib/Database')
+const EventEmitter = require('events').EventEmitter
 
-class DailyJackpots {
+class DailyJackpots extends EventEmitter {
     
     constructor() {
-        
+        super()
         this.interval = 10 //sec
-        
+        this.description = 'Detect abnormal daily jackpot wins'
     }
     
     
     
-    async exec(operator, date = null){
-        
+    async exec(operator, from, to){
+        console.log('---------------------------------------------------------------------------')
+        console.log(this.description)
+        console.log({operator, from, to})
+    
+        console.log('Executing testDailyJackpotWonTwoTimeSameDay..')
+        await this.testDailyJackpotWonTwoTimeSameDay(operator, from, to)
+    
+    
+    }
+    
+    async testDailyJackpotWonTwoTimeSameDay(operator, from, to){
         let db = await Database.getJackpotInstance(operator)
-        
-        // Daily jackpot won two times in same day
-        
-        let SQL = `SELECT DATE(timeWon), potId, COUNT(*), SUM(pot)
+    
+        let SQL = `SELECT DATE(timeWon), potId, COUNT(*) as cnt, SUM(pot)
                    FROM _jackpot_history h
-                   WHERE DATE(timeWon) = :date
-                   GROUP BY potId, DATE(timeWon)`
-        
-        let [found] = await db.query(SQL, [date || 'CURDATE()'])
-        
-        if(!found) return false
-        
-        
-        await this.action()
-        
-        return {
-            message: "Daily jackpot won two times in same day!!!",
-            details: {
-                potId: 2001,
-                wins: [
-                    { timeWon: '2018-09-28 21:10:10', amount: '100050.40' },
-                    { timeWon: '2018-09-28 22:10:10', amount: '100050.40' },
-                ]
-            }
+                   WHERE (timeWon BETWEEN ? AND ?)
+                   GROUP BY potId, DATE(timeWon)
+                   HAVING cnt > 0`
+    
+        let found = await db.query(SQL, [from, to])
+        if (!found) return false
+    
+        for (let pot of found) {
+            this.emit('ALERT', { action: 'BLOCK_JACKPOTS',  potId: pot.potId,  value: pot.cnt,  threshold: 1 })
         }
-        
-        
+      
     }
-    
-    async collect(){}
-    
-    
-    async action(data){
-    
-        
-        let SQL = `UPDATE settings SET value = 'false' WHERE type = 'module.jackpot.enabled'`
-        
-        
-    
-    }
-    
 }
 
 module.exports = DailyJackpots

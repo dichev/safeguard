@@ -16,7 +16,7 @@ class SafeGuard {
         
         this.operators = ['bede', 'rank']
         this.tests = [
-            // new DailyJackpots(),
+            new DailyJackpots(),
             new UserLoss(),
         ]
         
