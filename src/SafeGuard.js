@@ -2,6 +2,7 @@
 
 const moment = require('moment')
 require('moment-recur')
+const Database = require('./lib/Database')
 const DailyJackpots = require('./triggers/DailyJackpots')
 const UserLoss = require('./triggers/UserLoss')
 const Alarm = require('./actions/Alarm')
@@ -89,7 +90,7 @@ class SafeGuard {
             }
         }
         
-        // await Database.killAllConnections()
+        await Database.killAllConnections()
         
     
     }
