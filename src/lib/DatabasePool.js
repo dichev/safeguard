@@ -43,7 +43,7 @@ class DatabasePool {
         }
         else if(instance.state === 'connecting'){
             await new Promise((resolve, reject) => {
-                instance.emitter.once('CONNECTED', () => resolve)
+                instance.emitter.once('CONNECTED', () => resolve())
             })
         }
         else if(instance.state === 'connected') {
