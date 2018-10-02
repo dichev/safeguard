@@ -59,10 +59,12 @@ class UserLoss extends EventEmitter {
                 action: user.profit < THRESHOLD_USER_TOTAL_LOSS ? 'ALARM' : 'BLOCK_USER',
                 userId: user.userId,
                 value: user.profit,
-                threshold: THRESHOLD_USER_TOTAL_LOSS
+                threshold: THRESHOLD_USER_TOTAL_LOSS,
+                period: {from, to}
             })
         }
     }
+    
     
     async testTotalLossNormalized(operator, from, to){
         let db = await Database.getPlatformInstance(operator)
@@ -85,7 +87,8 @@ class UserLoss extends EventEmitter {
                 action: user.profitNormalized < THRESHOLD_USER_TOTAL_LOSS_NORMALIZED ? 'ALARM' : 'BLOCK_USER',
                 userId: user.userId,
                 value: user.profitNormalized,
-                threshold: THRESHOLD_USER_TOTAL_LOSS_NORMALIZED
+                threshold: THRESHOLD_USER_TOTAL_LOSS_NORMALIZED,
+                period: {from, to}
             })
         }
     }

@@ -2,11 +2,13 @@
 
 const moment = require('moment')
 require('moment-recur')
+const Config = require('./config/Config')
 const Database = require('./lib/Database')
 const DailyJackpots = require('./triggers/DailyJackpots')
 const UserLoss = require('./triggers/UserLoss')
 const Alarm = require('./actions/Alarm')
 const KillSwitch = require('./actions/KillSwitch')
+const Monitor = require('./actions/Monitor')
 
 const operator = 'bede'
 
@@ -22,6 +24,7 @@ class SafeGuard {
         
         this.alarm = new Alarm()
         this.killSwitch = new KillSwitch()
+        this.monitor = new Monitor()
     }
     
     
@@ -74,6 +77,10 @@ class SafeGuard {
             default:
                 throw Error('Unexpected action: ' + details.action)
         
+        }
+    
+        if (Config.monitoring.enabled && details.userId) {
+            this.monitor.trackUser(operator, details.userId, details.period.from)
         }
     }
     

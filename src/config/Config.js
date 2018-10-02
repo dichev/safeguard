@@ -31,6 +31,14 @@ const Config = {
             
             }
         }
+    },
+    
+    monitoring: {
+        enabled: false,
+        graphite: {
+            host: null,
+            port: null,
+        }
     }
     
 }

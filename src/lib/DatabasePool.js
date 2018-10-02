@@ -42,7 +42,7 @@ class DatabasePool {
             
         }
         else if(instance.state === 'connecting'){
-            await new Promise((resolve, reject) => {
+            await new Promise((resolve, reject) => { // TODO: timeout/error reject
                 instance.emitter.once('CONNECTED', () => resolve())
             })
         }
