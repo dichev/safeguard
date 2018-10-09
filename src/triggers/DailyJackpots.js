@@ -29,7 +29,8 @@ class DailyJackpots extends EventEmitter {
     
         let SQL = `SELECT DATE(timeWon), potId, COUNT(*) as cnt, SUM(pot)
                    FROM _jackpot_history h
-                   WHERE (timeWon BETWEEN ? AND ?)
+                   LEFT JOIN _jackpot_config c ON(c.id = h.potId)
+                   WHERE (timeWon BETWEEN ? AND ?) and type = 'time'
                    GROUP BY potId, DATE(timeWon)
                    HAVING cnt > 0`
     

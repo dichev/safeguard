@@ -68,7 +68,7 @@ class DatabasePool {
             dateStrings: 'date',
             multipleStatements: true
         }
-    
+        
         if(ssh) await sshClient.connect(ssh)
         await mysqlClient.connect(cfg, sshClient)
         return {mysqlClient, sshClient }

@@ -17,8 +17,16 @@ class Database extends DatabasePool {
         return this.getInstance(operator, Config.credentials.databases.operators[operator].platform)
     }
     
+    static async getSegmentsInstance(operator){
+        return this.getInstance(operator, Config.credentials.databases.operators[operator].segments)
+    }
+    
     static async getArchiveInstance(operator){
         return this.getInstance(operator, Config.credentials.databases.operators[operator].archive)
+    }
+    
+    static async getAggregationsInstance(operator){
+        return this.getInstance(operator, Config.credentials.databases.aggregations)
     }
     
 }

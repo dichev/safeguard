@@ -10,13 +10,12 @@ const Alarm = require('./actions/Alarm')
 const KillSwitch = require('./actions/KillSwitch')
 const Monitor = require('./actions/Monitor')
 
-const operator = 'bede'
+const operator = 'williamhill'
 
 class SafeGuard {
     
     constructor() {
         
-        this.operators = ['bede', 'rank']
         this.tests = [
             new DailyJackpots(),
             new UserLoss(),
@@ -49,7 +48,7 @@ class SafeGuard {
     }
     
     async _handleAlert(details, test){
-        
+    
         await this.alarm.notify(details.value, details.threshold, details, test)
         
         switch (details.action) {
@@ -76,9 +75,9 @@ class SafeGuard {
         
             default:
                 throw Error('Unexpected action: ' + details.action)
-        
+
         }
-    
+        
         if (Config.monitoring.enabled && details.userId) {
             this.monitor.trackUser(operator, details.userId, details.period.from)
         }

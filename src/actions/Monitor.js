@@ -9,8 +9,10 @@ const UPDATE_INTERVAL = 60 // sec
 class Monitor {
     
     constructor() {
-        
+        if(!Config.monitoring.enabled) return {}
+
         this._users = []
+        
         this.graphite = net.createConnection(Config.monitoring.graphite, () => {
             console.log('connected to graphite!')
         })
