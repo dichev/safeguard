@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "async-trace": "node -r trace -r clarify test/dev.js",
     "postinstall": "npm link configurator dopamine-toolbox"
   },
   "dependencies": {
@@ -10,5 +11,9 @@
     "dopamine-toolbox": "git+ssh://git@gitlab.dopamine.bg:devops/toolbox.git",
     "moment": "^2.22.2",
     "moment-recur": "^1.0.7"
+  },
+  "devDependencies": {
+    "clarify": "^2.1.0",
+    "trace": "^3.1.0"
   }
 }
