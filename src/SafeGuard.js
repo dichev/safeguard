@@ -92,7 +92,7 @@ class SafeGuard {
                     break;
             
                 default:
-                    throw Error('Unexpected action: ' + trigger.action)
+                    throw Error('Unexpected action: ' + trigger.value)
             
             }
         

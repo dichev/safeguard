@@ -24,18 +24,17 @@ class UserLoss extends EventEmitter {
         console.log(this.description)
         console.log({operator, from, to})
     
-        //
         console.log('Executing testTotalLoss..')
         await this.testTotalLoss(operator, from, to)
         
-        // console.log('Executing testHugeWins..')
-        // await this.testHugeWins(operator, from, to)
+        console.log('Executing testHugeWins..')
+        await this.testHugeWins(operator, from, to)
     
-        // console.log('Executing testTotalLossNormalized..')
-        // await this.testTotalLossNormalized(operator, from, to)
-        //
-        // console.log('Executing testTotalMplrLoss..')
-        // await this.testTotalMplrLoss(operator, from, to)
+        console.log('Executing testTotalLossCapped..')
+        await this.testTotalLossCapped(operator, from, to)
+        
+        console.log('Executing testTotalMplrLoss..')
+        await this.testTotalMplrLoss(operator, from, to)
     
     }
 
@@ -83,8 +82,8 @@ class UserLoss extends EventEmitter {
                   AND (totalWin - turnover - jackpotsWinnings) > ${threshold * WARNING_LIMIT}`
         */
     
-        let found = await db.query(SQL, [operator, from, to])
-        if (!found) return
+        let found = await db.query(SQL, [from, to])
+        if (!found.length) return
         
         console.log(`-> Found ${found.length} users`)
         for (let user of found) {
@@ -101,37 +100,88 @@ class UserLoss extends EventEmitter {
     }
     
     
-    async testTotalLossNormalized(operator, from, to){
-        const {threshold, info} = Config.triggers.limits.userLossNormalized
+    async testTotalLossCapped(operator, from, to){
+        const {threshold, info} = Config.triggers.limits.userLossCapped
         
         let db = await Database.getPlatformInstance(operator)
     
         let SQL = `SELECT
                         userId,
-                        SUM(IF(payout-jackpot<1000, payout-jackpot, 0))-SUM(stake) AS profitNormalized
+                        SUM(payout-jackpot)-SUM(stake) AS profit
                         #, SUM(IF(payout-jackpot<1000, 0, payout-jackpot)) AS profitExcluded
-                   FROM transactions_real
+                   FROM transactions_real FORCE INDEX (startTime)
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    GROUP BY userId
-                   HAVING profitNormalized > ${threshold * WARNING_LIMIT}`
+                   HAVING profit > ${threshold * WARNING_LIMIT}`
     
-        
         let found = await db.query(SQL, [from, to])
-        if (!found) return
+        if (!found.length) return
+        
+        
+        // Cap users huge wins
+        let ids = found.map(u => u.userId)
+        let local = await Database.getLocalInstance()
+        let SQL2 = `SELECT userId, SUM(payout-jackpot) as payout FROM users_huge_wins
+                    WHERE userId IN (?) AND (startTime BETWEEN ? AND ?)
+                    GROUP BY userId`
+        let rows = await local.query(SQL2, [ids, from, to])
+
+        for(let row of rows) { // TODO: validations & tests
+            found.find(u => u.userId === row.userId).profit -= row.payout
+        }
+        found = found.filter(u => u.profit > threshold * WARNING_LIMIT)
+        
+        if(!found.length) return
+        
+        
         for (let user of found) {
             // console.warn(`[ALERT]`, user)
             this.emit('ALERT', new Trigger({
-                action: user.profitNormalized < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                action: user.profit < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
                 userId: user.userId,
-                value: user.profitNormalized,
+                value: user.profit,
                 threshold: threshold,
-                period: {from, to}
+                msg: `Detected user #${user.userId} with capped profit of ${user.profit} GBP for last 24 hours`,
+                period: {from, to},
+                name: 'testTotalLossCapped',
             }))
         }
     }
     
     async testTotalMplrLoss(operator, from, to){
-        console.warn('not implemented')
+        const {threshold, info} = Config.triggers.limits.userMplr
+    
+        // from platform
+        let db = await Database.getPlatformInstance(operator)
+        let SQL = `SELECT
+                        userId,
+                        SUM(mplr) as mplr
+                   FROM (
+                       SELECT
+                            userId,
+                            ROUND(SUM(payout-jackpot-stake)/SUM(stake), 2) AS mplr
+                       FROM transactions_real FORCE INDEX (startTime)
+                       WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
+                       GROUP BY roundInstanceId, userId
+                   ) tmp
+                   GROUP BY userId
+                   HAVING mplr > ${threshold * WARNING_LIMIT}`
+    
+        let found = await db.query(SQL, [from, to])
+        if (!found.length) return
+    
+        console.log(`-> Found ${found.length} users`)
+        for (let user of found) {
+            this.emit('ALERT', new Trigger({
+                action: user.mplr < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                userId: user.userId,
+                value: user.mplr,
+                threshold: threshold,
+                msg: `Detected user #${user.userId} with mplr of x${user.mplr} for last 24 hours`,
+                period: {from, to},
+                name: 'testTotalLoss',
+            }))
+        }
     }
     
     
@@ -145,13 +195,13 @@ class UserLoss extends EventEmitter {
                         roundInstanceId,
                         userId,
                         payout-jackpot as value
-                   FROM transactions_real
+                   FROM transactions_real FORCE INDEX (startTime)
                    WHERE (startTime BETWEEN ? AND ?) # AND statusCode IN (100, 101, 102, 200)
                    AND payout-jackpot > ${threshold * WARNING_LIMIT}`
     
     
         let found = await db.query(SQL, [from, to])
-        if (!found) return
+        if (!found.length) return
         
         
         console.log(`-> Found ${found.length} users`)
@@ -163,7 +213,7 @@ class UserLoss extends EventEmitter {
                 threshold: threshold,
                 msg: `Detected user #${user.userId} with single win of ${user.value} GBP for last 2 days`,
                 period: {from, to},
-                trigger: 'testHugeWins',
+                name: 'testHugeWins',
             }))
         }
     
@@ -179,7 +229,7 @@ class UserLoss extends EventEmitter {
     
         let local = await Database.getLocalInstance()
         await local.query(`
-            REPLACE INTO transactions_real VALUES ?
+            REPLACE INTO users_huge_wins VALUES ?
         `, [values])
     }
     

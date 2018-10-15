@@ -13,7 +13,7 @@ class DatabasePool {
     /**
      * @param {string} name
      * @param {object} cfg
-     * @return MySQL
+     * @return {Promise<MySQL>}
      */
     static async getInstance(name, cfg) {
         let key = name + '|' + cfg.database

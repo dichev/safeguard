@@ -2,7 +2,17 @@
 
 class Trigger {
     
-    constructor({action, userId, gameId, value, threshold, msg, period, name}) {
+    /**
+     * @param {Trigger.actions} action
+     * @param {number|null} userId
+     * @param {number|null} gameId
+     * @param {number} value
+     * @param {number} threshold
+     * @param {string} msg
+     * @param {string} period
+     * @param {string} name
+     */
+    constructor({action, userId = null, gameId = null, value, threshold, msg, period, name}) {
         this.action = action
         this.userId = userId
         this.gameId = gameId

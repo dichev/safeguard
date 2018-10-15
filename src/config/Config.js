@@ -20,9 +20,13 @@ const Config = {
                 info: 'loss from single user for last 24 hours',
                 threshold: 2000 // GBP
             },
-            userLossNormalized: {
+            userLossCapped: {
                 info: 'normalized loss from single user for last 24 hours',
-                threshold: 2000 // GBP
+                threshold: 1000 // GBP
+            },
+            userMplr: {
+                info: 'mplr from single user for last 24 hours',
+                threshold: 2000 // x
             },
             gameLoss: {
                 info: 'loss from single game for last 24 hours',

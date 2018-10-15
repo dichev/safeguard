@@ -23,7 +23,7 @@ class Alarm {
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
         let key = trigger.name + '_' + trigger.userId
-        if(!trigger.name) console.warn('Invalid data:', {trigger})
+        if(!trigger.name || !trigger.userId) console.warn('Invalid data:', {trigger})
         if(this.alarms[key]){
             let diff = Math.abs(perc - this.alarms[key])
             if(diff < ALARM_GAP) {
