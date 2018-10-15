@@ -1,5 +1,6 @@
 'use strict'
 
+const Trigger = require('../triggers/Trigger')
 const Database = require('../lib/Database')
 const EventEmitter = require('events').EventEmitter
 
@@ -7,7 +8,6 @@ class DailyJackpots extends EventEmitter {
     
     constructor() {
         super()
-        this.interval = 10 //sec
         this.description = 'Detect abnormal daily jackpot wins'
     }
     
@@ -38,7 +38,7 @@ class DailyJackpots extends EventEmitter {
         if (!found) return false
     
         for (let pot of found) {
-            this.emit('ALERT', { action: 'BLOCK_JACKPOTS',  potId: pot.potId,  value: pot.cnt,  threshold: 1 })
+            this.emit('ALERT', { action: Trigger.actions.BLOCK_JACKPOT,  potId: pot.potId,  value: pot.cnt,  threshold: 1 })
         }
       
     }

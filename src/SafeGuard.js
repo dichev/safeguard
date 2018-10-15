@@ -11,6 +11,7 @@ const UserLoss = require('./triggers/UserLoss')
 const Alarm = require('./actions/Alarm')
 const KillSwitch = require('./actions/KillSwitch')
 const Monitor = require('./actions/Monitor')
+const Trigger = require('./triggers/Trigger')
 const Log = require('./Log')
 const sleep = (sec = 1, msg = '') => {
     if (msg) console.info(msg, `(${sec}sec)`)
@@ -57,43 +58,50 @@ class SafeGuard {
         }
     }
     
-    async _handleAlert(operator, details, test){
+    /**
+     * @param {string} operator
+     * @param {Trigger} trigger
+     * @param test
+     * @return {Promise<void>}
+     * @private
+     */
+    async _handleAlert(operator, trigger, test){
     
         let isBlocked = false
         
-        switch (details.action) {
+        switch (trigger.action) {
         
-            case 'ALARM':
+            case Trigger.actions.ALARM:
                 //
                 break;
         
-            case 'BLOCK_USER':
-                isBlocked = await this.killSwitch.blockUser(operator, details.userId, details)
+            case Trigger.actions.BLOCK_USER:
+                isBlocked = await this.killSwitch.blockUser(operator, trigger)
                 break;
         
-            case 'BLOCK_GAME':
-                isBlocked = await this.killSwitch.blockGame(operator, details.gameId, details)
+            case Trigger.actions.BLOCK_GAME:
+                isBlocked = await this.killSwitch.blockGame(operator, trigger)
                 break;
         
-            case 'BLOCK_JACKPOTS':
-                isBlocked = await this.killSwitch.blockJackpots(operator, details, details)
+            case Trigger.actions.BLOCK_JACKPOT:
+                isBlocked = await this.killSwitch.blockJackpots(operator, trigger)
                 break;
         
-            case 'BLOCK_OPERATOR':
+            case Trigger.actions.BLOCK_OPERATOR:
                 isBlocked = await this.killSwitch.blockOperator(operator)
                 break;
         
             default:
-                throw Error('Unexpected action: ' + details.action)
+                throw Error('Unexpected action: ' + trigger.action)
 
         }
     
-        await this.alarm.notify(operator, details, isBlocked)
+        await this.alarm.notify(operator, trigger, isBlocked)
     
         
         
-        if (Config.monitoring.enabled && details.userId) {
-            this.monitor.trackUser(operator, details.userId, details.period.from)
+        if (Config.monitoring.enabled && trigger.userId) {
+            this.monitor.trackUser(operator, trigger.userId, trigger.period.from)
         }
     }
     

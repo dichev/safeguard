@@ -1,6 +1,7 @@
 'use strict'
 
 const Database = require('../lib/Database')
+const Trigger = require('../triggers/Trigger')
 
 const ALARM_GAP = 1 // percent
 
@@ -10,13 +11,19 @@ class Alarm {
         this.alarms = {}
     }
     
-
     
-    async notify(operator, {value, threshold, trigger, msg, userId = null, gameId = null}, blocked = false){
-        let perc = Math.round(100 * value / threshold)
+    /**
+     *
+     * @param {string} operator
+     * @param {Trigger} trigger
+     * @param {boolean} blocked
+     * @return {Promise}
+     */
+    async notify(operator, trigger, blocked = false){
+        let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let key = trigger + '_' + userId
-        if(!trigger || !key) console.warn('Invalid data:', {trigger, key})
+        let key = trigger.name + '_' + trigger.userId
+        if(!trigger.name) console.warn('Invalid data:', {trigger})
         if(this.alarms[key]){
             let diff = Math.abs(perc - this.alarms[key])
             if(diff < ALARM_GAP) {
@@ -26,18 +33,18 @@ class Alarm {
         this.alarms[key] = perc
         
         
-        console.log(`[ALARM] ${perc}%]`, msg)
+        console.log(`[ALARM] ${perc}%]`, trigger.msg)
     
         let row = {
             type: 'ALERT',
             blocked: blocked ? 'YES' : 'NO',
             percent: perc / 100,
-            value: value,
-            threshold: threshold,
+            value: trigger.value,
+            threshold: trigger.threshold,
             operator: operator,
-            userId: userId,
-            gameId: gameId,
-            message: msg || 'above warning limit',
+            userId: trigger.userId,
+            gameId: trigger.gameId,
+            message: trigger.msg || 'above warning limit',
             details: null,
         }
     

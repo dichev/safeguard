@@ -1,5 +1,8 @@
 'use strict'
 
+// TODO: temporary gathering data from transactions tables (slow) until the segments aggregations are ready (fast)
+
+const Trigger = require('../triggers/Trigger')
 const Database = require('../lib/Database')
 const EventEmitter = require('events').EventEmitter
 const Config = require('../config/Config')
@@ -85,15 +88,15 @@ class UserLoss extends EventEmitter {
         
         console.log(`-> Found ${found.length} users`)
         for (let user of found) {
-            this.emit('ALERT', {
-                action: user.profit < threshold ? 'ALARM' : 'BLOCK_USER',
+            this.emit('ALERT', new Trigger({
+                action: user.profit < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
                 userId: user.userId,
                 value: user.profit,
                 threshold: threshold,
                 msg: `Detected user #${user.userId} with net profit of ${user.profit} GBP for last 24 hours`,
                 period: {from, to},
-                trigger: 'testTotalLoss',
-            })
+                name: 'testTotalLoss',
+            }))
         }
     }
     
@@ -117,18 +120,18 @@ class UserLoss extends EventEmitter {
         if (!found) return
         for (let user of found) {
             // console.warn(`[ALERT]`, user)
-            this.emit('ALERT', {
-                action: user.profitNormalized < threshold ? 'ALARM' : 'BLOCK_USER',
+            this.emit('ALERT', new Trigger({
+                action: user.profitNormalized < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
                 userId: user.userId,
                 value: user.profitNormalized,
                 threshold: threshold,
                 period: {from, to}
-            })
+            }))
         }
     }
     
     async testTotalMplrLoss(operator, from, to){
-    
+        console.warn('not implemented')
     }
     
     
@@ -153,15 +156,15 @@ class UserLoss extends EventEmitter {
         
         console.log(`-> Found ${found.length} users`)
         for (let user of found) {
-            this.emit('ALERT', {
-                action: 'ALARM',
+            this.emit('ALERT', new Trigger({
+                action: Trigger.actions.ALARM,
                 userId: user.userId,
                 value: user.value,
                 threshold: threshold,
                 msg: `Detected user #${user.userId} with single win of ${user.value} GBP for last 2 days`,
                 period: {from, to},
                 trigger: 'testHugeWins',
-            })
+            }))
         }
     
         await this.saveTransactions(operator, found.map(t => t.roundInstanceId))
