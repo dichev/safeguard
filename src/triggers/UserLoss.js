@@ -2,15 +2,7 @@
 
 const Database = require('../lib/Database')
 const EventEmitter = require('events').EventEmitter
-
-// £500,000 total loss from user for last 24 hours
-const THRESHOLD_USER_TOTAL_LOSS = 50000;
-
-// £10,000 total loss from user for last 24 hours
-const THRESHOLD_USER_TOTAL_LOSS_NORMALIZED = 2000;
-
-// x100,000 total mplr loss from user for last 24 hours
-const THRESHOLD_USER_TOTAL_MPLR_LOSS = 1000;
+const Config = require('../config/Config')
 
 const WARNING_LIMIT = 0.60 // from the threshold
 
@@ -18,7 +10,7 @@ class UserLoss extends EventEmitter {
     
     constructor() {
         super()
-        this.interval = 30 //sec
+        this.interval = 10 //sec
         this.description = 'Detect users with abnormal amount of profit in last 24 hours'
     }
     
@@ -28,32 +20,36 @@ class UserLoss extends EventEmitter {
         console.log('---------------------------------------------------------------------------')
         console.log(this.description)
         console.log({operator, from, to})
-        
+    
+        //
         console.log('Executing testTotalLoss..')
         await this.testTotalLoss(operator, from, to)
+        
+        // console.log('Executing testHugeWins..')
+        // await this.testHugeWins(operator, from, to)
     
-        console.log('Executing testTotalLossNormalized..')
-        await this.testTotalLossNormalized(operator, from, to)
-
-        console.log('Executing testTotalMplrLoss..')
-        await this.testTotalMplrLoss(operator, from, to)
+        // console.log('Executing testTotalLossNormalized..')
+        // await this.testTotalLossNormalized(operator, from, to)
+        //
+        // console.log('Executing testTotalMplrLoss..')
+        // await this.testTotalMplrLoss(operator, from, to)
     
     }
 
     async testTotalLoss(operator, from, to){
+        const {threshold, info} = Config.triggers.limits.userLoss
         
-    
-        /*
+        
         // from platform
         let db = await Database.getPlatformInstance(operator)
         let SQL = `SELECT
                         userId,
                         SUM(payout-jackpot)-SUM(stake) AS profit
-                   FROM transactions_real
+                   FROM transactions_real FORCE INDEX (startTime)
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    GROUP BY userId
-                   HAVING profit > ${THRESHOLD_USER_TOTAL_LOSS * WARNING_LIMIT}`
-        */
+                   HAVING profit > ${threshold * WARNING_LIMIT}`
+
         
         /*
         // from aggregations
@@ -67,37 +63,44 @@ class UserLoss extends EventEmitter {
                 FROM summary_gbp s
                 WHERE s.operator = ? AND period BETWEEN DATE(?) AND DATE(?)
                 GROUP BY s.period, s.operator, s.userId
-                HAVING profit > ${THRESHOLD_USER_TOTAL_LOSS * WARNING_LIMIT}`
+                HAVING profit > ${threshold * WARNING_LIMIT}`
         */
         
+        /*
         // from segments
         let db = await Database.getSegmentsInstance(operator)
         let SQL = `
                 SELECT
-                     NOW() as period,
+                     timeLastGameSession as period,
                      userId,
                      (totalWin - turnover - jackpotsWinnings) AS profit,
                      hold
                 FROM users
-                WHERE (totalWin - turnover - jackpotsWinnings) > ${THRESHOLD_USER_TOTAL_LOSS * WARNING_LIMIT}`
-        
+                WHERE timeLastGameSession >= CURDATE() - INTERVAL 1 DAY
+                  AND (totalWin - turnover - jackpotsWinnings) > ${threshold * WARNING_LIMIT}`
+        */
     
         let found = await db.query(SQL, [operator, from, to])
         if (!found) return
+        
+        console.log(`-> Found ${found.length} users`)
         for (let user of found) {
             this.emit('ALERT', {
-                action: user.profit < THRESHOLD_USER_TOTAL_LOSS ? 'ALARM' : 'BLOCK_USER',
+                action: user.profit < threshold ? 'ALARM' : 'BLOCK_USER',
                 userId: user.userId,
                 value: user.profit,
-                threshold: THRESHOLD_USER_TOTAL_LOSS,
-                msg: `Detected user #${user.userId} with net profit of ${user.profit} GBP for last 2 days`,
-                period: {from, to}
+                threshold: threshold,
+                msg: `Detected user #${user.userId} with net profit of ${user.profit} GBP for last 24 hours`,
+                period: {from, to},
+                trigger: 'testTotalLoss',
             })
         }
     }
     
     
     async testTotalLossNormalized(operator, from, to){
+        const {threshold, info} = Config.triggers.limits.userLossNormalized
+        
         let db = await Database.getPlatformInstance(operator)
     
         let SQL = `SELECT
@@ -107,7 +110,7 @@ class UserLoss extends EventEmitter {
                    FROM transactions_real
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    GROUP BY userId
-                   HAVING profitNormalized > ${THRESHOLD_USER_TOTAL_LOSS_NORMALIZED * WARNING_LIMIT}`
+                   HAVING profitNormalized > ${threshold * WARNING_LIMIT}`
     
         
         let found = await db.query(SQL, [from, to])
@@ -115,10 +118,10 @@ class UserLoss extends EventEmitter {
         for (let user of found) {
             // console.warn(`[ALERT]`, user)
             this.emit('ALERT', {
-                action: user.profitNormalized < THRESHOLD_USER_TOTAL_LOSS_NORMALIZED ? 'ALARM' : 'BLOCK_USER',
+                action: user.profitNormalized < threshold ? 'ALARM' : 'BLOCK_USER',
                 userId: user.userId,
                 value: user.profitNormalized,
-                threshold: THRESHOLD_USER_TOTAL_LOSS_NORMALIZED,
+                threshold: threshold,
                 period: {from, to}
             })
         }
@@ -126,6 +129,55 @@ class UserLoss extends EventEmitter {
     
     async testTotalMplrLoss(operator, from, to){
     
+    }
+    
+    
+    async testHugeWins(operator, from, to){
+        const {threshold, info} = Config.triggers.users.hugeWins
+        
+        let db = await Database.getPlatformInstance(operator)
+    
+        let SQL = `SELECT
+                        id,
+                        roundInstanceId,
+                        userId,
+                        payout-jackpot as value
+                   FROM transactions_real
+                   WHERE (startTime BETWEEN ? AND ?) # AND statusCode IN (100, 101, 102, 200)
+                   AND payout-jackpot > ${threshold * WARNING_LIMIT}`
+    
+    
+        let found = await db.query(SQL, [from, to])
+        if (!found) return
+        
+        
+        console.log(`-> Found ${found.length} users`)
+        for (let user of found) {
+            this.emit('ALERT', {
+                action: 'ALARM',
+                userId: user.userId,
+                value: user.value,
+                threshold: threshold,
+                msg: `Detected user #${user.userId} with single win of ${user.value} GBP for last 2 days`,
+                period: {from, to},
+                trigger: 'testHugeWins',
+            })
+        }
+    
+        await this.saveTransactions(operator, found.map(t => t.roundInstanceId))
+    }
+    
+    
+    async saveTransactions(operator, roundIds){
+        console.log('Saving rounds:', roundIds.length)
+        let db = await Database.getPlatformInstance(operator)
+        let rows = await db.query(`SELECT * from transactions_real WHERE roundInstanceId IN (?)`, [roundIds])
+        let values = rows.map(row => Object.keys(row).map(key => row[key]))
+    
+        let local = await Database.getLocalInstance()
+        await local.query(`
+            REPLACE INTO transactions_real VALUES ?
+        `, [values])
     }
     
     

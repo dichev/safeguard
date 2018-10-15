@@ -8,8 +8,8 @@ let safeGuard = new SafeGuard()
 
     try {
     
-	    await safeGuard.activate()
-	    // await safeGuard.history('2018-09-27')
+	    await safeGuard.activate('williamhill')
+	    // await safeGuard.history('williamhill', '2018-09-27')
     
     } catch (e){
         console.error(e.toString())

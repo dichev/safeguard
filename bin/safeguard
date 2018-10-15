@@ -1,0 +1,32 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const program = require('commander')
+const Safeguard = require('../src/SafeGuard')
+
+
+program
+    .usage('[--operators=<operators> --period <date|period|auto>]')
+    
+    .option('-o, --operators <operators>', 'Comma-separated list on which operators to be executed: ugs,bede,.. Default: all ')
+    .option('-v, --verbose', 'Display error stack trace')
+    
+    .version(require('../package.json').version)
+    .parse(process.argv)
+
+
+
+;(async function () {
+    let safeguard = new Safeguard()
+    let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : []
+    
+    await Promise.all(operators.map(operator => safeguard.activate(operator)))
+})()
+.then(() => console.log('\nDone!'))
+.catch(err  => {
+    program.verbose ? console.error(err.stack) : console.error(err.message || err)
+    process.exit(1)
+});
+
+

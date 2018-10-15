@@ -5,6 +5,9 @@ const Config = require('../config/Config')
 
 class Database extends DatabasePool {
     
+    /**
+     * @return {Promise<MySQL>}
+     */
     static async getLocalInstance(){
         return this.getInstance('local', Config.credentials.databases.safeguard)
     }

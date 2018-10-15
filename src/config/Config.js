@@ -2,6 +2,40 @@
 
 const Config = {
     
+    triggers: {
+        
+        jackpots: {
+        
+        },
+        
+        users: {
+            hugeWins: {
+                info: 'single huge win from user in last 24 hours',
+                threshold: 10000 // GBP
+            },
+        },
+        
+        limits: {
+            userLoss: {
+                info: 'loss from single user for last 24 hours',
+                threshold: 2000 // GBP
+            },
+            userLossNormalized: {
+                info: 'normalized loss from single user for last 24 hours',
+                threshold: 2000 // GBP
+            },
+            gameLoss: {
+                info: 'loss from single game for last 24 hours',
+                threshold: 50000 // GBP
+            },
+            operatorLoss: {
+                info: 'loss from operator for last 24 hours',
+                threshold: 50000 // GBP
+            },
+        }
+        
+    },
+    
     credentials: {
         databases: {
             safeguard: {
