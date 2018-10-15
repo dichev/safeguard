@@ -66,42 +66,45 @@ class SafeGuard {
      * @private
      */
     async _handleAlert(operator, trigger, test){
-    
-        let isBlocked = false
+        try {
+            let isBlocked = false
         
-        switch (trigger.action) {
+            switch (trigger.action) {
+            
+                case Trigger.actions.ALARM:
+                    //
+                    break;
+            
+                case Trigger.actions.BLOCK_USER:
+                    isBlocked = await this.killSwitch.blockUser(operator, trigger)
+                    break;
+            
+                case Trigger.actions.BLOCK_GAME:
+                    isBlocked = await this.killSwitch.blockGame(operator, trigger)
+                    break;
+            
+                case Trigger.actions.BLOCK_JACKPOT:
+                    isBlocked = await this.killSwitch.blockJackpots(operator, trigger)
+                    break;
+            
+                case Trigger.actions.BLOCK_OPERATOR:
+                    isBlocked = await this.killSwitch.blockOperator(operator)
+                    break;
+            
+                default:
+                    throw Error('Unexpected action: ' + trigger.action)
+            
+            }
         
-            case Trigger.actions.ALARM:
-                //
-                break;
-        
-            case Trigger.actions.BLOCK_USER:
-                isBlocked = await this.killSwitch.blockUser(operator, trigger)
-                break;
-        
-            case Trigger.actions.BLOCK_GAME:
-                isBlocked = await this.killSwitch.blockGame(operator, trigger)
-                break;
-        
-            case Trigger.actions.BLOCK_JACKPOT:
-                isBlocked = await this.killSwitch.blockJackpots(operator, trigger)
-                break;
-        
-            case Trigger.actions.BLOCK_OPERATOR:
-                isBlocked = await this.killSwitch.blockOperator(operator)
-                break;
-        
-            default:
-                throw Error('Unexpected action: ' + trigger.action)
-
-        }
-    
-        await this.alarm.notify(operator, trigger, isBlocked)
-    
+            await this.alarm.notify(operator, trigger, isBlocked)
         
         
-        if (Config.monitoring.enabled && trigger.userId) {
-            this.monitor.trackUser(operator, trigger.userId, trigger.period.from)
+            if (Config.monitoring.enabled && trigger.userId) {
+                this.monitor.trackUser(operator, trigger.userId, trigger.period.from)
+            }
+        
+        } catch (err) { // these errors are in asynchronous event loop, so they can't be catch by the main loop
+            return this.errorHandler(err)
         }
     }
     
@@ -123,6 +126,14 @@ class SafeGuard {
         await Database.killAllConnections()
         
     
+    }
+    
+    /**
+     * @param {Error} error
+     */
+    errorHandler(error){
+        console.error(error)
+        process.exit(1)
     }
     
     
