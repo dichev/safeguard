@@ -8,6 +8,7 @@ const Config = require('./config/Config')
 const Database = require('./lib/Database')
 const DailyJackpots = require('./triggers/DailyJackpots')
 const UserLoss = require('./triggers/UserLoss')
+const GameLoss = require('./triggers/GameLoss')
 const Alarm = require('./actions/Alarm')
 const KillSwitch = require('./actions/KillSwitch')
 const Monitor = require('./actions/Monitor')
@@ -27,6 +28,7 @@ class SafeGuard {
         this.tests = [
             new DailyJackpots(),
             new UserLoss(),
+            new GameLoss(),
         ]
         
         this.alarm = new Alarm()

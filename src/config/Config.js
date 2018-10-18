@@ -17,8 +17,25 @@ const Config = {
             
             // £100,000 from bonuses for last 24 hours
             lossFromBonuses: 1000, // GBP
+        },
+        
+        
+        
+        games: {
+            //'£500,000 from the game for last 24 hours'
+            lossFromGames: 1000, // GBP
             
-        }
+            // £10,000 from the game for last 24 hours excluding wins above £10,000',
+            cappedLossFromGames: 1000, // GBP
+            
+            // £2,000,000 from jackpots for last 24 hours
+            lossFromJackpots: 1000, // GBP
+            
+            // £100,000 from bonuses for last 24 hours
+            lossFromBonuses: 1000, // GBP
+        },
+        
+        
         
         
     },

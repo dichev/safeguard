@@ -5,7 +5,7 @@ class Trigger {
     /**
      * @param {Trigger.actions} action
      * @param {number|null} userId
-     * @param {number|null} gameId
+     * @param {string|null} gameName
      * @param {number|null} potId
      * @param {number} value
      * @param {number} threshold
@@ -13,9 +13,9 @@ class Trigger {
      * @param {string} period
      * @param {string} name
      */
-    constructor({action, userId = null, gameId = null, potId = null, value, threshold, msg, period, name}) {
+    constructor({action, userId = null, gameName = null, potId = null, value, threshold, msg, period, name}) {
         this.userId = userId || null
-        this.gameId = gameId || null
+        this.gameName = gameName || null
         this.potId = potId || null
         
         this.action = action

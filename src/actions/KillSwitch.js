@@ -37,11 +37,18 @@ class KillSwitch {
      * @return {Promise<boolean>}
      */
     async blockGame(operator, trigger) {
-        console.log(`[BLOCK] Disable game #${trigger.gameId}`)
+        if(this._blocked.users.includes(trigger.gameName)) return true // TODO: this should be combined with mysql checks
+    
+        console.log(`[BLOCK] Disable game #${trigger.gameName}`)
         let SQL = `UPDATE games SET status = 0 WHERE id = :id`
-        // console.log('   '+SQL.replace(':id', gameId))
+        this._blocked.users.push(trigger.gameName)
+    
+        // console.log('   '+SQL.replace(':id', gameName))
+        
+        await this.log(operator, trigger)
         return true
     }
+    
     
     /**
      * @param {string} operator
@@ -86,7 +93,7 @@ class KillSwitch {
             threshold: trigger.threshold,
             operator: operator,
             userId: trigger.userId,
-            gameId: trigger.gameId,
+            gameName: trigger.gameName,
             message: `Blocked user #${trigger.userId}`,
             details: null,
         }

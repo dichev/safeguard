@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `found` (
   `threshold` decimal(10,2) NOT NULL,
   `operator` varchar(15) NOT NULL,
   `userId` int(10) unsigned DEFAULT NULL,
-  `gameId` varchar(50) DEFAULT NULL,
+  `gameName` varchar(100) DEFAULT NULL,
   `message` varchar(255) NOT NULL,
   `details` json DEFAULT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

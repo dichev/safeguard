@@ -22,7 +22,7 @@ class Alarm {
     async notify(operator, trigger, blocked = false){
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let type = trigger.userId || trigger.potId || trigger.gameId
+        let type = trigger.userId || trigger.potId || trigger.gameName
         let key = trigger.name + '_' + type
         if(!trigger.name || !type) console.warn('Invalid data:', {trigger})
         if(this.alarms[key]){
@@ -44,7 +44,7 @@ class Alarm {
             threshold: trigger.threshold,
             operator: operator,
             userId: trigger.userId,
-            gameId: trigger.gameId,
+            gameName: trigger.gameName,
             message: trigger.msg || 'above warning limit',
             details: null,
         }

@@ -28,7 +28,7 @@ class UserLoss extends EventEmitter {
         console.log(this.description)
         console.log({operator, from, to})
     
-        console.log('Executing testLimits..')
+        console.log('Executing user testLimits..')
         await this.testLimits(operator, from, to)
         
         // console.log('Executing testHugeWins..')
