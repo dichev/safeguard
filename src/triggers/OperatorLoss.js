@@ -42,7 +42,7 @@ class OperatorLoss extends EventEmitter {
                         SUM(payout-jackpot)-SUM(stake) AS profitGames,
                         SUM(jackpot) AS profitJackpots,
                         SUM(bonusPayout-bonusStake) AS profitBonuses
-                   FROM transactions_real FORCE INDEX (startTime)
+                   FROM transactions_real
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}

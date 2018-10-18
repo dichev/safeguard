@@ -44,7 +44,7 @@ class GameLoss extends EventEmitter {
                         SUM(payout-jackpot)-SUM(stake) AS profitGames,
                         SUM(jackpot) AS profitJackpots,
                         SUM(bonusPayout-bonusStake) AS profitBonuses
-                   FROM transactions_real FORCE INDEX (startTime)
+                   FROM transactions_real
                    LEFT JOIN games ON games.id = transactions_real.gameId
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    GROUP BY gameId

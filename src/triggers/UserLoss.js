@@ -53,7 +53,7 @@ class UserLoss extends EventEmitter {
                         SUM(payout-jackpot)-SUM(stake) AS profitGames,
                         SUM(jackpot) AS profitJackpots,
                         SUM(bonusPayout-bonusStake) AS profitBonuses
-                   FROM transactions_real FORCE INDEX (startTime)
+                   FROM transactions_real
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    GROUP BY userId
                    HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
@@ -145,7 +145,7 @@ class UserLoss extends EventEmitter {
                         userId,
                         SUM(payout-jackpot)-SUM(stake) AS profit
                         #, SUM(IF(payout-jackpot<1000, 0, payout-jackpot)) AS profitExcluded
-                   FROM transactions_real FORCE INDEX (startTime)
+                   FROM transactions_real
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    GROUP BY userId
                    HAVING profit > ${threshold * WARNING_LIMIT}`
@@ -196,7 +196,7 @@ class UserLoss extends EventEmitter {
                        SELECT
                             userId,
                             ROUND(SUM(payout-jackpot-stake)/SUM(stake), 2) AS mplr
-                       FROM transactions_real FORCE INDEX (startTime)
+                       FROM transactions_real
                        WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                        GROUP BY roundInstanceId, userId
                    ) tmp
@@ -231,7 +231,7 @@ class UserLoss extends EventEmitter {
                         roundInstanceId,
                         userId,
                         payout-jackpot as value
-                   FROM transactions_real FORCE INDEX (startTime)
+                   FROM transactions_real
                    WHERE (startTime BETWEEN ? AND ?) # AND statusCode IN (100, 101, 102, 200)
                    AND payout-jackpot > ${threshold * WARNING_LIMIT}`
     

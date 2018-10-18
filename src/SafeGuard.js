@@ -25,6 +25,8 @@ const INTERVAL = 10 //sec
 class SafeGuard {
     
     constructor(operator) {
+        if(!Config.credentials.databases.operators[operator]) throw Error('There is no such operator: ' + operator)
+        
         this.operator = operator
         
         this.tests = [
