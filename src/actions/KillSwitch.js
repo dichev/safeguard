@@ -37,11 +37,11 @@ class KillSwitch {
      * @return {Promise<boolean>}
      */
     async blockGame(operator, trigger) {
-        if(this._blocked.users.includes(trigger.gameName)) return true // TODO: this should be combined with mysql checks
+        if(this._blocked.games.includes(trigger.gameName)) return true // TODO: this should be combined with mysql checks
     
         console.log(`[BLOCK] Disable game #${trigger.gameName}`)
         let SQL = `UPDATE games SET status = 0 WHERE id = :id`
-        this._blocked.users.push(trigger.gameName)
+        this._blocked.games.push(trigger.gameName)
     
         // console.log('   '+SQL.replace(':id', gameName))
         
@@ -71,9 +71,12 @@ class KillSwitch {
      * @return {Promise<boolean>}
      */
     async blockOperator(operator, trigger) {
-        console.log(`[BLOCK] Disable opertaor #${operator}`)
+        if (this._blocked.operators.includes(operator)) return true
+        
+        console.log(`[BLOCK] Disable operator #${operator}`)
         let SQL = `UPDATE settings SET value = 'true' WHERE type = 'maintenance'`
         // console.log('   '+SQL.replace(':id', user.userId))
+        this._blocked.operators.push(operator)
         return true
     }
     

@@ -22,9 +22,9 @@ class Alarm {
     async notify(operator, trigger, blocked = false){
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let type = trigger.userId || trigger.potId || trigger.gameName
+        let type = trigger.userId || trigger.potId || trigger.gameName || operator
         let key = trigger.name + '_' + type
-        if(!trigger.name || !type) console.warn('Invalid data:', {trigger})
+        if(!trigger.name || !type) console.warn('Invalid data:', {operator, trigger})
         if(this.alarms[key]){
             let diff = Math.abs(perc - this.alarms[key])
             if(diff < ALARM_GAP) {

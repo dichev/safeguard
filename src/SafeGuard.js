@@ -9,6 +9,7 @@ const Database = require('./lib/Database')
 const DailyJackpots = require('./triggers/DailyJackpots')
 const UserLoss = require('./triggers/UserLoss')
 const GameLoss = require('./triggers/GameLoss')
+const OperatorLoss = require('./triggers/OperatorLoss')
 const Alarm = require('./actions/Alarm')
 const KillSwitch = require('./actions/KillSwitch')
 const Monitor = require('./actions/Monitor')
@@ -29,6 +30,7 @@ class SafeGuard {
             new DailyJackpots(),
             new UserLoss(),
             new GameLoss(),
+            new OperatorLoss(),
         ]
         
         this.alarm = new Alarm()
@@ -87,7 +89,7 @@ class SafeGuard {
                     break;
             
                 case Trigger.actions.BLOCK_OPERATOR:
-                    isBlocked = await this.killSwitch.blockOperator(operator)
+                    isBlocked = await this.killSwitch.blockOperator(operator, trigger)
                     break;
             
                 default:
