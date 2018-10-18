@@ -21,7 +21,6 @@ class DailyJackpots extends EventEmitter {
         console.log('Executing testDailyJackpotWonTwoTimeSameDay..')
         await this.testDailyJackpotWonTwoTimeSameDay(operator, from, to)
     
-    
     }
     
     async testDailyJackpotWonTwoTimeSameDay(operator, from, to){
@@ -32,13 +31,21 @@ class DailyJackpots extends EventEmitter {
                    LEFT JOIN _jackpot_config c ON(c.id = h.potId)
                    WHERE (timeWon BETWEEN ? AND ?) and type = 'time'
                    GROUP BY potId, DATE(timeWon)
-                   HAVING cnt > 0`
+                   HAVING cnt > 1`
     
         let found = await db.query(SQL, [from, to])
         if (!found) return false
     
         for (let pot of found) {
-            this.emit('ALERT', { action: Trigger.actions.BLOCK_JACKPOT,  potId: pot.potId,  value: pot.cnt,  threshold: 1 })
+            this.emit('ALERT', {
+                action: Trigger.actions.BLOCK_JACKPOT,
+                potId: pot.potId,
+                value: pot.cnt,
+                threshold: 1,
+                msg: `Daily jackpot won ${pot.cnt} times same day`,
+                period: {from, to},
+                name: 'testDailyJackpotWonTwoTimeSameDay',
+            })
         }
       
     }

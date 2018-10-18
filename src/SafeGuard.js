@@ -25,8 +25,8 @@ class SafeGuard {
     constructor() {
         
         this.tests = [
-            // new DailyJackpots(),
-            new UserLoss(),
+            new DailyJackpots(),
+            // new UserLoss(),
         ]
         
         this.alarm = new Alarm()

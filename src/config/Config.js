@@ -5,7 +5,10 @@ const Config = {
     triggers: {
         
         jackpots: {
-        
+            dailyJackpots: {
+                info: 'jackpot won 2 times in N minutes (exclude small jackpots)',
+                threshold: 2
+            }
         },
         
         users: {
