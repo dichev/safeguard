@@ -18,10 +18,14 @@ program
 
 
 ;(async function () {
-    let safeguard = new Safeguard()
     let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : []
     
-    await Promise.all(operators.map(operator => safeguard.activate(operator)))
+    let guards = []
+    for (let operator of operators) {
+        guards.push(new Safeguard(operator))
+    }
+    // run in parallel
+    await Promise.all(guards.map(guard => guard.activate()))
 })()
 .then(() => console.log('\nDone!'))
 .catch(err  => {

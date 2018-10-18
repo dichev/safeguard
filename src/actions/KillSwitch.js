@@ -4,7 +4,8 @@ const Database = require('../lib/Database')
 
 class KillSwitch {
     
-    constructor() {
+    constructor(operator) {
+        this.operator = operator
         this._blocked = {
             users: [],
             games: [],
@@ -14,11 +15,10 @@ class KillSwitch {
     }
     
     /**
-     * @param {string} operator
      * @param {Trigger} trigger
      * @return {Promise<boolean>}
      */
-    async blockUser(operator, trigger) {
+    async blockUser(trigger) {
         if(this._blocked.users.includes(trigger.userId)) return true // TODO: this should be combined with mysql checks
         
         console.log(`[BLOCK] Disable user #${trigger.userId}`)
@@ -27,16 +27,15 @@ class KillSwitch {
     
         // console.log('   '+SQL.replace(':id', userId))
         
-        await this.log(operator, trigger)
+        await this.log(trigger)
         return true
     }
     
     /**
-     * @param {string} operator
      * @param {Trigger} trigger
      * @return {Promise<boolean>}
      */
-    async blockGame(operator, trigger) {
+    async blockGame(trigger) {
         if(this._blocked.games.includes(trigger.gameName)) return true // TODO: this should be combined with mysql checks
     
         console.log(`[BLOCK] Disable game #${trigger.gameName}`)
@@ -45,17 +44,16 @@ class KillSwitch {
     
         // console.log('   '+SQL.replace(':id', gameName))
         
-        await this.log(operator, trigger)
+        await this.log(trigger)
         return true
     }
     
     
     /**
-     * @param {string} operator
      * @param {Trigger} trigger
      * @return {Promise<boolean>}
      */
-    async blockJackpots(operator, trigger) {
+    async blockJackpots(trigger) {
         if (this._blocked.jackpots.includes(trigger.potId)) return true
         
         console.log(`[BLOCK] Disable jackpots`)
@@ -66,26 +64,24 @@ class KillSwitch {
     }
     
     /**
-     * @param {string} operator
      * @param {Trigger} trigger
      * @return {Promise<boolean>}
      */
-    async blockOperator(operator, trigger) {
-        if (this._blocked.operators.includes(operator)) return true
+    async blockOperator(trigger) {
+        if (this._blocked.operators.includes(this.operator)) return true
         
-        console.log(`[BLOCK] Disable operator #${operator}`)
+        console.log(`[BLOCK] Disable operator #${this.operator}`)
         let SQL = `UPDATE settings SET value = 'true' WHERE type = 'maintenance'`
         // console.log('   '+SQL.replace(':id', user.userId))
-        this._blocked.operators.push(operator)
+        this._blocked.operators.push(this.operator)
         return true
     }
     
     /**
-     * @param {string} operator
      * @param {Trigger} trigger
      * @return {Promise}
      */
-    async log(operator, trigger) {
+    async log(trigger) {
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
         let row = {
@@ -94,10 +90,10 @@ class KillSwitch {
             percent: perc / 100,
             value: trigger.value,
             threshold: trigger.threshold,
-            operator: operator,
+            operator: this.operator,
             userId: trigger.userId,
             gameName: trigger.gameName,
-            message: `Blocked user #${trigger.userId}`,
+            message: `Blocked #${trigger.userId}`,
             details: null,
         }
         

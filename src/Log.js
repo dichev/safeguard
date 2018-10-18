@@ -4,14 +4,14 @@ const Database = require('./lib/Database')
 
 class Log {
     
-    constructor() {
-    
+    constructor(operator) {
+        this.operator = operator
     }
     
-    async start(operator, name){
+    async start(name){
         // console.log('Log started', name)
         let db = await Database.getLocalInstance()
-        let res = await db.query(`INSERT INTO log (operator, command, status, timeStarted) VALUES (?, ?, 'PROGRESS', NOW(3))`, [operator, name])
+        let res = await db.query(`INSERT INTO log (operator, command, status, timeStarted) VALUES (?, ?, 'PROGRESS', NOW(3))`, [this.operator, name])
         return res.insertId
     }
     

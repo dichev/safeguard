@@ -24,7 +24,8 @@ const INTERVAL = 10 //sec
 
 class SafeGuard {
     
-    constructor() {
+    constructor(operator) {
+        this.operator = operator
         
         this.tests = [
             new DailyJackpots(),
@@ -33,40 +34,39 @@ class SafeGuard {
             new OperatorLoss(),
         ]
         
-        this.alarm = new Alarm()
-        this.killSwitch = new KillSwitch()
-        this.monitor = new Monitor()
-        this.log = new Log()
+        this.alarm = new Alarm(operator)
+        this.killSwitch = new KillSwitch(operator)
+        this.monitor = new Monitor(operator)
+        this.log = new Log(operator)
     }
     
     
-    async activate(operator){
+    async activate(){
         for (let test of this.tests) {
-            test.on('ALERT', async (details) => this._handleAlert(operator, details, test))
+            test.on('ALERT', async (details) => this._handleAlert(details, test))
         }
 
         while (true) { // TODO: decide about the parallel execution
-            await this.check(operator)
+            await this.check()
             await sleep(INTERVAL, 'Waiting between iterations')
         }
     }
     
-    async check(operator){
+    async check(){
         for (let test of this.tests) {
-            let logId = await this.log.start(operator, test.constructor.name)
-            let result = await test.exec(operator)
+            let logId = await this.log.start(test.constructor.name)
+            let result = await test.exec(this.operator)
             await this.log.end(logId, test.constructor.name)
         }
     }
     
     /**
-     * @param {string} operator
      * @param {Trigger} trigger
      * @param test
      * @return {Promise<void>}
      * @private
      */
-    async _handleAlert(operator, trigger, test){
+    async _handleAlert(trigger, test){
         try {
             let isBlocked = false
         
@@ -77,19 +77,19 @@ class SafeGuard {
                     break;
             
                 case Trigger.actions.BLOCK_USER:
-                    isBlocked = await this.killSwitch.blockUser(operator, trigger)
+                    isBlocked = await this.killSwitch.blockUser(trigger)
                     break;
             
                 case Trigger.actions.BLOCK_GAME:
-                    isBlocked = await this.killSwitch.blockGame(operator, trigger)
+                    isBlocked = await this.killSwitch.blockGame(trigger)
                     break;
             
                 case Trigger.actions.BLOCK_JACKPOT:
-                    isBlocked = await this.killSwitch.blockJackpots(operator, trigger)
+                    isBlocked = await this.killSwitch.blockJackpots(trigger)
                     break;
             
                 case Trigger.actions.BLOCK_OPERATOR:
-                    isBlocked = await this.killSwitch.blockOperator(operator, trigger)
+                    isBlocked = await this.killSwitch.blockOperator(trigger)
                     break;
             
                 default:
@@ -97,11 +97,11 @@ class SafeGuard {
             
             }
         
-            await this.alarm.notify(operator, trigger, isBlocked)
+            await this.alarm.notify(trigger, isBlocked)
         
         
             if (Config.monitoring.enabled && trigger.userId) {
-                this.monitor.trackUser(operator, trigger.userId, trigger.period.from)
+                this.monitor.trackUser(trigger.userId, trigger.period.from)
             }
         
         } catch (err) { // these errors are in asynchronous event loop, so they can't be catch by the main loop
@@ -110,7 +110,7 @@ class SafeGuard {
     }
     
     
-    async history(operator, from, to = null){
+    async history(from, to = null){
         to = to || moment().utc().format('YYYY-MM-DD')
         let interval = moment().recur(from, to).all('YYYY-MM-DD');
         
@@ -118,8 +118,8 @@ class SafeGuard {
             // let [from, to] =  [`${date} 00:00:00`, `${date} 23:59:59`]
             console.log(`Execution for ${date}`)
             for (let test of this.tests) {
-                let logId = await this.log.start(operator, test.constructor.name)
-                let result = await test.exec(operator, `${date} 23:59:59`)
+                let logId = await this.log.start(test.constructor.name)
+                let result = await test.exec(`${date} 23:59:59`)
                 await this.log.end(logId, test.constructor.name, {period: date})
             }
         }

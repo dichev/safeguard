@@ -7,24 +7,24 @@ const ALARM_GAP = 1 // percent
 
 class Alarm {
     
-    constructor() {
+    constructor(operator) {
+        this.operator = operator
         this.alarms = {}
     }
     
     
     /**
      *
-     * @param {string} operator
      * @param {Trigger} trigger
      * @param {boolean} blocked
      * @return {Promise}
      */
-    async notify(operator, trigger, blocked = false){
+    async notify(trigger, blocked = false){
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let type = trigger.userId || trigger.potId || trigger.gameName || operator
+        let type = trigger.userId || trigger.potId || trigger.gameName || this.operator
         let key = trigger.name + '_' + type
-        if(!trigger.name || !type) console.warn('Invalid data:', {operator, trigger})
+        if(!trigger.name || !type) console.warn('Invalid data:', {trigger})
         if(this.alarms[key]){
             let diff = Math.abs(perc - this.alarms[key])
             if(diff < ALARM_GAP) {
@@ -42,7 +42,7 @@ class Alarm {
             percent: perc / 100,
             value: trigger.value,
             threshold: trigger.threshold,
-            operator: operator,
+            operator: this.operator,
             userId: trigger.userId,
             gameName: trigger.gameName,
             message: trigger.msg || 'above warning limit',

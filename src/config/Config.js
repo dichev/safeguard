@@ -55,7 +55,7 @@ const Config = {
     },
     
     
-    triggers: {
+    triggers: { // to be removed
         
         jackpots: {
             dailyJackpots: {
@@ -72,25 +72,9 @@ const Config = {
         },
         
         limits: {
-            userLoss: {
-                info: 'loss from single user for last 24 hours',
-                threshold: 2000 // GBP
-            },
-            userLossCapped: {
-                info: 'normalized loss from single user for last 24 hours',
-                threshold: 1000 // GBP
-            },
             userMplr: {
                 info: 'mplr from single user for last 24 hours',
                 threshold: 2000 // x
-            },
-            gameLoss: {
-                info: 'loss from single game for last 24 hours',
-                threshold: 50000 // GBP
-            },
-            operatorLoss: {
-                info: 'loss from operator for last 24 hours',
-                threshold: 50000 // GBP
             },
         }
         

@@ -8,8 +8,10 @@ const UPDATE_INTERVAL = 60 // sec
 
 class Monitor {
     
-    constructor() {
+    constructor(operator) {
         if(!Config.monitoring.enabled) return {}
+
+        this.operator = operator
 
         this._users = []
         
@@ -24,13 +26,13 @@ class Monitor {
         })
     }
     
-    trackUser(operator, userId, from){
-        if (this._users.includes(operator + '_' + userId)) return
-        this._users.push(operator + '_' + userId)
+    trackUser(userId, from){
+        if (this._users.includes(this.operator + '_' + userId)) return
+        this._users.push(this.operator + '_' + userId)
         console.log(`Tracking ${userId} from ${from}`)
         
         const track = async () => {
-            let db = await Database.getPlatformInstance(operator)
+            let db = await Database.getPlatformInstance(this.operator)
             let SQL = `SELECT
                         UNIX_TIMESTAMP(NOW()) as time,
                         userId,
@@ -45,7 +47,7 @@ class Monitor {
     
             let rows = await db.query(SQL, [from, userId])
             // console.log('MONITOR:', JSON.stringify(rows))
-            await this.toGraphite(`test.${operator}.users.${userId}`, rows[0]) // or to database
+            await this.toGraphite(`test.${this.operator}.users.${userId}`, rows[0]) // or to database
     
             setTimeout(() => track(), UPDATE_INTERVAL * 1000) // minus elapsed time
         }
@@ -56,7 +58,6 @@ class Monitor {
     }
     
     toGraphite(category, metrics){
-        
         
         for(let [key, value] of Object.entries(metrics)){
             if(key === 'userId' || key === 'time') continue
