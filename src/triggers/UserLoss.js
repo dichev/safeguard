@@ -6,6 +6,7 @@ const Trigger = require('../triggers/Trigger')
 const Database = require('../lib/Database')
 const EventEmitter = require('events').EventEmitter
 const Config = require('../config/Config')
+const moment = require('moment')
 
 const WARNING_LIMIT = 0.60 // from the threshold
 
@@ -19,7 +20,10 @@ class UserLoss extends EventEmitter {
     
     
     
-    async exec(operator, from, to){
+    async exec(operator, now = null){
+        let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
+        let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
+        
         console.log('---------------------------------------------------------------------------')
         console.log(this.description)
         console.log({operator, from, to})

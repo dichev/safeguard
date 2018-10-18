@@ -48,12 +48,9 @@ class SafeGuard {
     }
     
     async check(operator){
-        let from = moment().utc().subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
-        let to = moment().utc().format('YYYY-MM-DD HH:mm:ss')
-        
         for (let test of this.tests) {
             let logId = await this.log.start(operator, test.constructor.name)
-            let result = await test.exec(operator, from, to)
+            let result = await test.exec(operator)
             await this.log.end(logId, test.constructor.name)
         }
     }
@@ -114,11 +111,11 @@ class SafeGuard {
         let interval = moment().recur(from, to).all('YYYY-MM-DD');
         
         for(let date of interval){
-            let [from, to] =  [`${date} 00:00:00`, `${date} 23:59:59`]
-            console.log(`Execution for ${from} - ${to}`)
+            // let [from, to] =  [`${date} 00:00:00`, `${date} 23:59:59`]
+            console.log(`Execution for ${date}`)
             for (let test of this.tests) {
                 let logId = await this.log.start(operator, test.constructor.name)
-                let result = await test.exec(operator, `${date} 00:00:00`, `${date} 23:59:59`)
+                let result = await test.exec(operator, `${date} 23:59:59`)
                 await this.log.end(logId, test.constructor.name, {period: date})
             }
         }

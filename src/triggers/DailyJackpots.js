@@ -2,7 +2,9 @@
 
 const Trigger = require('../triggers/Trigger')
 const Database = require('../lib/Database')
+const Config = require('../config/Config')
 const EventEmitter = require('events').EventEmitter
+const moment = require('moment')
 
 class DailyJackpots extends EventEmitter {
     
@@ -13,39 +15,42 @@ class DailyJackpots extends EventEmitter {
     
     
     
-    async exec(operator, from, to){
+    async exec(operator, now = null){
+        now = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         console.log('---------------------------------------------------------------------------')
         console.log(this.description)
-        console.log({operator, from, to})
+        console.log({operator, now})
     
         console.log('Executing testDailyJackpotWonTwoTimeSameDay..')
-        await this.testDailyJackpotWonTwoTimeSameDay(operator, from, to)
+        await this.testDailyJackpotWonTwoTimeSameDay(operator, now)
     
     }
     
-    async testDailyJackpotWonTwoTimeSameDay(operator, from, to){
+    async testDailyJackpotWonTwoTimeSameDay(operator, now){
+        const {threshold, info} = Config.triggers.jackpots.dailyJackpots
+        
         let db = await Database.getJackpotInstance(operator)
     
         let SQL = `SELECT DATE(timeWon), potId, COUNT(*) as cnt, SUM(pot)
                    FROM _jackpot_history h
-                   LEFT JOIN _jackpot_config c ON(c.id = h.potId)
-                   WHERE (timeWon BETWEEN ? AND ?) and type = 'time'
+                   JOIN _jackpot_config c ON(c.id = h.potId and c.type = 'time')
+                   WHERE DATE(timeWon) = DATE(?)
                    GROUP BY potId, DATE(timeWon)
-                   HAVING cnt > 1`
+                   HAVING cnt >= ?`
     
-        let found = await db.query(SQL, [from, to])
+        let found = await db.query(SQL, [now, threshold])
         if (!found) return false
     
         for (let pot of found) {
-            this.emit('ALERT', {
+            this.emit('ALERT', new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
                 potId: pot.potId,
                 value: pot.cnt,
                 threshold: 1,
                 msg: `Daily jackpot won ${pot.cnt} times same day`,
-                period: {from, to},
+                period: now,
                 name: 'testDailyJackpotWonTwoTimeSameDay',
-            })
+            }))
         }
       
     }
