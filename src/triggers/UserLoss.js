@@ -28,34 +28,81 @@ class UserLoss extends EventEmitter {
         console.log(this.description)
         console.log({operator, from, to})
     
-        console.log('Executing testTotalLoss..')
-        await this.testTotalLoss(operator, from, to)
+        console.log('Executing testLimits..')
+        await this.testLimits(operator, from, to)
         
-        console.log('Executing testHugeWins..')
-        await this.testHugeWins(operator, from, to)
-    
-        console.log('Executing testTotalLossCapped..')
-        await this.testTotalLossCapped(operator, from, to)
-        
-        console.log('Executing testTotalMplrLoss..')
-        await this.testTotalMplrLoss(operator, from, to)
+        // console.log('Executing testHugeWins..')
+        // await this.testHugeWins(operator, from, to)
+        //
+        // console.log('Executing testCappedTotalLossFromGames..')
+        // await this.testCappedTotalLossFromGames(operator, from, to)
+        //
+        // console.log('Executing testTotalMplrLoss..')
+        // await this.testTotalMplrLoss(operator, from, to)
     
     }
 
-    async testTotalLoss(operator, from, to){
-        const {threshold, info} = Config.triggers.limits.userLoss
-        
+    async testLimits(operator, from, to){
+        const limits = Config.limits.users
         
         // from platform
         let db = await Database.getPlatformInstance(operator)
         let SQL = `SELECT
                         userId,
-                        SUM(payout-jackpot)-SUM(stake) AS profit
+                        SUM(payout)-SUM(stake) AS profit,
+                        SUM(payout-jackpot)-SUM(stake) AS profitGames,
+                        SUM(jackpot) AS profitJackpots,
+                        SUM(bonusPayout-bonusStake) AS profitBonuses
                    FROM transactions_real FORCE INDEX (startTime)
                    WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
                    GROUP BY userId
-                   HAVING profit > ${threshold * WARNING_LIMIT}`
-
+                   HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
+                       OR profitBonuses > ${limits.lossFromBonuses * WARNING_LIMIT}
+                   `
+    
+    
+        let found = await db.query(SQL, [from, to])
+        if (!found.length) return
+        console.log(`-> Found ${found.length} users`)
+    
+        for (let user of found) {
+            if(user.profitGames > limits.lossFromGames * WARNING_LIMIT){
+                this.emit('ALERT', new Trigger({
+                    action: user.profitGames < limits.lossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    value: user.profitGames,
+                    threshold: limits.lossFromGames,
+                    userId: user.userId,
+                    msg: `Detected user #${user.userId} with net profit of ${user.profitGames} GBP from games in last 24 hours`,
+                    period: {from, to},
+                    name: 'testLimits',
+                }))
+            }
+            if(user.profitJackpots > limits.lossFromJackpots * WARNING_LIMIT){
+                this.emit('ALERT', new Trigger({
+                    action: user.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    value: user.profitJackpots,
+                    threshold: limits.lossFromJackpots,
+                    userId: user.userId,
+                    msg: `Detected user #${user.userId} with net profit of ${user.profitJackpots} GBP from jackpots in last 24 hours`,
+                    period: {from, to},
+                    name: 'testLimits',
+                }))
+            }
+            if(user.profitBonuses > limits.lossFromBonuses * WARNING_LIMIT){
+                this.emit('ALERT', new Trigger({
+                    action: user.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    value: user.profitBonuses,
+                    threshold: limits.lossFromBonuses,
+                    userId: user.userId,
+                    msg: `Detected user #${user.userId} with net profit of ${user.profitBonuses} GBP from bonuses in last 24 hours`,
+                    period: {from, to},
+                    name: 'testLimits',
+                }))
+            }
+            
+        }
+        
         
         /*
         // from aggregations
@@ -86,25 +133,10 @@ class UserLoss extends EventEmitter {
                   AND (totalWin - turnover - jackpotsWinnings) > ${threshold * WARNING_LIMIT}`
         */
     
-        let found = await db.query(SQL, [from, to])
-        if (!found.length) return
-        
-        console.log(`-> Found ${found.length} users`)
-        for (let user of found) {
-            this.emit('ALERT', new Trigger({
-                action: user.profit < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
-                userId: user.userId,
-                value: user.profit,
-                threshold: threshold,
-                msg: `Detected user #${user.userId} with net profit of ${user.profit} GBP for last 24 hours`,
-                period: {from, to},
-                name: 'testTotalLoss',
-            }))
-        }
     }
     
     
-    async testTotalLossCapped(operator, from, to){
+    async testCappedTotalLossFromGames(operator, from, to){
         const {threshold, info} = Config.triggers.limits.userLossCapped
         
         let db = await Database.getPlatformInstance(operator)
@@ -147,7 +179,7 @@ class UserLoss extends EventEmitter {
                 threshold: threshold,
                 msg: `Detected user #${user.userId} with capped profit of ${user.profit} GBP for last 24 hours`,
                 period: {from, to},
-                name: 'testTotalLossCapped',
+                name: 'testCappedTotalLossFromGames',
             }))
         }
     }
@@ -183,7 +215,7 @@ class UserLoss extends EventEmitter {
                 threshold: threshold,
                 msg: `Detected user #${user.userId} with mplr of x${user.mplr} for last 24 hours`,
                 period: {from, to},
-                name: 'testTotalLoss',
+                name: 'testTotalLossFromGames',
             }))
         }
     }
