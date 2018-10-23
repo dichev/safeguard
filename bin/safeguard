@@ -4,12 +4,13 @@
 
 const program = require('commander')
 const Safeguard = require('../src/SafeGuard')
+const OPERATORS = Object.keys(require('../src/config/Config').credentials.databases.operators)
 
 
 program
     .usage('[--operators=<operators> --period <date|period|auto>]')
     
-    .option('-o, --operators <operators>', 'Comma-separated list on which operators to be executed: ugs,bede,.. Default: all ')
+    .option('-o, --operators <operators>', `Comma-separated list on which operators to be executed. Available: ${OPERATORS}. Default: all `)
     .option('-v, --verbose', 'Display error stack trace')
     
     .version(require('../package.json').version)

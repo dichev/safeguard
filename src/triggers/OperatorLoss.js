@@ -1,7 +1,5 @@
 'use strict'
 
-// TODO: temporary gathering data from transactions tables (slow) until the segments aggregations are ready (fast)
-
 const Trigger = require('../triggers/Trigger')
 const Database = require('../lib/Database')
 const EventEmitter = require('events').EventEmitter
@@ -36,14 +34,14 @@ class OperatorLoss extends EventEmitter {
         const limits = Config.limits.operators
         
         // from platform
-        let db = await Database.getPlatformInstance(operator)
+        let db = await Database.getSegmentsInstance(operator)
         let SQL = `SELECT
-                        SUM(payout)-SUM(stake) AS profit,
-                        SUM(payout-jackpot)-SUM(stake) AS profitGames,
-                        SUM(jackpot) AS profitJackpots,
-                        SUM(bonusPayout-bonusStake) AS profitBonuses
-                   FROM transactions_real
-                   WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
+                        SUM(payout)-SUM(bets) AS profit,
+                        SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
+                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
+                        SUM(bonusPayout-bonusBets) AS profitBonuses
+                   FROM user_summary_hourly
+                   WHERE (period BETWEEN ? AND ?)
                    HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
                        OR profitBonuses > ${limits.lossFromBonuses * WARNING_LIMIT}

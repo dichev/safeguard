@@ -1,7 +1,5 @@
 'use strict'
 
-// TODO: temporary gathering data from transactions tables (slow) until the segments aggregations are ready (fast)
-
 const Trigger = require('../triggers/Trigger')
 const Database = require('../lib/Database')
 const EventEmitter = require('events').EventEmitter
@@ -45,16 +43,15 @@ class UserLoss extends EventEmitter {
     async testLimits(operator, from, to){
         const limits = Config.limits.users
         
-        // from platform
-        let db = await Database.getPlatformInstance(operator)
+        let db = await Database.getSegmentsInstance(operator)
         let SQL = `SELECT
                         userId,
-                        SUM(payout)-SUM(stake) AS profit,
-                        SUM(payout-jackpot)-SUM(stake) AS profitGames,
-                        SUM(jackpot) AS profitJackpots,
-                        SUM(bonusPayout-bonusStake) AS profitBonuses
-                   FROM transactions_real
-                   WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
+                        SUM(payout)-SUM(bets) AS profit,
+                        SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
+                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
+                        SUM(bonusPayout-bonusBets) AS profitBonuses
+                   FROM user_summary_hourly
+                   WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
                    HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
@@ -105,6 +102,23 @@ class UserLoss extends EventEmitter {
         
         
         /*
+        // from platform
+        let db = await Database.getPlatformInstance(operator)
+        let SQL = `SELECT
+                        userId,
+                        SUM(payout)-SUM(stake) AS profit,
+                        SUM(payout-jackpot)-SUM(stake) AS profitGames,
+                        SUM(jackpot) AS profitJackpots,
+                        SUM(bonusPayout-bonusStake) AS profitBonuses
+                   FROM transactions_real
+                   WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
+                   GROUP BY userId
+                   HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
+                       OR profitBonuses > ${limits.lossFromBonuses * WARNING_LIMIT}
+                   `
+    
+        
         // from aggregations
         let db = await Database.getAggregationsInstance(operator)
         let SQL = `
