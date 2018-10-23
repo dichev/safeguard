@@ -50,7 +50,7 @@ class SafeGuard {
 
         while (true) { // TODO: decide about the parallel execution
             await this.check()
-            await sleep(INTERVAL, 'Waiting between iterations')
+            await sleep(INTERVAL, '\n\nWaiting between iterations')
         }
     }
     

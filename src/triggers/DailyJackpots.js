@@ -19,7 +19,7 @@ class DailyJackpots extends EventEmitter {
         now = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         console.log('---------------------------------------------------------------------------')
         console.log(this.description)
-        console.log({operator, now})
+        // console.log({operator, now})
     
         console.log('Executing testDailyJackpotWonTwoTimeSameDay..')
         await this.testDailyJackpotWonTwoTimeSameDay(operator, now)
