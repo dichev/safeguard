@@ -42,9 +42,9 @@ class OperatorLoss extends EventEmitter {
                         SUM(bonusPayout-bonusBets) AS profitBonuses
                    FROM user_summary_hourly
                    WHERE (period BETWEEN ? AND ?)
-                   HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
-                       OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
-                       OR profitBonuses > ${limits.lossFromBonuses * WARNING_LIMIT}
+                   HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
+                       OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                    `
     
     

@@ -29,11 +29,9 @@ class UserLoss extends EventEmitter {
         console.log('Executing user testLimits..')
         await this.testLimits(operator, from, to)
         
-        // console.log('Executing testHugeWins..')
-        // await this.testHugeWins(operator, from, to)
         //
-        // console.log('Executing testCappedTotalLossFromGames..')
-        // await this.testCappedTotalLossFromGames(operator, from, to)
+        console.log('Executing testCappedTotalLossFromGames..')
+        await this.testCappedTotalLossFromGames(operator, from, to)
         //
         // console.log('Executing testTotalMplrLoss..')
         // await this.testTotalMplrLoss(operator, from, to)
@@ -53,9 +51,9 @@ class UserLoss extends EventEmitter {
                    FROM user_summary_hourly
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
-                   HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
-                       OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
-                       OR profitBonuses > ${limits.lossFromBonuses * WARNING_LIMIT}
+                   HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
+                       OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                    `
     
     
@@ -131,9 +129,7 @@ class UserLoss extends EventEmitter {
                 WHERE s.operator = ? AND period BETWEEN DATE(?) AND DATE(?)
                 GROUP BY s.period, s.operator, s.userId
                 HAVING profit > ${threshold * WARNING_LIMIT}`
-        */
         
-        /*
         // from segments
         let db = await Database.getSegmentsInstance(operator)
         let SQL = `
@@ -151,47 +147,36 @@ class UserLoss extends EventEmitter {
     
     
     async testCappedTotalLossFromGames(operator, from, to){
-        const {threshold, info} = Config.triggers.limits.userLossCapped
-        
-        let db = await Database.getPlatformInstance(operator)
+        const limits = Config.limits.users
+        const indicators = Config.indicators
     
+        let db = await Database.getSegmentsInstance(operator)
         let SQL = `SELECT
                         userId,
-                        SUM(payout-jackpot)-SUM(stake) AS profit
-                        #, SUM(IF(payout-jackpot<1000, 0, payout-jackpot)) AS profitExcluded
-                   FROM transactions_real
-                   WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
+                        SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames
+                   FROM user_summary_hourly
+                   LEFT JOIN (
+                       SELECT userId, SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
+                       FROM user_huge_wins
+                       WHERE period BETWEEN ? and ? AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+                       GROUP BY userId
+                   ) h USING (userId)
+                   WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
-                   HAVING profit > ${threshold * WARNING_LIMIT}`
+                   HAVING profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
+                   `
     
-        let found = await db.query(SQL, [from, to])
+        let found = await db.query(SQL, [from, to, from, to])
         if (!found.length) return
-        
-        
-        // Cap users huge wins
-        let ids = found.map(u => u.userId)
-        let local = await Database.getLocalInstance()
-        let SQL2 = `SELECT userId, SUM(payout-jackpot) as payout FROM users_huge_wins
-                    WHERE userId IN (?) AND (startTime BETWEEN ? AND ?)
-                    GROUP BY userId`
-        let rows = await local.query(SQL2, [ids, from, to])
-
-        for(let row of rows) { // TODO: validations & tests
-            found.find(u => u.userId === row.userId).profit -= row.payout
-        }
-        found = found.filter(u => u.profit > threshold * WARNING_LIMIT)
-        
-        if(!found.length) return
-        
         
         for (let user of found) {
             // console.warn(`[ALERT]`, user)
             this.emit('ALERT', new Trigger({
-                action: user.profit < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                action: user.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
                 userId: user.userId,
-                value: user.profit,
-                threshold: threshold,
-                msg: `Detected user #${user.userId} with capped profit of ${user.profit} GBP for last 24 hours`,
+                value: user.profitCapGames,
+                threshold: limits.cappedLossFromGames,
+                msg: `Detected user #${user.userId} with capped profit of ${user.profitCapGames} GBP for last 24 hours`,
                 period: {from, to},
                 name: 'testCappedTotalLossFromGames',
             }))
@@ -234,41 +219,6 @@ class UserLoss extends EventEmitter {
         }
     }
     
-    
-    async testHugeWins(operator, from, to){
-        const {threshold, info} = Config.triggers.users.hugeWins
-        
-        let db = await Database.getPlatformInstance(operator)
-    
-        let SQL = `SELECT
-                        id,
-                        roundInstanceId,
-                        userId,
-                        payout-jackpot as value
-                   FROM transactions_real
-                   WHERE (startTime BETWEEN ? AND ?) # AND statusCode IN (100, 101, 102, 200)
-                   AND payout-jackpot > ${threshold * WARNING_LIMIT}`
-    
-    
-        let found = await db.query(SQL, [from, to])
-        if (!found.length) return
-        
-        
-        console.log(`-> Found ${found.length} users`)
-        for (let user of found) {
-            this.emit('ALERT', new Trigger({
-                action: Trigger.actions.ALARM,
-                userId: user.userId,
-                value: user.value,
-                threshold: threshold,
-                msg: `Detected user #${user.userId} with single win of ${user.value} GBP for last 2 days`,
-                period: {from, to},
-                name: 'testHugeWins',
-            }))
-        }
-    
-        await this.saveTransactions(operator, found.map(t => t.roundInstanceId))
-    }
     
     
     async saveTransactions(operator, roundIds){

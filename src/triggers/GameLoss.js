@@ -44,9 +44,9 @@ class GameLoss extends EventEmitter {
                    FROM user_summary_hourly
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId
-                   HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
-                       OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
-                       OR profitBonuses > ${limits.lossFromBonuses * WARNING_LIMIT}
+                   HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
+                       OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                    `
     
     

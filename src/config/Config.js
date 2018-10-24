@@ -3,6 +3,11 @@
 const Config = {
     
     
+    indicators: {
+        hugeWinIsAbove: 1000 // GBP
+    },
+    
+    
     limits: {
         
         users: {
@@ -63,14 +68,7 @@ const Config = {
                 threshold: 2
             }
         },
-        
-        users: {
-            hugeWins: {
-                info: 'single huge win from user in last 24 hours',
-                threshold: 10000 // GBP
-            },
-        },
-        
+
         limits: {
             userMplr: {
                 info: 'mplr from single user for last 24 hours',
