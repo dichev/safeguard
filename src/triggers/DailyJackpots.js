@@ -27,7 +27,7 @@ class DailyJackpots extends EventEmitter {
     }
     
     async testDailyJackpotWonTwoTimeSameDay(operator, now){
-        const {threshold, info} = Config.triggers.jackpots.dailyJackpots
+        const limits = Config.limits.jackpots
         
         let db = await Database.getJackpotInstance(operator)
     
@@ -36,9 +36,9 @@ class DailyJackpots extends EventEmitter {
                    JOIN _jackpot_config c ON(c.id = h.potId and c.type = 'time')
                    WHERE DATE(timeWon) = DATE(?)
                    GROUP BY potId, DATE(timeWon)
-                   HAVING cnt >= ?`
+                   HAVING cnt >= ${limits.timedJackpotWonCount}`
     
-        let found = await db.query(SQL, [now, threshold])
+        let found = await db.query(SQL, [now])
         if (!found) return false
     
         for (let pot of found) {

@@ -10,6 +10,12 @@ const Config = {
     
     limits: {
         
+        jackpots: {
+            // timed jackpot won 2 times in N minutes
+            timedJackpotWonCount: 2
+        },
+        
+        
         users: {
             //'£500,000 from games for last 24 hours'
             lossFromGames: 2000, // GBP
@@ -61,28 +67,8 @@ const Config = {
         },
         
         
-        
-        
     },
     
-    
-    triggers: { // to be removed
-        
-        jackpots: {
-            dailyJackpots: {
-                info: 'jackpot won 2 times in N minutes (exclude small jackpots)',
-                threshold: 2
-            }
-        },
-
-        limits: {
-            userMplr: {
-                info: 'mplr from single user for last 24 hours',
-                threshold: 2000 // x
-            },
-        }
-        
-    },
     
     credentials: {
         databases: {

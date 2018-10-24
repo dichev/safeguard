@@ -4,8 +4,6 @@ const SSHClient = require('dopamine-toolbox').SSHClient
 const MySQL = require('dopamine-toolbox').MySQL;
 const EventEmitter = require('events').EventEmitter
 
-const emitter = new EventEmitter()
-
 // TODO: move me to toolbox
 class DatabasePool {
    
@@ -95,7 +93,7 @@ class DatabasePool {
         
         if (conn.mysqlClient) {
             // console.log(`[${id}] End mysql connection..`)
-            conn.mysqlClient.disconnect()
+            conn.mysqlClient.disconnect().catch(console.error)
         }
         if(conn.sshClient) {
             // console.log(`[${id}] End ssh connection..`)

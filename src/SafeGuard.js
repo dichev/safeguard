@@ -48,6 +48,7 @@ class SafeGuard {
             test.on('ALERT', async (details) => this._handleAlert(details, test))
         }
 
+        // noinspection InfiniteLoopJS
         while (true) { // TODO: decide about the parallel execution
             await this.check()
             await sleep(INTERVAL, '\n\nWaiting between iterations')

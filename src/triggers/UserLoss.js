@@ -17,7 +17,6 @@ class UserLoss extends EventEmitter {
     }
     
     
-    
     async exec(operator, now = null){
         let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
@@ -106,51 +105,6 @@ class UserLoss extends EventEmitter {
             }
             
         }
-        
-        
-        /*
-        // from platform
-        let db = await Database.getPlatformInstance(operator)
-        let SQL = `SELECT
-                        userId,
-                        SUM(payout)-SUM(stake) AS profit,
-                        SUM(payout-jackpot)-SUM(stake) AS profitGames,
-                        SUM(jackpot) AS profitJackpots,
-                        SUM(bonusPayout-bonusStake) AS profitBonuses
-                   FROM transactions_real
-                   WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
-                   GROUP BY userId
-                   HAVING profitGames > ${limits.lossFromGames * WARNING_LIMIT}
-                       OR profitJackpots > ${limits.lossFromJackpots * WARNING_LIMIT}
-                       OR profitBonuses > ${limits.lossFromBonuses * WARNING_LIMIT}
-                   `
-    
-        
-        // from aggregations
-        let db = await Database.getAggregationsInstance(operator)
-        let SQL = `
-                SELECT
-                    period,
-                    s.operator,
-                    s.userId,
-                    ROUND(-SUM(s.hold), 2) AS profit
-                FROM summary_gbp s
-                WHERE s.operator = ? AND period BETWEEN DATE(?) AND DATE(?)
-                GROUP BY s.period, s.operator, s.userId
-                HAVING profit > ${threshold * WARNING_LIMIT}`
-        
-        // from segments
-        let db = await Database.getSegmentsInstance(operator)
-        let SQL = `
-                SELECT
-                     timeLastGameSession as period,
-                     userId,
-                     (totalWin - turnover - jackpotsWinnings) AS profit,
-                     hold
-                FROM users
-                WHERE timeLastGameSession >= CURDATE() - INTERVAL 1 DAY
-                  AND (totalWin - turnover - jackpotsWinnings) > ${threshold * WARNING_LIMIT}`
-        */
     
     }
     
