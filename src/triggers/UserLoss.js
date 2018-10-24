@@ -29,13 +29,8 @@ class UserLoss extends EventEmitter {
         console.log('Executing user testLimits..')
         await this.testLimits(operator, from, to)
         
-        //
         console.log('Executing testCappedTotalLossFromGames..')
         await this.testCappedTotalLossFromGames(operator, from, to)
-        //
-        // console.log('Executing testTotalMplrLoss..')
-        // await this.testTotalMplrLoss(operator, from, to)
-    
     }
 
     async testLimits(operator, from, to){
@@ -47,13 +42,15 @@ class UserLoss extends EventEmitter {
                         SUM(payout)-SUM(bets) AS profit,
                         SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
                         SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                        SUM(bonusPayout-bonusBets) AS profitBonuses
+                        SUM(bonusPayout-bonusBets) AS profitBonuses,
+                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
+                       OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
     
     
@@ -91,6 +88,18 @@ class UserLoss extends EventEmitter {
                     threshold: limits.lossFromBonuses,
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with net profit of ${user.profitBonuses} GBP from bonuses in last 24 hours`,
+                    period: {from, to},
+                    name: 'testLimits',
+                }))
+            }
+            
+            if(user.pureProfit > limits.pureLossFromGames * WARNING_LIMIT){
+                this.emit('ALERT', new Trigger({
+                    action: user.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    value: user.pureProfit,
+                    threshold: limits.pureLossFromGames,
+                    userId: user.userId,
+                    msg: `Detected user #${user.userId} with pure mplr win of x${user.pureProfit} in last 24 hours`,
                     period: {from, to},
                     name: 'testLimits',
                 }))
@@ -183,55 +192,6 @@ class UserLoss extends EventEmitter {
         }
     }
     
-    async testTotalMplrLoss(operator, from, to){
-        const {threshold, info} = Config.triggers.limits.userMplr
-    
-        // from platform
-        let db = await Database.getPlatformInstance(operator)
-        let SQL = `SELECT
-                        userId,
-                        SUM(mplr) as mplr
-                   FROM (
-                       SELECT
-                            userId,
-                            ROUND(SUM(payout-jackpot-stake)/SUM(stake), 2) AS mplr
-                       FROM transactions_real
-                       WHERE (startTime BETWEEN ? AND ?) AND statusCode IN (100, 101, 102, 200)
-                       GROUP BY roundInstanceId, userId
-                   ) tmp
-                   GROUP BY userId
-                   HAVING mplr > ${threshold * WARNING_LIMIT}`
-    
-        let found = await db.query(SQL, [from, to])
-        if (!found.length) return
-    
-        console.log(`-> Found ${found.length} users`)
-        for (let user of found) {
-            this.emit('ALERT', new Trigger({
-                action: user.mplr < threshold ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
-                userId: user.userId,
-                value: user.mplr,
-                threshold: threshold,
-                msg: `Detected user #${user.userId} with mplr of x${user.mplr} for last 24 hours`,
-                period: {from, to},
-                name: 'testTotalLossFromGames',
-            }))
-        }
-    }
-    
-    
-    
-    async saveTransactions(operator, roundIds){
-        console.log('Saving rounds:', roundIds.length)
-        let db = await Database.getPlatformInstance(operator)
-        let rows = await db.query(`SELECT * from transactions_real WHERE roundInstanceId IN (?)`, [roundIds])
-        let values = rows.map(row => Object.keys(row).map(key => row[key]))
-    
-        let local = await Database.getLocalInstance()
-        await local.query(`
-            REPLACE INTO users_huge_wins VALUES ?
-        `, [values])
-    }
     
     
 }

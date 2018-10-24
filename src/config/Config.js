@@ -22,6 +22,8 @@ const Config = {
             
             // £100,000 from bonuses for last 24 hours
             lossFromBonuses: 1000, // GBP
+            
+            pureLossFromGames: 1000 // as multiplier
         },
         
         
@@ -38,6 +40,8 @@ const Config = {
             
             // £100,000 from bonuses for last 24 hours
             lossFromBonuses: 1000, // GBP
+    
+            pureLossFromGames: 1000 // as multiplier
         },
         
         operators: {
@@ -52,6 +56,8 @@ const Config = {
             
             // £100,000 from bonuses for last 24 hours
             lossFromBonuses: 1000, // GBP
+    
+            pureLossFromGames: 1000 // as multiplier
         },
         
         

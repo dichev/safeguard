@@ -39,12 +39,14 @@ class OperatorLoss extends EventEmitter {
                         SUM(payout)-SUM(bets) AS profit,
                         SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
                         SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                        SUM(bonusPayout-bonusBets) AS profitBonuses
+                        SUM(bonusPayout-bonusBets) AS profitBonuses,
+                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly
                    WHERE (period BETWEEN ? AND ?)
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
+                       OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
     
     
@@ -80,6 +82,16 @@ class OperatorLoss extends EventEmitter {
                     value: row.profitBonuses,
                     threshold: limits.lossFromBonuses,
                     msg: `Detected operator #${operator} with net profit of ${row.profitBonuses} GBP from bonuses in last 24 hours`,
+                    period: {from, to},
+                    name: 'testLimits',
+                }))
+            }
+            if (row.pureProfit > limits.pureLossFromGames * WARNING_LIMIT) {
+                this.emit('ALERT', new Trigger({
+                    action: row.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    value: row.pureProfit,
+                    threshold: limits.pureLossFromGames,
+                    msg: `Detected operator #${operator} with pure mplr win of x${row.pureProfit} in last 24 hours`,
                     period: {from, to},
                     name: 'testLimits',
                 }))

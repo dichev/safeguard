@@ -40,13 +40,15 @@ class GameLoss extends EventEmitter {
                         SUM(payout)-SUM(bets) AS profit,
                         SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
                         SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                        SUM(bonusPayout-bonusBets) AS profitBonuses
+                        SUM(bonusPayout-bonusBets) AS profitBonuses,
+                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
+                       OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
     
     
@@ -88,7 +90,16 @@ class GameLoss extends EventEmitter {
                     name: 'testLimits',
                 }))
             }
-            
+            if (game.pureProfit > limits.pureLossFromGames * WARNING_LIMIT) {
+                this.emit('ALERT', new Trigger({
+                    action: game.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    value: game.pureProfit,
+                    threshold: limits.pureLossFromGames,
+                    msg: `Detected game #${game.gameName} with pure mplr win of x${game.pureProfit} in last 24 hours`,
+                    period: {from, to},
+                    name: 'testLimits',
+                }))
+            }
         }
     
     }
