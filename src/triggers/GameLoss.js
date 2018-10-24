@@ -6,7 +6,7 @@ const EventEmitter = require('events').EventEmitter
 const Config = require('../config/Config')
 const moment = require('moment')
 
-const WARNING_LIMIT = 0.60 // from the threshold
+const WARNING_LIMIT = Config.indicators.warningsRatio
 
 class GameLoss extends EventEmitter {
     
@@ -36,12 +36,12 @@ class GameLoss extends EventEmitter {
         // from platform
         let db = await Database.getSegmentsInstance(operator)
         let SQL = `SELECT
-                        gameId as gameName,
-                        SUM(payout)-SUM(bets) AS profit,
-                        SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
-                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                        SUM(bonusPayout-bonusBets) AS profitBonuses,
-                        SUM(mplr) AS pureProfit
+                       gameId as gameName,
+                       SUM(payout)-SUM(bets) AS profit,
+                       SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
+                       SUM(jackpotPayout - jackpotBets) AS profitJackpots,
+                       SUM(bonusPayout-bonusBets) AS profitBonuses,
+                       SUM(mplr) AS pureProfit
                    FROM user_summary_hourly
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId

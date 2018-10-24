@@ -4,6 +4,7 @@ const Config = {
     
     
     indicators: {
+        warningsRatio: 0.60, // from the threshold
         hugeWinIsAbove: 1000 // GBP
     },
     
