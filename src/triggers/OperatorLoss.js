@@ -56,7 +56,7 @@ class OperatorLoss extends EventEmitter {
         if(found.length > 1) console.warn('It is not expected to found more than 1 operator here, please investigate', found)
     
         for (let row of found) {
-            if(row.profitGames > limits.lossFromGames * WARNING_LIMIT){
+            if(row.profitGames >= limits.lossFromGames * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
                     action: row.profitGames < limits.lossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitGames,
@@ -66,7 +66,7 @@ class OperatorLoss extends EventEmitter {
                     name: 'testLimits',
                 }))
             }
-            if(row.profitJackpots > limits.lossFromJackpots * WARNING_LIMIT){
+            if(row.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
                     action: row.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALARM : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitJackpots,
@@ -76,7 +76,7 @@ class OperatorLoss extends EventEmitter {
                     name: 'testLimits',
                 }))
             }
-            if(row.profitBonuses > limits.lossFromBonuses * WARNING_LIMIT){
+            if(row.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
                     action: row.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALARM : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitBonuses,
@@ -86,7 +86,7 @@ class OperatorLoss extends EventEmitter {
                     name: 'testLimits',
                 }))
             }
-            if (row.pureProfit > limits.pureLossFromGames * WARNING_LIMIT) {
+            if (row.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
                 this.emit('ALERT', new Trigger({
                     action: row.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
                     value: row.pureProfit,

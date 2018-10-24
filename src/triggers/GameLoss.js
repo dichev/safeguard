@@ -57,7 +57,7 @@ class GameLoss extends EventEmitter {
         console.log(`-> Found ${found.length} games`)
     
         for (let game of found) {
-            if(game.profitGames > limits.lossFromGames * WARNING_LIMIT){
+            if(game.profitGames >= limits.lossFromGames * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
                     action: game.profitGames < limits.lossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_GAME,
                     value: game.profitGames,
@@ -68,7 +68,7 @@ class GameLoss extends EventEmitter {
                     name: 'testLimits',
                 }))
             }
-            if(game.profitJackpots > limits.lossFromJackpots * WARNING_LIMIT){
+            if(game.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
                     action: game.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALARM : Trigger.actions.BLOCK_GAME,
                     value: game.profitJackpots,
@@ -79,7 +79,7 @@ class GameLoss extends EventEmitter {
                     name: 'testLimits',
                 }))
             }
-            if(game.profitBonuses > limits.lossFromBonuses * WARNING_LIMIT){
+            if(game.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
                     action: game.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALARM : Trigger.actions.BLOCK_GAME,
                     value: game.profitBonuses,
@@ -90,7 +90,7 @@ class GameLoss extends EventEmitter {
                     name: 'testLimits',
                 }))
             }
-            if (game.pureProfit > limits.pureLossFromGames * WARNING_LIMIT) {
+            if (game.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
                 this.emit('ALERT', new Trigger({
                     action: game.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
                     value: game.pureProfit,
