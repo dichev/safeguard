@@ -58,7 +58,7 @@ class GameLoss extends EventEmitter {
         for (let game of found) {
             if(game.profitGames >= limits.lossFromGames * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: game.profitGames < limits.lossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_GAME,
+                    action: game.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
                     value: game.profitGames,
                     threshold: limits.lossFromGames,
                     gameName: game.gameName,
@@ -69,7 +69,7 @@ class GameLoss extends EventEmitter {
             }
             if(game.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: game.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALARM : Trigger.actions.BLOCK_GAME,
+                    action: game.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
                     value: game.profitJackpots,
                     threshold: limits.lossFromJackpots,
                     gameName: game.gameName,
@@ -80,7 +80,7 @@ class GameLoss extends EventEmitter {
             }
             if(game.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: game.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALARM : Trigger.actions.BLOCK_GAME,
+                    action: game.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
                     value: game.profitBonuses,
                     threshold: limits.lossFromBonuses,
                     gameName: game.gameName,
@@ -91,7 +91,7 @@ class GameLoss extends EventEmitter {
             }
             if (game.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
                 this.emit('ALERT', new Trigger({
-                    action: game.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    action: game.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: game.pureProfit,
                     threshold: limits.pureLossFromGames,
                     msg: `Detected game #${game.gameName} with pure mplr win of x${game.pureProfit} in last 24 hours`,

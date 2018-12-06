@@ -3,13 +3,13 @@
 const Database = require('../lib/Database')
 const Trigger = require('../triggers/Trigger')
 
-const ALARM_GAP = 1 // percent
+const ALERT_GAP = 1 // percent
 
-class Alarm {
+class Alert {
     
     constructor(operator) {
         this.operator = operator
-        this.alarms = {}
+        this.alertss = {}
     }
     
     
@@ -25,16 +25,16 @@ class Alarm {
         let type = trigger.userId || trigger.potId || trigger.gameName || this.operator
         let key = trigger.name + '_' + type
         if(!trigger.name || !type) console.warn('Invalid data:', {trigger})
-        if(this.alarms[key]){
-            let diff = Math.abs(perc - this.alarms[key])
-            if(diff < ALARM_GAP) {
-                return console.verbose(`skipping alarm for ${key} with diff:`, diff)
+        if(this.alertss[key]){
+            let diff = Math.abs(perc - this.alertss[key])
+            if(diff < ALERT_GAP) {
+                return console.verbose(`skipping alerts for ${key} with diff:`, diff)
             }
         }
-        this.alarms[key] = perc
+        this.alertss[key] = perc
         
         
-        console.log(`[ALARM ${perc}%]`, trigger.msg)
+        console.log(`[ALERT ${perc}%]`, trigger.msg)
     
         let row = {
             type: 'ALERT',
@@ -55,4 +55,4 @@ class Alarm {
     }
 }
 
-module.exports = Alarm
+module.exports = Alert

@@ -58,7 +58,7 @@ class OperatorLoss extends EventEmitter {
         for (let row of found) {
             if(row.profitGames >= limits.lossFromGames * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: row.profitGames < limits.lossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_OPERATOR,
+                    action: row.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitGames,
                     threshold: limits.lossFromGames,
                     msg: `Detected operator #${operator} with net profit of ${row.profitGames} GBP from games in last 24 hours`,
@@ -68,7 +68,7 @@ class OperatorLoss extends EventEmitter {
             }
             if(row.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: row.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALARM : Trigger.actions.BLOCK_OPERATOR,
+                    action: row.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitJackpots,
                     threshold: limits.lossFromJackpots,
                     msg: `Detected operator #${operator} with net profit of ${row.profitJackpots} GBP from jackpots in last 24 hours`,
@@ -78,7 +78,7 @@ class OperatorLoss extends EventEmitter {
             }
             if(row.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: row.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALARM : Trigger.actions.BLOCK_OPERATOR,
+                    action: row.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitBonuses,
                     threshold: limits.lossFromBonuses,
                     msg: `Detected operator #${operator} with net profit of ${row.profitBonuses} GBP from bonuses in last 24 hours`,
@@ -88,7 +88,7 @@ class OperatorLoss extends EventEmitter {
             }
             if (row.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
                 this.emit('ALERT', new Trigger({
-                    action: row.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    action: row.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: row.pureProfit,
                     threshold: limits.pureLossFromGames,
                     msg: `Detected operator #${operator} with pure mplr win of x${row.pureProfit} in last 24 hours`,

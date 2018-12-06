@@ -10,7 +10,7 @@ const DailyJackpots = require('./triggers/DailyJackpots')
 const UserLoss = require('./triggers/UserLoss')
 const GameLoss = require('./triggers/GameLoss')
 const OperatorLoss = require('./triggers/OperatorLoss')
-const Alarm = require('./actions/Alarm')
+const Alert = require('./actions/Alert')
 const KillSwitch = require('./actions/KillSwitch')
 const Monitor = require('./actions/Monitor')
 const Trigger = require('./triggers/Trigger')
@@ -42,7 +42,7 @@ class SafeGuard {
             new OperatorLoss(),
         ]
         
-        this.alarm = new Alarm(operator)
+        this.alerts = new Alert(operator)
         this.killSwitch = new KillSwitch(operator)
         this.monitor = new Monitor(operator)
         this.log = new Log(operator)
@@ -81,7 +81,7 @@ class SafeGuard {
         
             switch (trigger.action) {
             
-                case Trigger.actions.ALARM:
+                case Trigger.actions.ALERT:
                     //
                     break;
             
@@ -106,7 +106,7 @@ class SafeGuard {
             
             }
         
-            await this.alarm.notify(trigger, isBlocked)
+            await this.alerts.notify(trigger, isBlocked)
         
         
             if (Config.monitoring.enabled && trigger.userId) {

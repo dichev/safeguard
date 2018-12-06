@@ -60,7 +60,7 @@ class UserLoss extends EventEmitter {
         for (let user of found) {
             if(user.profitGames >= limits.lossFromGames * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: user.profitGames < limits.lossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    action: user.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.profitGames,
                     threshold: limits.lossFromGames,
                     userId: user.userId,
@@ -71,7 +71,7 @@ class UserLoss extends EventEmitter {
             }
             if(user.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: user.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    action: user.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.profitJackpots,
                     threshold: limits.lossFromJackpots,
                     userId: user.userId,
@@ -82,7 +82,7 @@ class UserLoss extends EventEmitter {
             }
             if(user.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: user.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    action: user.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.profitBonuses,
                     threshold: limits.lossFromBonuses,
                     userId: user.userId,
@@ -94,7 +94,7 @@ class UserLoss extends EventEmitter {
             
             if(user.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
-                    action: user.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                    action: user.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.pureProfit,
                     threshold: limits.pureLossFromGames,
                     userId: user.userId,
@@ -135,7 +135,7 @@ class UserLoss extends EventEmitter {
         for (let user of found) {
             // console.warn(`[ALERT]`, user)
             this.emit('ALERT', new Trigger({
-                action: user.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALARM : Trigger.actions.BLOCK_USER,
+                action: user.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                 userId: user.userId,
                 value: user.profitCapGames,
                 threshold: limits.cappedLossFromGames,

@@ -30,7 +30,7 @@ class Trigger {
 
 
 Trigger.actions = {
-    ALARM: 'ALARM',
+    ALERT: 'ALERT',
     BLOCK_USER: 'BLOCK_USER',
     BLOCK_GAME: 'BLOCK_GAME',
     BLOCK_JACKPOT: 'BLOCK_JACKPOT',
