@@ -85,7 +85,7 @@ class KillSwitch {
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
         let row = {
-            type: 'BLOCK',
+            name: trigger.name,
             blocked: 'YES',
             percent: perc / 100,
             value: trigger.value,
@@ -98,7 +98,7 @@ class KillSwitch {
         }
         
         let db = await Database.getLocalInstance()
-        await db.query(`INSERT INTO found (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
+        await db.query(`INSERT INTO blocked (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
     }
     
     

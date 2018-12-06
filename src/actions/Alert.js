@@ -37,7 +37,7 @@ class Alert {
         console.log(`[ALERT ${perc}%]`, trigger.msg)
     
         let row = {
-            type: 'ALERT',
+            name: trigger.name,
             blocked: blocked ? 'YES' : 'NO',
             percent: perc / 100,
             value: trigger.value,
@@ -51,7 +51,7 @@ class Alert {
     
     
         let db = await Database.getLocalInstance()
-        await db.query(`INSERT INTO found (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
+        await db.query(`INSERT INTO alerts (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
     }
 }
 

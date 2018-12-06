@@ -27,7 +27,7 @@ class SafeGuard {
     // used during dev
     static async cleanDatabase(){
         let db = await Database.getLocalInstance()
-        await db.query('TRUNCATE found; TRUNCATE log;')
+        await db.query('TRUNCATE alerts; TRUNCATE blocked; TRUNCATE log;')
     }
     
     constructor(operator) {
