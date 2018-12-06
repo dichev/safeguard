@@ -34,7 +34,7 @@ class Alarm {
         this.alarms[key] = perc
         
         
-        console.log(`[ALARM] ${perc}%]`, trigger.msg)
+        console.log(`[ALARM ${perc}%]`, trigger.msg)
     
         let row = {
             type: 'ALERT',

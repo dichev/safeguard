@@ -11,7 +11,9 @@ program
     .usage('[--operators=<operators> --period <date|period|auto>]')
     
     .option('-o, --operators <operators>', `Comma-separated list on which operators to be executed. Available: ${OPERATORS}. Default: all `)
+    // .option('-m, --mode <parallel|sequential>', `Run multiple operators in parallel or one by one. Default: parallel `)
     .option('-v, --verbose', 'Display error stack trace')
+    .option('--clean', `Fresh start - will clean the safeguard database logs and alerts`)
     
     .version(require('../package.json').version)
     .parse(process.argv)
@@ -19,7 +21,9 @@ program
 
 
 ;(async function () {
-    let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : []
+    if(program.clean) await Safeguard.cleanDatabase()
+    // let parallel = program.mode !== 'sequential'
+    let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : OPERATORS
     
     let guards = []
     for (let operator of operators) {

@@ -1,5 +1,15 @@
 # Safe Guard
 
+### Install & run
+
+```bash
+npm install
+node bin/safeguard --help
+node bin/safeguard -o bede,rank
+```
+
+
+### Scope
 Here is a draft of the protection scope. The values are chosen randomly, they will tuned based on history data and potentials
 
 #### Limits
@@ -15,6 +25,7 @@ users
   ✓ £10,000 from games for last 24 hours excluding wins above £10,000
   ✓ £2,000,000 from jackpots for last 24 hours
   ✓ £100,000 from bonuses for last 24 hours
+  ✓ x10,000 cumulative mplr for last 24 hours
 
 
 games
@@ -22,6 +33,7 @@ games
   ✓ £10,000 for last 24 hours excluding wins above £10,000
   ✓ £2,000,000 from jackpots for last 24 hours
   ✓ £100,000 from bonuses for last 24 hours
+  ✓ x10,000 cumulative mplr for last 24 hours
     Game win above expected game max win
 
 operator
@@ -30,7 +42,8 @@ operator
   ✓ £10,000 for last 24 hours excluding wins above £10,000
   ✓ £2,000,000 from jackpots for last 24 hours
   ✓ £100,000 from bonuses for last 24 hours
-    Total hold is bellow -£100,000 for last 24 hours (exclude jackpots)
+  ✓ x10,000 cumulative mplr for last 24 hours
+
 ```
 
 
@@ -82,6 +95,8 @@ Users
     Balance changes of VIP users (with initial balance > £200,000)
     Incremental serial winners
     Jackpot abusers
+Bonuses
+    grr
 ```
 
 ### Other

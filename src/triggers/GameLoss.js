@@ -25,7 +25,7 @@ class GameLoss extends EventEmitter {
         console.log(this.description)
         // console.log({operator, from, to})
     
-        console.log('Executing game testLimits..')
+        console.log(' - Executing game testLimits..')
         await this.testLimits(operator, from, to)
     
     }
@@ -42,7 +42,7 @@ class GameLoss extends EventEmitter {
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
-                   FROM user_summary_hourly
+                   FROM user_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
@@ -50,7 +50,6 @@ class GameLoss extends EventEmitter {
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                        OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
-    
     
         let found = await db.query(SQL, [from, to])
         if (!found.length) return
@@ -103,6 +102,7 @@ class GameLoss extends EventEmitter {
         }
     
     }
+    
     
 }
 

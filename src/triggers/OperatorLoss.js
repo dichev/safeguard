@@ -25,7 +25,7 @@ class OperatorLoss extends EventEmitter {
         console.log(this.description)
         // console.log({operator, from, to})
     
-        console.log('Executing operator testLimits..')
+        console.log(' - Executing operator testLimits..')
         await this.testLimits(operator, from, to)
     
     }
@@ -41,7 +41,7 @@ class OperatorLoss extends EventEmitter {
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
-                   FROM user_summary_hourly
+                   FROM user_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}

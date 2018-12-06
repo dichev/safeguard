@@ -24,6 +24,12 @@ const INTERVAL = 10 //sec
 
 class SafeGuard {
     
+    // used during dev
+    static async cleanDatabase(){
+        let db = await Database.getLocalInstance()
+        await db.query('TRUNCATE found; TRUNCATE log;')
+    }
+    
     constructor(operator) {
         if(!Config.credentials.databases.operators[operator]) throw Error('There is no such operator: ' + operator)
         

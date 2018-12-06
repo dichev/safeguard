@@ -25,10 +25,10 @@ class UserLoss extends EventEmitter {
         console.log(this.description)
         // console.log({operator, from, to})
     
-        console.log('Executing user testLimits..')
+        console.log(' - Executing user testLimits..')
         await this.testLimits(operator, from, to)
         
-        console.log('Executing testCappedTotalLossFromGames..')
+        console.log(' - Executing testCappedTotalLossFromGames..')
         await this.testCappedTotalLossFromGames(operator, from, to)
     }
 
@@ -43,7 +43,7 @@ class UserLoss extends EventEmitter {
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
-                   FROM user_summary_hourly
+                   FROM user_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
@@ -117,7 +117,7 @@ class UserLoss extends EventEmitter {
         let SQL = `SELECT
                        userId,
                        SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames
-                   FROM user_summary_hourly
+                   FROM user_summary_hourly_live
                    LEFT JOIN (
                        SELECT userId, SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
                        FROM user_huge_wins

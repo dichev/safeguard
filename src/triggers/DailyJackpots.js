@@ -21,7 +21,7 @@ class DailyJackpots extends EventEmitter {
         console.log(this.description)
         // console.log({operator, now})
     
-        console.log('Executing testDailyJackpotWonTwoTimeSameDay..')
+        console.log(' - Executing testDailyJackpotWonTwoTimeSameDay..')
         await this.testDailyJackpotWonTwoTimeSameDay(operator, now)
     
     }
@@ -37,6 +37,7 @@ class DailyJackpots extends EventEmitter {
                    WHERE DATE(timeWon) = DATE(?)
                    GROUP BY potId, DATE(timeWon)
                    HAVING cnt >= ${limits.timedJackpotWonCount}`
+        
     
         let found = await db.query(SQL, [now])
         if (!found) return false
