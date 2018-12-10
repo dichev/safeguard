@@ -66,7 +66,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with net profit of ${user.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'user.lossFromGames',
                 }))
             }
             if(user.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
@@ -77,7 +77,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with net profit of ${user.profitJackpots} GBP from jackpots in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'user.lossFromJackpots',
                 }))
             }
             if(user.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
@@ -88,7 +88,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with net profit of ${user.profitBonuses} GBP from bonuses in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'user.lossFromBonuses',
                 }))
             }
             
@@ -100,7 +100,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with pure mplr win of x${user.pureProfit} in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'user.pureLossFromGames',
                 }))
             }
             
@@ -141,7 +141,7 @@ class UserLoss extends EventEmitter {
                 threshold: limits.cappedLossFromGames,
                 msg: `Detected user #${user.userId} with capped profit of ${user.profitCapGames} GBP for last 24 hours`,
                 period: {from, to},
-                name: 'testCappedTotalLossFromGames',
+                name: 'user.cappedLossFromGames',
             }))
         }
     }

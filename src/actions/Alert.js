@@ -9,7 +9,7 @@ class Alert {
     
     constructor(operator) {
         this.operator = operator
-        this.alertss = {}
+        this.alerts = {}
     }
     
     
@@ -25,13 +25,13 @@ class Alert {
         let type = trigger.userId || trigger.potId || trigger.gameName || this.operator
         let key = trigger.name + '_' + type
         if(!trigger.name || !type) console.warn('Invalid data:', {trigger})
-        if(this.alertss[key]){
-            let diff = Math.abs(perc - this.alertss[key])
+        if(this.alerts[key]){
+            let diff = Math.abs(perc - this.alerts[key])
             if(diff < ALERT_GAP) {
                 return console.verbose(`skipping alerts for ${key} with diff:`, diff)
             }
         }
-        this.alertss[key] = perc
+        this.alerts[key] = perc
         
         
         console.log(`[ALERT ${perc}%]`, trigger.msg)

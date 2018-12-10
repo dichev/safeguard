@@ -57,46 +57,51 @@ class GameLoss extends EventEmitter {
     
         for (let game of found) {
             if(game.profitGames >= limits.lossFromGames * WARNING_LIMIT){
+                let action = game.profitGames >= limits.lossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 this.emit('ALERT', new Trigger({
-                    action: game.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
+                    action: action,
                     value: game.profitGames,
                     threshold: limits.lossFromGames,
                     gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with net profit of ${game.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'games.lossFromGames',
                 }))
             }
             if(game.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
+                let action = game.profitJackpots >= limits.lossFromJackpots ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 this.emit('ALERT', new Trigger({
-                    action: game.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
+                    action: action,
                     value: game.profitJackpots,
                     threshold: limits.lossFromJackpots,
                     gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with net profit of ${game.profitJackpots} GBP from jackpots in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'games.lossFromJackpots',
                 }))
             }
             if(game.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
+                let action = game.profitBonuses >= limits.lossFromBonuses ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 this.emit('ALERT', new Trigger({
-                    action: game.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
+                    action: action,
                     value: game.profitBonuses,
                     threshold: limits.lossFromBonuses,
                     gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with net profit of ${game.profitBonuses} GBP from bonuses in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'games.lossFromBonuses',
                 }))
             }
-            if (game.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
+            if(game.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
+                let action = game.pureProfit >= limits.pureLossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 this.emit('ALERT', new Trigger({
-                    action: game.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    action: action,
                     value: game.pureProfit,
                     threshold: limits.pureLossFromGames,
+                    gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with pure mplr win of x${game.pureProfit} in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'games.pureLossFromGames',
                 }))
             }
         }

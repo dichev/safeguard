@@ -63,7 +63,7 @@ class OperatorLoss extends EventEmitter {
                     threshold: limits.lossFromGames,
                     msg: `Detected operator #${operator} with net profit of ${row.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'operator.lossFromGames',
                 }))
             }
             if(row.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
@@ -73,7 +73,7 @@ class OperatorLoss extends EventEmitter {
                     threshold: limits.lossFromJackpots,
                     msg: `Detected operator #${operator} with net profit of ${row.profitJackpots} GBP from jackpots in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'operator.lossFromJackpots',
                 }))
             }
             if(row.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
@@ -83,7 +83,7 @@ class OperatorLoss extends EventEmitter {
                     threshold: limits.lossFromBonuses,
                     msg: `Detected operator #${operator} with net profit of ${row.profitBonuses} GBP from bonuses in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'operator.lossFromBonuses',
                 }))
             }
             if (row.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
@@ -93,7 +93,7 @@ class OperatorLoss extends EventEmitter {
                     threshold: limits.pureLossFromGames,
                     msg: `Detected operator #${operator} with pure mplr win of x${row.pureProfit} in last 24 hours`,
                     period: {from, to},
-                    name: 'testLimits',
+                    name: 'operator.pureLossFromGames',
                 }))
             }
             
