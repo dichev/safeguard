@@ -4,7 +4,9 @@
 
 const program = require('commander')
 const Safeguard = require('../src/SafeGuard')
+const Server = require('../src/Server')
 const OPERATORS = Object.keys(require('../src/config/Config').credentials.databases.operators)
+                        .filter(o => !o.startsWith('ugs')); console.warn('WARN - Temporary skipping ugs..'); //TODO
 
 
 program
@@ -14,6 +16,7 @@ program
     // .option('-m, --mode <parallel|sequential>', `Run multiple operators in parallel or one by one. Default: parallel `)
     .option('-v, --verbose', 'Display error stack trace')
     .option('--clean', `Fresh start - will clean the safeguard database logs and alerts`)
+    .option('--no-server', `Normally the safeguard expose http server on port 3000, to provide prometheus metrics. This will disable it`)
     
     .version(require('../package.json').version)
     .parse(process.argv)
@@ -21,13 +24,21 @@ program
 
 
 ;(async function () {
+    
+    let server = null
+    if(program.server) {
+        server = new Server()
+        server.listen()
+    }
+    
     if(program.clean) await Safeguard.cleanDatabase()
     // let parallel = program.mode !== 'sequential'
     let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : OPERATORS
-    
     let guards = []
     for (let operator of operators) {
-        guards.push(new Safeguard(operator))
+        let guard = new Safeguard(operator)
+        if(server) server.addMetrics(() => guard.metrics())
+        guards.push(guard)
     }
     // run in parallel
     await Promise.all(guards.map(guard => guard.activate()))

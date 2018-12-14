@@ -65,7 +65,7 @@ class GameLoss extends EventEmitter {
                     gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with net profit of ${game.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
-                    name: 'games.lossFromGames',
+                    name: 'games_lossFromGames_gbp',
                 }))
             }
             if(game.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
@@ -77,7 +77,7 @@ class GameLoss extends EventEmitter {
                     gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with net profit of ${game.profitJackpots} GBP from jackpots in last 24 hours`,
                     period: {from, to},
-                    name: 'games.lossFromJackpots',
+                    name: 'games_lossFromJackpots_gbp',
                 }))
             }
             if(game.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
@@ -89,7 +89,7 @@ class GameLoss extends EventEmitter {
                     gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with net profit of ${game.profitBonuses} GBP from bonuses in last 24 hours`,
                     period: {from, to},
-                    name: 'games.lossFromBonuses',
+                    name: 'games_lossFromBonuses_gbp',
                 }))
             }
             if(game.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
@@ -101,7 +101,7 @@ class GameLoss extends EventEmitter {
                     gameName: game.gameName,
                     msg: `Detected game #${game.gameName} with pure mplr win of x${game.pureProfit} in last 24 hours`,
                     period: {from, to},
-                    name: 'games.pureLossFromGames',
+                    name: 'games_pureLossFromGames_gbp',
                 }))
             }
         }

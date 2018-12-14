@@ -12,7 +12,7 @@ const GameLoss = require('./triggers/GameLoss')
 const OperatorLoss = require('./triggers/OperatorLoss')
 const Alert = require('./actions/Alert')
 const KillSwitch = require('./actions/KillSwitch')
-const Monitor = require('./actions/Monitor')
+const Metrics = require('./actions/Metrics')
 const Trigger = require('./triggers/Trigger')
 const Log = require('./Log')
 const sleep = (sec = 1, msg = '') => {
@@ -44,8 +44,16 @@ class SafeGuard {
         
         this.alerts = new Alert(operator)
         this.killSwitch = new KillSwitch(operator)
-        this.monitor = new Monitor(operator)
         this.log = new Log(operator)
+        
+        this._metrics = new Metrics(operator)
+    }
+    
+    /**
+     * @return {string}
+     */
+    metrics() {
+        return this._metrics.export()
     }
     
     
@@ -68,6 +76,7 @@ class SafeGuard {
             await this.log.end(logId, test.constructor.name)
         }
     }
+    
     
     /**
      * @param {Trigger} trigger
@@ -107,11 +116,7 @@ class SafeGuard {
             }
         
             await this.alerts.notify(trigger, isBlocked)
-        
-        
-            if (Config.monitoring.enabled && trigger.userId) {
-                this.monitor.trackUser(trigger.userId, trigger.period.from)
-            }
+            this._metrics.collect(trigger)
         
         } catch (err) { // these errors are in asynchronous event loop, so they can't be catch by the main loop
             return this.errorHandler(err)
@@ -137,6 +142,8 @@ class SafeGuard {
         
     
     }
+    
+    
     
     /**
      * @param {Error} error

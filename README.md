@@ -4,9 +4,31 @@
 
 ```bash
 npm install
+
+# Prepare local database
+mysql -uroot -e "CREATE DATABASE `safeguard`;"
+mysql -uroot safeguard < db/schema.sql
+
+# Override db credentials in this file (always excluded from the repo)
+cp src/config/custom.config.js-TEMPLATE src/config/custom.config.js
+```
+
+Now you should be able to run it simply like that:
+```bash
 node bin/safeguard --help
 node bin/safeguard -o bede,rank
 ```
+
+### Monitoring
+Safeguard could be tracked from 3 places
+1) everything is exposed in stdout/stderr, so is recommended to be redirected to log file
+2) safeguard stores logs/alerts/bans details in it's own local mysql database
+3) safeguard exposes prometheus metrics via simple http server here
+```bash
+curl http://localhost:3000/heartbeat
+curl http://localhost:3000/metrics
+```
+If you want to run locally prometheus server, see [test/promteheus/README.md](test/promteheus/README.md) 
 
 
 ### Scope

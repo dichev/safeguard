@@ -104,15 +104,10 @@ const Config = {
             }
         }
     },
-    
-    monitoring: {
-        enabled: false,
-        graphite: {
-            host: null,
-            port: null,
-        }
+
+    server: { // used to expose prometheus metrics
+        port: 3000
     }
-    
 }
 
 module.exports = Config

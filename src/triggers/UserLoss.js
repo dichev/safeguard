@@ -66,7 +66,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with net profit of ${user.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
-                    name: 'user.lossFromGames',
+                    name: 'users_lossFromGames_gbp',
                 }))
             }
             if(user.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
@@ -77,7 +77,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with net profit of ${user.profitJackpots} GBP from jackpots in last 24 hours`,
                     period: {from, to},
-                    name: 'user.lossFromJackpots',
+                    name: 'users_lossFromJackpots_gbp',
                 }))
             }
             if(user.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
@@ -88,7 +88,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with net profit of ${user.profitBonuses} GBP from bonuses in last 24 hours`,
                     period: {from, to},
-                    name: 'user.lossFromBonuses',
+                    name: 'users_lossFromBonuses_gbp',
                 }))
             }
             
@@ -100,7 +100,7 @@ class UserLoss extends EventEmitter {
                     userId: user.userId,
                     msg: `Detected user #${user.userId} with pure mplr win of x${user.pureProfit} in last 24 hours`,
                     period: {from, to},
-                    name: 'user.pureLossFromGames',
+                    name: 'users_pureLossFromGames_x',
                 }))
             }
             
@@ -141,7 +141,7 @@ class UserLoss extends EventEmitter {
                 threshold: limits.cappedLossFromGames,
                 msg: `Detected user #${user.userId} with capped profit of ${user.profitCapGames} GBP for last 24 hours`,
                 period: {from, to},
-                name: 'user.cappedLossFromGames',
+                name: 'users_cappedLossFromGames_gbp',
             }))
         }
     }
