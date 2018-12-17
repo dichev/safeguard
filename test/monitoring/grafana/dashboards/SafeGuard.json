@@ -74,13 +74,6 @@
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
           "refId": "A"
-        },
-        {
-          "expr": "safeguard_users_lossFromGames_limit",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "limit",
-          "refId": "B"
         }
       ],
       "thresholds": [
@@ -185,13 +178,6 @@
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
           "refId": "A"
-        },
-        {
-          "expr": "safeguard_users_cappedLossFromGames_limit",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "limit",
-          "refId": "B"
         }
       ],
       "thresholds": [
@@ -296,13 +282,6 @@
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
           "refId": "A"
-        },
-        {
-          "expr": "safeguard_users_pureLossFromGames_limit",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "limit",
-          "refId": "B"
         }
       ],
       "thresholds": [

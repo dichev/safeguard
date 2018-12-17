@@ -122,7 +122,7 @@ class GameLoss extends EventEmitter {
                     gameName: game.gameId,
                     msg: `Detected game #${game.gameId} with pure mplr win of x${game.pureProfit} in last 24 hours`,
                     period: {from, to},
-                    name: 'games_pureLossFromGames_gbp',
+                    name: 'games_pureLossFromGames_x',
                 }))
             }
         }

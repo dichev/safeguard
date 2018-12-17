@@ -113,7 +113,7 @@ class OperatorLoss extends EventEmitter {
                     threshold: limits.pureLossFromGames,
                     msg: `Detected operator #${operator} with pure mplr win of x${row.pureProfit} in last 24 hours`,
                     period: {from, to},
-                    name: 'operators_pureLossFromGames_gbp',
+                    name: 'operators_pureLossFromGames_x',
                 }))
             }
             
