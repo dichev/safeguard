@@ -32,26 +32,35 @@ class GameLoss extends EventEmitter {
 
     async testLimits(operator, from, to){
         const limits = Config.limits.games
+        const indicators = Config.indicators
         
         // from platform
         let db = await Database.getSegmentsInstance(operator)
         let SQL = `SELECT
-                       gameId as gameName,
+                       gameId,
                        SUM(payout)-SUM(bets) AS profit,
                        SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames,
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly_live
+                   LEFT JOIN (
+                       SELECT gameId, SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
+                       FROM user_huge_wins
+                       WHERE (period BETWEEN ? and ?) AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+                       GROUP BY gameId
+                   ) h USING (gameId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
                        OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                        OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
-    
-        let found = await db.query(SQL, [from, to])
+
+        let found = await db.query(SQL, [from, to, from, to])
         if (!found.length) return
         console.log(`-> Found ${found.length} games`)
     
@@ -62,10 +71,22 @@ class GameLoss extends EventEmitter {
                     action: action,
                     value: game.profitGames,
                     threshold: limits.lossFromGames,
-                    gameName: game.gameName,
-                    msg: `Detected game #${game.gameName} with net profit of ${game.profitGames} GBP from games in last 24 hours`,
+                    gameName: game.gameId,
+                    msg: `Detected game #${game.gameId} with net profit of ${game.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'games_lossFromGames_gbp',
+                }))
+            }
+            if(game.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT){
+                let action = game.profitCapGames >= limits.cappedLossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
+                this.emit('ALERT', new Trigger({
+                    action: action,
+                    value: game.profitCapGames,
+                    threshold: limits.cappedLossFromGames,
+                    gameName: game.gameId,
+                    msg: `Detected game #${game.gameId} with capped profit of ${game.profitCapGames} GBP from games in last 24 hours`,
+                    period: {from, to},
+                    name: 'games_cappedLossFromGames_gbp',
                 }))
             }
             if(game.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
@@ -74,8 +95,8 @@ class GameLoss extends EventEmitter {
                     action: action,
                     value: game.profitJackpots,
                     threshold: limits.lossFromJackpots,
-                    gameName: game.gameName,
-                    msg: `Detected game #${game.gameName} with net profit of ${game.profitJackpots} GBP from jackpots in last 24 hours`,
+                    gameName: game.gameId,
+                    msg: `Detected game #${game.gameId} with net profit of ${game.profitJackpots} GBP from jackpots in last 24 hours`,
                     period: {from, to},
                     name: 'games_lossFromJackpots_gbp',
                 }))
@@ -86,8 +107,8 @@ class GameLoss extends EventEmitter {
                     action: action,
                     value: game.profitBonuses,
                     threshold: limits.lossFromBonuses,
-                    gameName: game.gameName,
-                    msg: `Detected game #${game.gameName} with net profit of ${game.profitBonuses} GBP from bonuses in last 24 hours`,
+                    gameName: game.gameId,
+                    msg: `Detected game #${game.gameId} with net profit of ${game.profitBonuses} GBP from bonuses in last 24 hours`,
                     period: {from, to},
                     name: 'games_lossFromBonuses_gbp',
                 }))
@@ -98,8 +119,8 @@ class GameLoss extends EventEmitter {
                     action: action,
                     value: game.pureProfit,
                     threshold: limits.pureLossFromGames,
-                    gameName: game.gameName,
-                    msg: `Detected game #${game.gameName} with pure mplr win of x${game.pureProfit} in last 24 hours`,
+                    gameName: game.gameId,
+                    msg: `Detected game #${game.gameId} with pure mplr win of x${game.pureProfit} in last 24 hours`,
                     period: {from, to},
                     name: 'games_pureLossFromGames_gbp',
                 }))

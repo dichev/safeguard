@@ -27,33 +27,39 @@ class UserLoss extends EventEmitter {
     
         console.log(' - Executing user testLimits..')
         await this.testLimits(operator, from, to)
-        
-        console.log(' - Executing testCappedTotalLossFromGames..')
-        await this.testCappedTotalLossFromGames(operator, from, to)
     }
 
     async testLimits(operator, from, to){
         const limits = Config.limits.users
+        const indicators = Config.indicators
         
         let db = await Database.getSegmentsInstance(operator)
         let SQL = `SELECT
                        userId,
                        SUM(payout)-SUM(bets) AS profit,
-                       SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) AS profitGames,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames,
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly_live
+                   LEFT JOIN (
+                       SELECT userId, SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
+                       FROM user_huge_wins
+                       WHERE (period BETWEEN ? and ?) AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+                       GROUP BY userId
+                   ) h USING (userId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
                        OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                        OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
     
     
-        let found = await db.query(SQL, [from, to])
+        let found = await db.query(SQL, [from, to, from, to])
         if (!found.length) return
         console.log(`-> Found ${found.length} users`)
     
@@ -69,6 +75,19 @@ class UserLoss extends EventEmitter {
                     name: 'users_lossFromGames_gbp',
                 }))
             }
+            
+            if(user.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT) {
+                this.emit('ALERT', new Trigger({
+                    action: user.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    userId: user.userId,
+                    value: user.profitCapGames,
+                    threshold: limits.cappedLossFromGames,
+                    msg: `Detected user #${user.userId} with capped profit of ${user.profitCapGames} GBP for last 24 hours`,
+                    period: {from, to},
+                    name: 'users_cappedLossFromGames_gbp',
+                }))
+            }
+            
             if(user.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
                 this.emit('ALERT', new Trigger({
                     action: user.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
@@ -107,45 +126,6 @@ class UserLoss extends EventEmitter {
         }
     
     }
-    
-    
-    async testCappedTotalLossFromGames(operator, from, to){
-        const limits = Config.limits.users
-        const indicators = Config.indicators
-    
-        let db = await Database.getSegmentsInstance(operator)
-        let SQL = `SELECT
-                       userId,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames
-                   FROM user_summary_hourly_live
-                   LEFT JOIN (
-                       SELECT userId, SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
-                       FROM user_huge_wins
-                       WHERE period BETWEEN ? and ? AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
-                       GROUP BY userId
-                   ) h USING (userId)
-                   WHERE (period BETWEEN ? AND ?)
-                   GROUP BY userId
-                   HAVING profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
-                   `
-    
-        let found = await db.query(SQL, [from, to, from, to])
-        if (!found.length) return
-        
-        for (let user of found) {
-            // console.warn(`[ALERT]`, user)
-            this.emit('ALERT', new Trigger({
-                action: user.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                userId: user.userId,
-                value: user.profitCapGames,
-                threshold: limits.cappedLossFromGames,
-                msg: `Detected user #${user.userId} with capped profit of ${user.profitCapGames} GBP for last 24 hours`,
-                period: {from, to},
-                name: 'users_cappedLossFromGames_gbp',
-            }))
-        }
-    }
-    
     
     
 }

@@ -16,7 +16,7 @@ program
     // .option('-m, --mode <parallel|sequential>', `Run multiple operators in parallel or one by one. Default: parallel `)
     .option('-v, --verbose', 'Display error stack trace')
     .option('--clean', `Fresh start - will clean the safeguard database logs and alerts`)
-    .option('--no-server', `Normally the safeguard expose http server on port 3000, to provide prometheus metrics. This will disable it`)
+    .option('--no-server', `Normally the safeguard expose http server, to provide prometheus metrics. This will disable it`)
     
     .version(require('../package.json').version)
     .parse(process.argv)

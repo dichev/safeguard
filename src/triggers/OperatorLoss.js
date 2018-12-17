@@ -32,25 +32,35 @@ class OperatorLoss extends EventEmitter {
 
     async testLimits(operator, from, to){
         const limits = Config.limits.operators
+        const indicators = Config.indicators
         
         // from platform
         let db = await Database.getSegmentsInstance(operator)
+        
+        let sqlHugeWins = `
+            SELECT SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
+            FROM user_huge_wins
+            WHERE (period BETWEEN ? AND ?) AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+        `
+        let res = await db.query(sqlHugeWins, [from, to])
+        let hugeWins = res.length ? res[0].hugeWins : 0
+        
         let SQL = `SELECT
                        SUM(payout)-SUM(bets) AS profit,
                        SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - ? AS profitCapGames,
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
+                       OR profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
                        OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                        OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
-    
-    
-        let found = await db.query(SQL, [from, to])
+        let found = await db.query(SQL, [hugeWins, from, to])
         if (!found.length) return
         console.log(`-> Found ${found.length} operator`)
         if(found.length > 1) console.warn('It is not expected to found more than 1 operator here, please investigate', found)
@@ -64,6 +74,16 @@ class OperatorLoss extends EventEmitter {
                     msg: `Detected operator #${operator} with net profit of ${row.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'operators_lossFromGames_gbp',
+                }))
+            }
+            if(row.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT){
+                this.emit('ALERT', new Trigger({
+                    action: row.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                    value: row.profitGames,
+                    threshold: limits.cappedLossFromGames,
+                    msg: `Detected operator #${operator} with capped profit of ${row.profitCapGames} GBP from games in last 24 hours`,
+                    period: {from, to},
+                    name: 'operators_cappedLossFromGames_gbp',
                 }))
             }
             if(row.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
