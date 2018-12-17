@@ -106,7 +106,7 @@ const Config = {
     },
 
     server: { // used to expose prometheus metrics
-        port: 3000
+        port: 4000
     }
 }
 

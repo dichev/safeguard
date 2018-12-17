@@ -22,11 +22,11 @@ node bin/safeguard -o bede,rank
 ### Monitoring
 Safeguard could be tracked from 3 places
 1) everything is exposed in stdout/stderr, so is recommended to be redirected to log file
-2) safeguard stores logs/alerts/bans details in it's own local mysql database
+2) safeguard stores logs/alerts/bans details in its own local mysql database
 3) safeguard exposes prometheus metrics via simple http server here
 ```bash
-curl http://localhost:3000/heartbeat
-curl http://localhost:3000/metrics
+curl http://localhost:4000/heartbeat
+curl http://localhost:4000/metrics
 ```
 If you want to run locally prometheus server, see [test/promteheus/README.md](test/promteheus/README.md) 
 
