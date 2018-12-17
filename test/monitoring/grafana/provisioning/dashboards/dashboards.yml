@@ -1,6 +1,11 @@
+apiVersion: 1
+
+providers:
 - name: 'default'
-  org_id: 1
+  orgId: 1
   folder: ''
-  type: 'file'
+  type: file
+  disableDeletion: false
+  updateIntervalSeconds: 1 #how often Grafana will scan for changed dashboards  #TODO: during dev only is set to every 1 sec
   options:
-    folder: '/var/lib/grafana/dashboards'
+    path: /var/lib/grafana/dashboards
