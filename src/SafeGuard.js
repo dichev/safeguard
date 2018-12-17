@@ -13,14 +13,14 @@ const OperatorLoss = require('./triggers/OperatorLoss')
 const Alert = require('./actions/Alert')
 const KillSwitch = require('./actions/KillSwitch')
 const Metrics = require('./actions/Metrics')
-const Trigger = require('./triggers/Trigger')
+const Trigger = require('./triggers/events/Trigger')
 const Log = require('./Log')
 const sleep = (sec = 1, msg = '') => {
     if (msg) console.info(msg, `(${sec}sec)`)
     return new Promise((resolve) => setTimeout(resolve, sec * 1000))
 }
 
-const INTERVAL = 10 //sec
+const INTERVAL = 60 //sec
 
 class SafeGuard {
     

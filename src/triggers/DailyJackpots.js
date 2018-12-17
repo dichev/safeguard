@@ -1,6 +1,6 @@
 'use strict'
 
-const Trigger = require('../triggers/Trigger')
+const Trigger = require('./events/Trigger')
 const Database = require('../lib/Database')
 const Config = require('../config/Config')
 const EventEmitter = require('events').EventEmitter

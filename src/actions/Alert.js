@@ -1,7 +1,7 @@
 'use strict'
 
 const Database = require('../lib/Database')
-const Trigger = require('../triggers/Trigger')
+const Trigger = require('../triggers/events/Trigger')
 
 const ALERT_GAP = 1 // percent
 
