@@ -76,6 +76,10 @@ class DatabasePool {
         Object.keys(this._instances).forEach(name => this.killConnectionById(name))
     }
     
+    static killConnectionsByNamePrefix(name){
+        Object.keys(this._instances).filter(n => n.startsWith(name + '|') === true).forEach(name => this.killConnectionById(name))
+    }
+    
     static killConnection(db) {
         for(let id in this._instances) if(this._instances.hasOwnProperty(id)) {
             if(this._instances[id].mysqlClient === db){

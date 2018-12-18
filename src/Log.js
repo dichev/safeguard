@@ -15,11 +15,22 @@ class Log {
         return res.insertId
     }
     
-    async end(logId, name, details = null){
+    async end(logId, details = null){
         // console.log('Log end', name, details)
-        let result = details ? JSON.stringify(details) : null
+        let json = details ? JSON.stringify(details) : null
         let db = await Database.getLocalInstance()
-        await db.query(`UPDATE log SET result = ?, status = 'DONE', timeEnded = NOW(3), duration = TIMEDIFF(timeEnded, timeStarted) WHERE id = ?`, [result, logId])
+        await db.query(`UPDATE log SET result = ?, status = 'DONE', timeEnded = NOW(3), duration = TIMEDIFF(timeEnded, timeStarted) WHERE id = ?`, [json, logId])
+    }
+    
+    async error(logId, error){
+        try {
+            let json = JSON.stringify({error: error.toString()})
+            let db = await Database.getLocalInstance()
+            await db.query(`UPDATE log SET result = ?, status = 'ERROR', timeEnded = NOW(3), duration = TIMEDIFF(timeEnded, timeStarted) WHERE id = ?`, [json, logId])
+        }catch (e) {
+            console.error(e)
+            // we shouldn't mask the original error by throwing new error here
+        }
     }
 }
 

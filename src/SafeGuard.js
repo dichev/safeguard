@@ -72,9 +72,16 @@ class SafeGuard {
     async check(){
         for (let test of this.tests) {
             let logId = await this.log.start(test.constructor.name)
-            let result = await test.exec(this.operator)
-            await this.log.end(logId, test.constructor.name)
+            try {
+                let result = await test.exec(this.operator)
+                await this.log.end(logId)
+            } catch (err) {
+                await this.log.error(logId, err)
+                throw err
+            }
         }
+
+        await Database.killConnectionsByNamePrefix(this.operator)
     }
     
     
