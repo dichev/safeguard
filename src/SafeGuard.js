@@ -18,9 +18,6 @@ const Log = require('./Log')
 const prefix = require('./lib/Utils').prefix
 const sleep = require('./lib/Utils').sleep
 
-
-const INTERVAL = 60 //sec
-
 class SafeGuard {
     
     // used during dev
@@ -64,8 +61,8 @@ class SafeGuard {
         // noinspection InfiniteLoopJS
         while (true) {
             await this.check()
-            console.log(prefix(this.operator) + `Next iteration will be after ${INTERVAL} sec`)
-            await sleep(INTERVAL)
+            console.log(prefix(this.operator) + `Next iteration will be after ${Config.schedule.intervalBetweenIterations} sec`)
+            await sleep(Config.schedule.intervalBetweenIterations)
         }
     }
     

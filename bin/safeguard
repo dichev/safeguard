@@ -3,11 +3,12 @@
 'use strict';
 
 const program = require('commander')
-const sleep = (sec) => new Promise(resolve => setTimeout(resolve, sec * 1000))
+const sleep = require('../src/lib/Utils').sleep
 const Safeguard = require('../src/SafeGuard')
 const Server = require('../src/Server')
+
+const THROTTLE = require('../src/config/Config').schedule.initialThrottleBetweenOperators
 const OPERATORS = Object.keys(require('../src/config/Config').credentials.databases.operators)
-                        // .filter(o => !o.startsWith('ugs')); console.warn('WARN - Temporary skipping ugs..'); //TODO
 
 
 program
@@ -41,7 +42,7 @@ program
     }
     // run in parallel
     await Promise.all(guards.map(async (guard, i) => {
-        await sleep(i*0.5) // throttle db connections
+        await sleep(i * THROTTLE) // throttle db connections
         await guard.activate()
     }))
 })()

@@ -2,6 +2,11 @@
 
 const Config = {
     
+    schedule: {
+        intervalBetweenIterations: 60, // sec
+        initialThrottleBetweenOperators: 0.5, // sec
+    },
+    
     
     indicators: {
         warningsRatio: 0.60, // from the threshold
@@ -112,5 +117,4 @@ try {
     if (err.code === 'MODULE_NOT_FOUND') return false;
     throw err
 }
-
 

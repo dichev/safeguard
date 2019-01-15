@@ -3,10 +3,10 @@
 const Config = require('./Config.js')
 const operators = require('/opt/servers-conf/automate.json').operators // [{ name, dbPrefix, dbSharedJackpots }]
 
-
 const HOST = '127.0.0.1'
 const USER = 'safeguard'
 const PASS = ''
+Config.schedule.intervalBetweenIterations = 5 // sec
 
 let operators = {}
 for(let operator of operators){
