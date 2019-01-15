@@ -24,7 +24,7 @@ class Server {
     
     routes(request, response){
         const {method, url} = request
-        console.log(prefix('http') + `${method} ${url}`)
+        console.log(prefix('http') + `${method} ${url} (client: ${request.connection.remoteAddress}, user-agent: ${request.headers['user-agent']})`)
     
         if (method === 'GET' && url === '/heartbeat') {
             response.setHeader('Content-Type', 'application/json')
