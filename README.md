@@ -41,6 +41,9 @@ cd /opt/dopamine/safeguard
 systemctl enable /opt/dopamine/safeguard/safeguard.service
 systemctl start safeguard
 systemctl status safeguard | head -n 3
+
+# to see the logs
+journalctl -f -u safeguard
 ```
 
 ### Scope

@@ -15,10 +15,9 @@ const KillSwitch = require('./actions/KillSwitch')
 const Metrics = require('./actions/Metrics')
 const Trigger = require('./triggers/events/Trigger')
 const Log = require('./Log')
-const sleep = (sec = 1, msg = '') => {
-    if (msg) console.info(msg, `(${sec}sec)`)
-    return new Promise((resolve) => setTimeout(resolve, sec * 1000))
-}
+const prefix = require('./lib/Utils').prefix
+const sleep = require('./lib/Utils').sleep
+
 
 const INTERVAL = 60 //sec
 
@@ -63,9 +62,10 @@ class SafeGuard {
         }
 
         // noinspection InfiniteLoopJS
-        while (true) { // TODO: decide about the parallel execution
+        while (true) {
             await this.check()
-            await sleep(INTERVAL, '\n\nWaiting between iterations')
+            console.log(prefix(this.operator) + `Next iteration will be after ${INTERVAL} sec`)
+            await sleep(INTERVAL)
         }
     }
     
@@ -137,7 +137,7 @@ class SafeGuard {
         
         for(let date of interval){
             // let [from, to] =  [`${date} 00:00:00`, `${date} 23:59:59`]
-            console.log(`Execution for ${date}`)
+            console.log(prefix(this.operator) + `Execution for ${date}`)
             for (let test of this.tests) {
                 let logId = await this.log.start(test.constructor.name)
                 let result = await test.exec(`${date} 23:59:59`)
@@ -156,7 +156,10 @@ class SafeGuard {
      * @param {Error} error
      */
     errorHandler(error){
-        console.error(error)
+        console.error(prefix(this.operator) + error.toString())
+        if(error.stack && (process.argv.findIndex(arg => arg === '-v' || arg === '--verbose') !== -1)) {
+            console.error(error.stack)
+        }
         process.exit(1)
     }
     

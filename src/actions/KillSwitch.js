@@ -1,6 +1,7 @@
 'use strict'
 
 const Database = require('../lib/Database')
+const prefix = require('../lib/Utils').prefix
 
 class KillSwitch {
     
@@ -21,7 +22,7 @@ class KillSwitch {
     async blockUser(trigger) {
         if(this._blocked.users.includes(trigger.userId)) return true // TODO: this should be combined with mysql checks
         
-        console.log(`[BLOCK] Disable user #${trigger.userId}`)
+        console.log(prefix(this.operator) + `[BLOCK] Disable user #${trigger.userId}`)
         let SQL = `UPDATE users SET blocked = 1 WHERE id = :id`
         this._blocked.users.push(trigger.userId)
     
@@ -38,7 +39,7 @@ class KillSwitch {
     async blockGame(trigger) {
         if(this._blocked.games.includes(trigger.gameName)) return true // TODO: this should be combined with mysql checks
     
-        console.log(`[BLOCK] Disable game #${trigger.gameName}`)
+        console.log(prefix(this.operator) + `[BLOCK] Disable game #${trigger.gameName}`)
         let SQL = `UPDATE games SET status = 0 WHERE id = :id`
         this._blocked.games.push(trigger.gameName)
     
@@ -56,7 +57,7 @@ class KillSwitch {
     async blockJackpots(trigger) {
         if (this._blocked.jackpots.includes(trigger.potId)) return true
         
-        console.log(`[BLOCK] Disable jackpots`)
+        console.log(prefix(this.operator) + `[BLOCK] Disable jackpots`)
         let SQL = `UPDATE settings SET value = 'false' WHERE type = 'modules.jackpots'`
         // console.log('   '+SQL.replace(':id', user.userId))
         this._blocked.jackpots.push(trigger.potId)
@@ -70,7 +71,7 @@ class KillSwitch {
     async blockOperator(trigger) {
         if (this._blocked.operators.includes(this.operator)) return true
         
-        console.log(`[BLOCK] Disable operator #${this.operator}`)
+        console.log(prefix(this.operator) + `[BLOCK] Disable operator #${this.operator}`)
         let SQL = `UPDATE settings SET value = 'true' WHERE type = 'maintenance'`
         // console.log('   '+SQL.replace(':id', user.userId))
         this._blocked.operators.push(this.operator)

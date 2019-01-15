@@ -1,7 +1,8 @@
 'use strict'
 
 const http = require('http')
-const now = () => new Date().toISOString().slice(0, 19).replace('T', ' ')
+const prefix = require('./lib/Utils').prefix
+const now = require('./lib/Utils').now
 
 const PORT = require('./config/Config').server.port
 const HTTP_BAD_REQUEST = 400
@@ -23,7 +24,7 @@ class Server {
     
     routes(request, response){
         const {method, url} = request
-        console.log(`${now()} | ${method} ${url}`)
+        console.log(prefix('http') + `${method} ${url}`)
     
         if (method === 'GET' && url === '/heartbeat') {
             response.setHeader('Content-Type', 'application/json')
@@ -51,8 +52,9 @@ class Server {
         this._server = http.createServer(this.routes.bind(this))
         this._server.listen(PORT, (err) => {
             if (err) throw Error(err)
-            console.log(`HTTP server is listening on http://localhost:${PORT}`)
-            console.log(`Available methods:\n` + AVAILABLE_METHODS.join('\n'))
+            console.log(prefix('http') + `HTTP server is listening on http://localhost:${PORT}`)
+            console.log(prefix('http') + `Available methods:\n` + prefix('http') + AVAILABLE_METHODS.join('\n'+ prefix('http')))
+            console.log(prefix('http') + `-------------------------------------------------------------------`)
         })
     }
     

@@ -2,6 +2,7 @@
 
 const Database = require('../lib/Database')
 const Trigger = require('../triggers/events/Trigger')
+const prefix = require('../lib/Utils').prefix
 
 const ALERT_GAP = 1 // percent
 
@@ -28,13 +29,14 @@ class Alert {
         if(this.alerts[key]){
             let diff = Math.abs(perc - this.alerts[key])
             if(diff < ALERT_GAP) {
-                return console.verbose(`skipping alerts for ${key} with diff:`, diff)
+                console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg, `(diff ${diff})`)
+                return
             }
         }
         this.alerts[key] = perc
         
         
-        console.log(`[ALERT ${perc}%]`, trigger.msg)
+        console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg)
     
         let row = {
             name: trigger.name,
