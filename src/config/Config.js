@@ -91,17 +91,9 @@ const Config = {
                     tournaments: { database: '', host: '', user: '', password: '', ssh: {}  },
                     rewards:     { database: '', host: '', user: '', password: '', ssh: {}  },
                     bonus:       { database: '', host: '', user: '', password: '', ssh: {}  },
-                    archive:     { database: '', host: '', user: '', password: '', ssh: {}  },
+                    // archive:     { database: '', host: '', user: '', password: '', ssh: {}  },
                 }
             },
-            
-            
-            aggregations: {
-                database: 'aggregator',
-                host: '127.0.0.1',
-                user: 'ronly',
-                password: ''
-            }
         }
     },
 

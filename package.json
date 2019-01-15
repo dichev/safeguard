@@ -15,5 +15,8 @@
   "devDependencies": {
     "clarify": "^2.1.0",
     "trace": "^3.1.0"
+  },
+  "optionalDependencies": {
+     "configurator": "git+ssh://git@gitlab.dopamine.bg:devops/configurator.git"
   }
 }

@@ -10,7 +10,7 @@ mysql -uroot -e "CREATE DATABASE `safeguard`;"
 mysql -uroot safeguard < db/schema.sql
 
 # Override db credentials in this file (always excluded from the repo)
-cp src/config/custom.config.js-TEMPLATE src/config/custom.config.js
+cp src/config/custom.config.js-MIRROR src/config/custom.config.js
 ```
 
 Now you should be able to run it simply like that:
