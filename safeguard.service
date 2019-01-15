@@ -1,0 +1,14 @@
+[Unit]
+Description=SafeGuard
+
+[Service]
+ExecStart=/usr/bin/node /opt/dopamine/safeguard/safeguard
+Restart=always
+RestartSec=10
+User=dopamine
+Group=dopamine
+WorkingDirectory=/opt/dopamine/safeguard
+
+[Install]
+WantedBy=multi-user.target
+

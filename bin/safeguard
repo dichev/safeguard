@@ -11,8 +11,6 @@ const OPERATORS = Object.keys(require('../src/config/Config').credentials.databa
 
 
 program
-    .usage('[--operators=<operators> --period <date|period|auto>]')
-    
     .option('-o, --operators <operators>', `Comma-separated list on which operators to be executed. Available: ${OPERATORS}. Default: all `)
     // .option('-m, --mode <parallel|sequential>', `Run multiple operators in parallel or one by one. Default: parallel `)
     .option('-v, --verbose', 'Display error stack trace')

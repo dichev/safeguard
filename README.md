@@ -19,6 +19,7 @@ node bin/safeguard --help
 node bin/safeguard -o bede,rank
 ```
 
+
 ### Monitoring
 Safeguard could be tracked from 3 places
 1) everything is exposed in stdout/stderr, so is recommended to be redirected to log file
@@ -28,8 +29,19 @@ Safeguard could be tracked from 3 places
 curl http://localhost:4000/heartbeat
 curl http://localhost:4000/metrics
 ```
-If you want to run locally prometheus server, see [test/promteheus/README.md](test/promteheus/README.md) 
+If you want to run locally Prometheus server with Grafana, see [test/monitoring/README.md](test/monitoring/README.md) 
 
+
+### Deploy
+```bash
+# the safeguard repo must be stored exactly in this directory
+cd /opt/dopamine/safeguard
+
+# activate safeguard as systemd service
+systemctl enable /opt/dopamine/safeguard/safeguard.service
+systemctl start safeguard
+systemctl status safeguard | head -n 3
+```
 
 ### Scope
 Here is a draft of the protection scope. The values are chosen randomly, they will tuned based on history data and potentials
