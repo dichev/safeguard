@@ -46,10 +46,9 @@ program
         await guard.activate()
     }))
 })()
-.then(() => console.log('\nDone!'))
 .catch(err  => {
     program.verbose ? console.error(err.stack) : console.error(err.message || err)
     process.exit(1)
-});
+})
 
 

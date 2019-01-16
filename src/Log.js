@@ -8,10 +8,10 @@ class Log {
         this.operator = operator
     }
     
-    async start(name){
+    async start(){
         // console.log('Log started', name)
         let db = await Database.getLocalInstance()
-        let res = await db.query(`INSERT INTO log (operator, command, status, timeStarted) VALUES (?, ?, 'PROGRESS', NOW(3))`, [this.operator, name])
+        let res = await db.query(`INSERT INTO log (operator, status, timeStarted) VALUES (?, 'PROGRESS', NOW(3))`, [this.operator])
         return res.insertId
     }
     

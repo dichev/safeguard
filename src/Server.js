@@ -2,7 +2,6 @@
 
 const http = require('http')
 const prefix = require('./lib/Utils').prefix
-const now = require('./lib/Utils').now
 
 const PORT = require('./config/Config').server.port
 const HTTP_BAD_REQUEST = 400

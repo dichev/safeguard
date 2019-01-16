@@ -49,34 +49,44 @@ class SafeGuard {
      * @return {string}
      */
     metrics() {
-        return this._metrics.export()
+        try {
+            return this._metrics.export()
+        } catch (err) {
+            this.errorHandler(err)
+        }
     }
     
     
     async activate(){
-        for (let test of this.tests) {
-            test.on('ALERT', async (details) => this._handleAlert(details, test))
-        }
-
-        // noinspection InfiniteLoopJS
-        while (true) {
-            await this.check()
-            console.log(prefix(this.operator) + `Next iteration will be after ${Config.schedule.intervalBetweenIterations} sec`)
-            await sleep(Config.schedule.intervalBetweenIterations)
+        try {
+            for (let test of this.tests) {
+                test.on('ALERT', async (details) => this._handleAlert(details, test))
+            }
+    
+            // noinspection InfiniteLoopJS
+            while (true) {
+                await this.check()
+                console.verbose(prefix(this.operator) + `Next iteration will be after ${Config.schedule.intervalBetweenIterations} sec`)
+                await sleep(Config.schedule.intervalBetweenIterations)
+            }
+        } catch (err) {
+            return this.errorHandler(err)
         }
     }
     
     async check(){
-        for (let test of this.tests) {
-            let logId = await this.log.start(test.constructor.name)
-            try {
-                let result = await test.exec(this.operator)
-                await this.log.end(logId)
-            } catch (err) {
-                await this.log.error(logId, err)
-                throw err
+        console.log(prefix(this.operator) + `Checking for anomalies..`)
+        let logId = await this.log.start()
+        let result = {}
+        try {
+            for (let test of this.tests) {
+                await test.exec(this.operator)
             }
+        } catch (err) {
+            await this.log.error(logId, err)
+            throw err
         }
+        await this.log.end(logId, result)
 
         await Database.killConnectionsByNamePrefix(this.operator)
     }
@@ -153,7 +163,7 @@ class SafeGuard {
      * @param {Error} error
      */
     errorHandler(error){
-        console.error(prefix(this.operator) + error.toString())
+        console.error(prefix(this.operator) + '[ERROR] ' + error.toString())
         if(error.stack && (process.argv.findIndex(arg => arg === '-v' || arg === '--verbose') !== -1)) {
             console.error(error.stack)
         }

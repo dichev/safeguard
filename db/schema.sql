@@ -39,14 +39,12 @@ CREATE TABLE IF NOT EXISTS `blocked` (
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
   `operator` varchar(20) NOT NULL,
-  `command` varchar(50) NOT NULL,
   `status` enum('PROGRESS','DONE','ERROR','SKIP') NOT NULL DEFAULT 'PROGRESS',
   `result` json DEFAULT NULL,
   `duration` time(3) DEFAULT NULL,
   `timeStarted` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `timeEnded` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `command` (`command`),
   KEY `timeStarted` (`timeStarted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
