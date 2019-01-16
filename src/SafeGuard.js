@@ -158,9 +158,7 @@ class SafeGuard {
      */
     errorHandler(error){
         console.error(prefix(this.operator) + '[ERROR] ' + error.toString())
-        if(error.stack && (process.argv.findIndex(arg => arg === '-v' || arg === '--verbose') !== -1)) {
-            console.error(error.stack)
-        }
+        console.verbose(error.stack)
         process.exit(1)
     }
     
