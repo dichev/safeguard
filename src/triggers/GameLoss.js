@@ -1,32 +1,33 @@
 'use strict'
 
-const Trigger = require('./events/Trigger')
+const Trigger = require('./types/Trigger')
 const Database = require('../lib/Database')
-const EventEmitter = require('events').EventEmitter
 const Config = require('../config/Config')
 const moment = require('moment')
+const prefix = require('../lib/Utils').prefix
 
 const WARNING_LIMIT = Config.indicators.warningsRatio
 
-class GameLoss extends EventEmitter {
+class GameLoss {
     
     constructor() {
-        super()
         this.description = 'Detect games with abnormal amount of profit in last 24 hours'
     }
     
     
-    
+    /**
+     * @param {string} operator
+     * @param {string} now
+     * @return {Promise<Array<Trigger>>}
+     */
     async exec(operator, now = null){
         let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
-        
-        console.log('---------------------------------------------------------------------------')
-        console.log(this.description)
+    
+        console.verbose(prefix(operator) + this.description)
         // console.log({operator, from, to})
     
-        console.log(' - Executing game testLimits..')
-        await this.testLimits(operator, from, to)
+        return await this.testLimits(operator, from, to)
     
     }
 
@@ -61,13 +62,14 @@ class GameLoss extends EventEmitter {
                    `
 
         let found = await db.query(SQL, [from, to, from, to])
-        if (!found.length) return
-        console.log(`-> Found ${found.length} games`)
+        if (!found.length) return []
+        // console.log(`-> Found ${found.length} games`)
     
+        let triggers = []
         for (let game of found) {
             if(game.profitGames >= limits.lossFromGames * WARNING_LIMIT){
                 let action = game.profitGames >= limits.lossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: action,
                     value: game.profitGames,
                     threshold: limits.lossFromGames,
@@ -79,7 +81,7 @@ class GameLoss extends EventEmitter {
             }
             if(game.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT){
                 let action = game.profitCapGames >= limits.cappedLossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: action,
                     value: game.profitCapGames,
                     threshold: limits.cappedLossFromGames,
@@ -91,7 +93,7 @@ class GameLoss extends EventEmitter {
             }
             if(game.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
                 let action = game.profitJackpots >= limits.lossFromJackpots ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: action,
                     value: game.profitJackpots,
                     threshold: limits.lossFromJackpots,
@@ -103,7 +105,7 @@ class GameLoss extends EventEmitter {
             }
             if(game.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
                 let action = game.profitBonuses >= limits.lossFromBonuses ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: action,
                     value: game.profitBonuses,
                     threshold: limits.lossFromBonuses,
@@ -115,7 +117,7 @@ class GameLoss extends EventEmitter {
             }
             if(game.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
                 let action = game.pureProfit >= limits.pureLossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: action,
                     value: game.pureProfit,
                     threshold: limits.pureLossFromGames,
@@ -126,7 +128,8 @@ class GameLoss extends EventEmitter {
                 }))
             }
         }
-    
+        
+        return triggers
     }
     
     

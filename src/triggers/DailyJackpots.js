@@ -1,29 +1,29 @@
 'use strict'
 
-const Trigger = require('./events/Trigger')
+const Trigger = require('./types/Trigger')
 const Database = require('../lib/Database')
 const Config = require('../config/Config')
-const EventEmitter = require('events').EventEmitter
 const moment = require('moment')
+const prefix = require('../lib/Utils').prefix
 
-class DailyJackpots extends EventEmitter {
+class DailyJackpots {
     
     constructor() {
-        super()
         this.description = 'Detect abnormal daily jackpot wins'
     }
     
     
-    
+    /**
+     * @param {string} operator
+     * @param {string} now
+     * @return {Promise<Array<Trigger>>}
+     */
     async exec(operator, now = null){
         now = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
-        console.log('---------------------------------------------------------------------------')
-        console.log(this.description)
+        console.verbose(prefix(operator) + this.description)
         // console.log({operator, now})
     
-        console.log(' - Executing testDailyJackpotWonTwoTimeSameDay..')
-        await this.testDailyJackpotWonTwoTimeSameDay(operator, now)
-    
+        return await this.testDailyJackpotWonTwoTimeSameDay(operator, now)
     }
     
     async testDailyJackpotWonTwoTimeSameDay(operator, now){
@@ -40,10 +40,11 @@ class DailyJackpots extends EventEmitter {
         
     
         let found = await db.query(SQL, [now])
-        if (!found) return false
+        if (!found) return []
     
+        let triggers = []
         for (let pot of found) {
-            this.emit('ALERT', new Trigger({
+            triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
                 potId: pot.potId,
                 value: pot.cnt,
@@ -53,7 +54,8 @@ class DailyJackpots extends EventEmitter {
                 name: 'testDailyJackpotWonTwoTimeSameDay',
             }))
         }
-      
+    
+        return triggers
     }
 }
 

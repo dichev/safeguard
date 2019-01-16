@@ -1,32 +1,33 @@
 'use strict'
 
-const Trigger = require('./events/Trigger')
+const Trigger = require('./types/Trigger')
 const Database = require('../lib/Database')
-const EventEmitter = require('events').EventEmitter
 const Config = require('../config/Config')
 const moment = require('moment')
+const prefix = require('../lib/Utils').prefix
 
 const WARNING_LIMIT = Config.indicators.warningsRatio
 
-class UserLoss extends EventEmitter {
+class UserLoss {
     
     constructor() {
-        super()
         this.interval = 10 //sec
         this.description = 'Detect users with abnormal amount of profit in last 24 hours'
     }
     
-    
+    /**
+     * @param {string} operator
+     * @param {string} now
+     * @return {Promise<Array<Trigger>>}
+     */
     async exec(operator, now = null){
         let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
         
-        console.log('---------------------------------------------------------------------------')
-        console.log(this.description)
+        console.verbose(prefix(operator) + this.description)
         // console.log({operator, from, to})
     
-        console.log(' - Executing user testLimits..')
-        await this.testLimits(operator, from, to)
+        return await this.testLimits(operator, from, to)
     }
 
     async testLimits(operator, from, to){
@@ -60,12 +61,13 @@ class UserLoss extends EventEmitter {
     
     
         let found = await db.query(SQL, [from, to, from, to])
-        if (!found.length) return
-        console.log(`-> Found ${found.length} users`)
+        if (!found.length) return []
+        // console.log(`-> Found ${found.length} users`)
     
+        let triggers = []
         for (let user of found) {
             if(user.profitGames >= limits.lossFromGames * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: user.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.profitGames,
                     threshold: limits.lossFromGames,
@@ -77,7 +79,7 @@ class UserLoss extends EventEmitter {
             }
             
             if(user.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT) {
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: user.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     userId: user.userId,
                     value: user.profitCapGames,
@@ -89,7 +91,7 @@ class UserLoss extends EventEmitter {
             }
             
             if(user.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: user.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.profitJackpots,
                     threshold: limits.lossFromJackpots,
@@ -100,7 +102,7 @@ class UserLoss extends EventEmitter {
                 }))
             }
             if(user.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: user.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.profitBonuses,
                     threshold: limits.lossFromBonuses,
@@ -112,7 +114,7 @@ class UserLoss extends EventEmitter {
             }
             
             if(user.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: user.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: user.pureProfit,
                     threshold: limits.pureLossFromGames,
@@ -122,9 +124,10 @@ class UserLoss extends EventEmitter {
                     name: 'users_pureLossFromGames_x',
                 }))
             }
-            
+    
         }
     
+        return triggers
     }
     
     

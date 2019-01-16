@@ -1,33 +1,33 @@
 'use strict'
 
-const Trigger = require('./events/Trigger')
+const Trigger = require('./types/Trigger')
 const Database = require('../lib/Database')
-const EventEmitter = require('events').EventEmitter
 const Config = require('../config/Config')
 const moment = require('moment')
+const prefix = require('../lib/Utils').prefix
 
 const WARNING_LIMIT = Config.indicators.warningsRatio
 
-class OperatorLoss extends EventEmitter {
+class OperatorLoss {
     
     constructor() {
-        super()
         this.description = 'Detect operators with abnormal amount of profit in last 24 hours'
     }
     
     
-    
+    /**
+     * @param {string} operator
+     * @param {string} now
+     * @return {Promise<Array<Trigger>>}
+     */
     async exec(operator, now = null){
         let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
         
-        console.log('---------------------------------------------------------------------------')
-        console.log(this.description)
+        console.verbose(prefix(operator) + this.description)
         // console.log({operator, from, to})
     
-        console.log(' - Executing operator testLimits..')
-        await this.testLimits(operator, from, to)
-    
+        return await this.testLimits(operator, from, to)
     }
 
     async testLimits(operator, from, to){
@@ -61,13 +61,14 @@ class OperatorLoss extends EventEmitter {
                        OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
         let found = await db.query(SQL, [hugeWins, from, to])
-        if (!found.length) return
-        console.log(`-> Found ${found.length} operator`)
+        if (!found.length) return []
+        // console.log(`-> Found ${found.length} operator`)
         if(found.length > 1) console.warn('It is not expected to found more than 1 operator here, please investigate', found)
     
+        let triggers = []
         for (let row of found) {
             if(row.profitGames >= limits.lossFromGames * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: row.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitGames,
                     threshold: limits.lossFromGames,
@@ -77,7 +78,7 @@ class OperatorLoss extends EventEmitter {
                 }))
             }
             if(row.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: row.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitGames,
                     threshold: limits.cappedLossFromGames,
@@ -87,7 +88,7 @@ class OperatorLoss extends EventEmitter {
                 }))
             }
             if(row.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: row.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitJackpots,
                     threshold: limits.lossFromJackpots,
@@ -97,7 +98,7 @@ class OperatorLoss extends EventEmitter {
                 }))
             }
             if(row.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: row.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitBonuses,
                     threshold: limits.lossFromBonuses,
@@ -107,7 +108,7 @@ class OperatorLoss extends EventEmitter {
                 }))
             }
             if (row.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
-                this.emit('ALERT', new Trigger({
+                triggers.push(new Trigger({
                     action: row.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: row.pureProfit,
                     threshold: limits.pureLossFromGames,
@@ -116,9 +117,10 @@ class OperatorLoss extends EventEmitter {
                     name: 'operators_pureLossFromGames_x',
                 }))
             }
-            
+    
         }
     
+        return triggers
     }
     
 }

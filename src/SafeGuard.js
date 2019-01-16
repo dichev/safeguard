@@ -13,7 +13,7 @@ const OperatorLoss = require('./triggers/OperatorLoss')
 const Alert = require('./actions/Alert')
 const KillSwitch = require('./actions/KillSwitch')
 const Metrics = require('./actions/Metrics')
-const Trigger = require('./triggers/events/Trigger')
+const Trigger = require('./triggers/types/Trigger')
 const Log = require('./Log')
 const prefix = require('./lib/Utils').prefix
 const sleep = require('./lib/Utils').sleep
@@ -59,10 +59,6 @@ class SafeGuard {
     
     async activate(){
         try {
-            for (let test of this.tests) {
-                test.on('ALERT', async (details) => this._handleAlert(details, test))
-            }
-    
             // noinspection InfiniteLoopJS
             while (true) {
                 await this.check()
@@ -77,10 +73,14 @@ class SafeGuard {
     async check(){
         console.log(prefix(this.operator) + `Checking for anomalies..`)
         let logId = await this.log.start()
-        let result = {}
+        let result = { alerts: 0, blocked: 0 }
         try {
             for (let test of this.tests) {
-                await test.exec(this.operator)
+                let triggers = await test.exec(this.operator)
+                for(let trigger of triggers) {
+                    trigger.action === Trigger.actions.ALERT ? result.alerts++ : result.blocked++
+                    await this._handleTrigger(trigger)
+                }
             }
         } catch (err) {
             await this.log.error(logId, err)
@@ -94,47 +94,41 @@ class SafeGuard {
     
     /**
      * @param {Trigger} trigger
-     * @param test
      * @return {Promise<void>}
      * @private
      */
-    async _handleAlert(trigger, test){
-        try {
-            let isBlocked = false
+    async _handleTrigger(trigger){
+        let isBlocked = false
+    
+        switch (trigger.action) {
         
-            switch (trigger.action) {
-            
-                case Trigger.actions.ALERT:
-                    //
-                    break;
-            
-                case Trigger.actions.BLOCK_USER:
-                    isBlocked = await this.killSwitch.blockUser(trigger)
-                    break;
-            
-                case Trigger.actions.BLOCK_GAME:
-                    isBlocked = await this.killSwitch.blockGame(trigger)
-                    break;
-            
-                case Trigger.actions.BLOCK_JACKPOT:
-                    isBlocked = await this.killSwitch.blockJackpots(trigger)
-                    break;
-            
-                case Trigger.actions.BLOCK_OPERATOR:
-                    isBlocked = await this.killSwitch.blockOperator(trigger)
-                    break;
-            
-                default:
-                    throw Error('Unexpected action: ' + trigger.value)
-            
-            }
+            case Trigger.actions.ALERT:
+                //
+                break;
         
-            await this.alerts.notify(trigger, isBlocked)
-            this._metrics.collect(trigger)
+            case Trigger.actions.BLOCK_USER:
+                isBlocked = await this.killSwitch.blockUser(trigger)
+                break;
         
-        } catch (err) { // these errors are in asynchronous event loop, so they can't be catch by the main loop
-            return this.errorHandler(err)
+            case Trigger.actions.BLOCK_GAME:
+                isBlocked = await this.killSwitch.blockGame(trigger)
+                break;
+        
+            case Trigger.actions.BLOCK_JACKPOT:
+                isBlocked = await this.killSwitch.blockJackpots(trigger)
+                break;
+        
+            case Trigger.actions.BLOCK_OPERATOR:
+                isBlocked = await this.killSwitch.blockOperator(trigger)
+                break;
+        
+            default:
+                throw Error('Unexpected action: ' + trigger.value)
+        
         }
+    
+        await this.alerts.notify(trigger, isBlocked)
+        this._metrics.collect(trigger)
     }
     
     
