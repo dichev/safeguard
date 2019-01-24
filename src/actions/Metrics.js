@@ -5,6 +5,7 @@ class Metrics {
     constructor(operator) {
         this.operator = operator
         this.metrics = {}
+        this.metrics[`safeguard_tracking{operator="${this.operator}"}`] = 1
     }
     
     /**
