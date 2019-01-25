@@ -244,7 +244,7 @@
         "hideEmpty": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -1168,6 +1168,107 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 29,
+      "panels": [],
+      "title": "Other",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 25
+      },
+      "id": 30,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_jackpots_daily_won_same_day{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} #{{jackpot}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Daily jackpot won more than once at same day",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "none",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "1m",
@@ -1205,10 +1306,10 @@
       {
         "allValue": null,
         "current": {
-          "text": "ugs1 + ugs3",
+          "tags": [],
+          "text": "none",
           "value": [
-            "ugs1",
-            "ugs3"
+            "none"
           ]
         },
         "hide": 0,
@@ -1218,12 +1319,12 @@
         "name": "exclude",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "none",
             "value": "none"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "ugs1",
             "value": "ugs1"
           },
@@ -1233,7 +1334,7 @@
             "value": "ugs2"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "ugs3",
             "value": "ugs3"
           }
@@ -1245,7 +1346,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {

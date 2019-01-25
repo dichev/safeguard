@@ -46,12 +46,12 @@ class DailyJackpots {
         for (let pot of found) {
             triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
-                potId: pot.potId,
                 value: pot.cnt,
-                threshold: 1,
+                threshold: limits.timedJackpotWonCount,
+                potId: pot.potId,
                 msg: `Daily jackpot won ${pot.cnt} times same day`,
                 period: now,
-                name: 'testDailyJackpotWonTwoTimeSameDay',
+                name: 'jackpots_daily_won_same_day',
             }))
         }
     

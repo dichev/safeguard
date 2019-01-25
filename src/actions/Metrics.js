@@ -19,6 +19,9 @@ class Metrics {
         else if(trigger.gameName){
             name = `safeguard_${trigger.name}{operator="${this.operator}",game="${trigger.gameName}"}`
         }
+        else if(trigger.potId){
+            name = `safeguard_${trigger.name}{operator="${this.operator}",jackpot="${trigger.potId}"}`
+        }
         else {
             name = `safeguard_${trigger.name}{operator="${this.operator}"}`
         }

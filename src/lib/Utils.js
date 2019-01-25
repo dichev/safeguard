@@ -12,7 +12,7 @@ class Utils {
      */
     static prefix(group) {
         if(group) {
-            return `${Utils.now()} | ${group.padEnd(14)} | `
+            return `${Utils.now()} | ${group.padEnd(15)} | `
         } else {
             return `${Utils.now()} | `
         }
