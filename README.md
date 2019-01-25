@@ -52,7 +52,8 @@ journalctl -f -u safeguard
 ### Scope
 Here is a draft of the protection scope. The values are chosen randomly, they will tuned based on history data and potentials
 
-#### Limits
+#### v1.0.0 (current)
+##### Limits
 ```
 jackpots
   ✓ daily jackpot won two times in same day
@@ -85,25 +86,7 @@ operator
   ✓ x10,000 cumulative mplr for last 24 hours
 
 ```
-
-
-#### Trends
-notes:
-```
-users
-    Win 90 from 100 consecutive rounds (win>stake)
-    Balance keep increasing in 90 from 100 consecutive rounds (in case of issue by operator side)
-    All time (or from last negative hold) have cummulative positive trend
-    Profit moving average
-    Detect anomaly between balance and patouts/bets
-
-operator
-    losses every day
-```
-
-
-
-####  Actions
+#####  Actions (currently disabled)
 ```
 Block user
 Block game
@@ -115,9 +98,26 @@ Block tournaments
 Lock payments
 ```
 
-----
+#### Future Roadmap
 
-#### Money Monitor
+
+```
+# Actions ----------------
+Block tournaments
+Lock payments
+
+# Trends detection ----------------
+users
+    Win 90 from 100 consecutive rounds (win>stake)
+    Balance keep increasing in 90 from 100 consecutive rounds (in case of issue by operator side)
+    All time (or from last negative hold) have cummulative positive trend
+    Profit moving average
+    Detect anomaly between balance and patouts/bets
+
+operator
+    losses every day
+```
+
 will be implemented in monitoring
 ```
 RTP
@@ -136,10 +136,10 @@ Users
     Incremental serial winners
     Jackpot abusers
 Bonuses
-    grr
+    ...
 ```
 
-### Other
+scope issues:
 ```
 demo play risks
 differences between our transaction data and actual operator data
