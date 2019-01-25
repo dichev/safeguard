@@ -2,7 +2,7 @@
 Description=SafeGuard
 
 [Service]
-ExecStart=/usr/bin/node /opt/dopamine/safeguard/safeguard
+ExecStart=/usr/bin/node /opt/dopamine/safeguard/bin/safeguard
 Restart=always
 RestartSec=10
 User=dopamine
