@@ -1,5 +1,7 @@
 'use strict'
 
+const Config = require('../config/Config')
+
 class Utils {
     
     static now() {
@@ -11,10 +13,12 @@ class Utils {
      * @return {string}
      */
     static prefix(group) {
+        let timestamp = Config.logs.prefixTimestamp ? `${Utils.now()} | ` : ''
+        
         if(group) {
-            return `${Utils.now()} | ${group.padEnd(15)} | `
+            return timestamp + `${group.padEnd(15)} | `
         } else {
-            return `${Utils.now()} | `
+            return timestamp
         }
     }
     

@@ -7,6 +7,7 @@ const HOST = '127.0.0.1'
 const USER = 'safeguard'
 const PASS = ''
 Config.schedule.intervalBetweenIterations = 5 // sec
+Config.logs.prefixTimestamp = false // journalctl adds them anyway
 
 let operators = {}
 for(let operator of OPERATORS){

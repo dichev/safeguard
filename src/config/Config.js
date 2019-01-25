@@ -104,6 +104,10 @@ const Config = {
 
     server: { // used to expose prometheus metrics
         port: 4444
+    },
+    
+    logs: {
+        prefixTimestamp: true
     }
 }
 
