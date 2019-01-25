@@ -20,8 +20,7 @@ const sleep = require('./lib/Utils').sleep
 
 class SafeGuard {
     
-    // used during dev
-    static async cleanDatabase(){
+    static async cleanDatabaseLogs(){
         let db = await Database.getLocalInstance()
         await db.query('TRUNCATE alerts; TRUNCATE blocked; TRUNCATE log;')
     }
@@ -131,7 +130,8 @@ class SafeGuard {
         this._metrics.collect(trigger)
     }
     
-    
+    /*
+    // TODO: will be supported later
     async history(from, to = null){
         to = to || moment().utc().format('YYYY-MM-DD')
         let interval = moment().recur(from, to).all('YYYY-MM-DD');
@@ -147,10 +147,8 @@ class SafeGuard {
         }
         
         await Database.killAllConnections()
-        
-    
     }
-    
+    */
     
     
     /**

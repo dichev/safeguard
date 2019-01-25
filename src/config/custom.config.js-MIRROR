@@ -23,8 +23,8 @@ for(let operator of Object.values(cfg.operators)){
         bonus:       { database: operator.dbPrefix + 'bonus',       host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
     }
 
-    if(operator.name === 'betfairmars' || operator.name === 'paddymars') {
-        operators[operator.name]['jackpot'].database = 'jackpot_bp' // Only betfairmars/paddymars have shared jackpot database.
+    if(operator.sharedJackpot) {
+        operators[operator.name]['jackpot'].database = operator.sharedJackpot // Only betfairmars/paddymars AND pokerstars/pokerstars-dk have shared jackpot database.
     }
 }
 

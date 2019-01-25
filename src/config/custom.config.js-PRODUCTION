@@ -23,7 +23,7 @@ for(let operator of operators){
     }
     
     if (operator.dbSharedJackpots) {
-        operators[operator.name]['jackpot'].database = operator.dbSharedJackpots // Only betfairmars/paddymars have shared jackpot database.
+        operators[operator.name]['jackpot'].database = operator.dbSharedJackpots // Only betfairmars/paddymars AND pokerstars/pokerstars-dk have shared jackpot database.
     }
 }
 

@@ -110,7 +110,6 @@ const Config = {
 module.exports = Config
 
 // Override the Config when custom configuration is available
-// TODO: better user ENV VARIABLES
 try {
     require('./custom.config.js')
 } catch (err) {

@@ -31,8 +31,8 @@ program
         server.listen()
     }
     
-    if(program.clean) await Safeguard.cleanDatabase()
-    // let parallel = program.mode !== 'sequential'
+    if(program.clean) await Safeguard.cleanDatabaseLogs()
+
     let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : OPERATORS
     let guards = []
     for (let operator of operators) {
@@ -40,7 +40,8 @@ program
         if(server) server.addMetrics(() => guard.metrics())
         guards.push(guard)
     }
-    // run in parallel
+    
+    // run each operator in parallel
     await Promise.all(guards.map(async (guard, i) => {
         await sleep(i * THROTTLE) // throttle db connections
         await guard.activate()
