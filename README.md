@@ -52,7 +52,7 @@ journalctl -f -u safeguard
 ### Scope
 Here is a draft of the protection scope. The values are chosen randomly, they will tuned based on history data and potentials
 
-#### v1.0.0 (current)
+#### v1 (current)
 ##### Limits
 ```
 jackpots
