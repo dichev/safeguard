@@ -29,8 +29,8 @@ Safeguard could be tracked from 3 places
 2) safeguard stores logs/alerts/bans details in its own local mysql database
 3) safeguard exposes prometheus metrics via simple http server here
 ```bash
-curl http://localhost:4000/heartbeat
-curl http://localhost:4000/metrics
+curl http://localhost:4444/heartbeat
+curl http://localhost:4444/metrics
 ```
 If you want to run locally Prometheus server with Grafana, see [test/monitoring/README.md](test/monitoring/README.md) 
 
