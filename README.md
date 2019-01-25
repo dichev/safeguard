@@ -9,6 +9,9 @@ npm install
 mysql -uroot -e "CREATE DATABASE `safeguard`;"
 mysql -uroot safeguard < db/schema.sql
 
+# On production create restricted mysql user with these permissions (you must set the password inside):
+mysql -uroot safeguard < db/permissions.sql
+
 # Override db credentials in this file (always excluded from the repo)
 cp src/config/custom.config.js-MIRROR src/config/custom.config.js
 ```
