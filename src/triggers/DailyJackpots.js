@@ -20,24 +20,21 @@ class DailyJackpots {
     
     
     /**
-     * @param {string} operator
      * @param {string} now
      * @return {Promise<Array<Trigger>>}
      */
-    async exec(operator, now = null){
+    async exec(now = null){
         now = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
-        console.verbose(prefix(operator) + this.description)
-        // console.log({operator, now})
+        console.verbose(prefix(this.operator) + this.description)
     
-        return await this.testDailyJackpotWonTwoTimeSameDay(operator, now)
+        return await this.testDailyJackpotWonTwoTimeSameDay(now)
     }
     
-    async testDailyJackpotWonTwoTimeSameDay(operator, now){
+    async testDailyJackpotWonTwoTimeSameDay(now){
         const limits = Config.limits.jackpots
-        operator = this.operator
         let rate = this.rate
     
-        let db = await Database.getJackpotInstance(operator)
+        let db = await Database.getJackpotInstance(this.operator)
     
         let SQL = `SELECT
                       DATE(timeWon),

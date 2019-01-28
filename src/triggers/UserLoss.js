@@ -21,27 +21,24 @@ class UserLoss {
     }
     
     /**
-     * @param {string} operator
      * @param {string} now
      * @return {Promise<Array<Trigger>>}
      */
-    async exec(operator, now = null){
+    async exec(now = null){
         let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
         
-        console.verbose(prefix(operator) + this.description)
-        // console.log({operator, from, to})
+        console.verbose(prefix(this.operator) + this.description)
     
-        return await this.testLimits(operator, from, to)
+        return await this.testLimits(from, to)
     }
 
-    async testLimits(operator, from, to){
+    async testLimits(from, to){
         const limits = Config.limits.users
         const indicators = Config.indicators
-        operator = this.operator
         let rate = this.rate
         
-        let db = await Database.getSegmentsInstance(operator)
+        let db = await Database.getSegmentsInstance(this.operator)
         let SQL = `SELECT
                        userId,
                        ROUND(${rate} * (SUM(payout)-SUM(bets)), 2) AS profit,

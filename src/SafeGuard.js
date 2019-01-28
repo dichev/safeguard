@@ -78,7 +78,7 @@ class SafeGuard {
         let result = { alerts: 0, blocked: 0 }
         try {
             for (let test of this.tests) {
-                let triggers = await test.exec(this.operator)
+                let triggers = await test.exec()
                 for(let trigger of triggers) {
                     trigger.action === Trigger.actions.ALERT ? result.alerts++ : result.blocked++
                     await this._handleTrigger(trigger)

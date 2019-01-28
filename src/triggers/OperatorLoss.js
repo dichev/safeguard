@@ -22,28 +22,25 @@ class OperatorLoss {
     
     
     /**
-     * @param {string} operator
      * @param {string} now
      * @return {Promise<Array<Trigger>>}
      */
-    async exec(operator, now = null){
+    async exec(now = null){
         let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
         
-        console.verbose(prefix(operator) + this.description)
-        // console.log({operator, from, to})
+        console.verbose(prefix(this.operator) + this.description)
     
-        return await this.testLimits(operator, from, to)
+        return await this.testLimits(from, to)
     }
 
-    async testLimits(operator, from, to){
+    async testLimits(from, to){
         const limits = Config.limits.operators
         const indicators = Config.indicators
-        operator = this.operator
         let rate = this.rate
         
         // from platform
-        let db = await Database.getSegmentsInstance(operator)
+        let db = await Database.getSegmentsInstance(this.operator)
         
         let sqlHugeWins = `
             SELECT ROUND(${rate} * (SUM(payout-jackpotPayout)-SUM(bets-jackpotBets)), 2) AS hugeWins
@@ -80,7 +77,7 @@ class OperatorLoss {
                     action: row.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitGames,
                     threshold: limits.lossFromGames,
-                    msg: `Detected operator #${operator} with net profit of ${row.profitGames} GBP from games in last 24 hours`,
+                    msg: `Detected operator #${this.operator} with net profit of ${row.profitGames} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'operators_lossFromGames_gbp',
                 }))
@@ -90,7 +87,7 @@ class OperatorLoss {
                     action: row.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitGames,
                     threshold: limits.cappedLossFromGames,
-                    msg: `Detected operator #${operator} with capped profit of ${row.profitCapGames} GBP from games in last 24 hours`,
+                    msg: `Detected operator #${this.operator} with capped profit of ${row.profitCapGames} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'operators_cappedLossFromGames_gbp',
                 }))
@@ -100,7 +97,7 @@ class OperatorLoss {
                     action: row.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitJackpots,
                     threshold: limits.lossFromJackpots,
-                    msg: `Detected operator #${operator} with net profit of ${row.profitJackpots} GBP from jackpots in last 24 hours`,
+                    msg: `Detected operator #${this.operator} with net profit of ${row.profitJackpots} GBP from jackpots in last 24 hours`,
                     period: {from, to},
                     name: 'operators_lossFromJackpots_gbp',
                 }))
@@ -110,7 +107,7 @@ class OperatorLoss {
                     action: row.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                     value: row.profitBonuses,
                     threshold: limits.lossFromBonuses,
-                    msg: `Detected operator #${operator} with net profit of ${row.profitBonuses} GBP from bonuses in last 24 hours`,
+                    msg: `Detected operator #${this.operator} with net profit of ${row.profitBonuses} GBP from bonuses in last 24 hours`,
                     period: {from, to},
                     name: 'operators_lossFromBonuses_gbp',
                 }))
@@ -120,7 +117,7 @@ class OperatorLoss {
                     action: row.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     value: row.pureProfit,
                     threshold: limits.pureLossFromGames,
-                    msg: `Detected operator #${operator} with pure mplr win of x${row.pureProfit} in last 24 hours`,
+                    msg: `Detected operator #${this.operator} with pure mplr win of x${row.pureProfit} in last 24 hours`,
                     period: {from, to},
                     name: 'operators_pureLossFromGames_x',
                 }))
