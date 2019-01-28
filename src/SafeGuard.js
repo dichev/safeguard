@@ -105,6 +105,7 @@ class SafeGuard {
         
         let db = await Database.getPlatformInstance(this.operator)
         let baseCurrency = await db.query(`SELECT value FROM settings WHERE type = 'base.currency'`)
+        await Database.killConnection(db)
         baseCurrency = baseCurrency[0].value
         
         if(baseCurrency !== 'GBP') {
