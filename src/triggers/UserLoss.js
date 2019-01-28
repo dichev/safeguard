@@ -10,8 +10,13 @@ const WARNING_LIMIT = Config.indicators.warningsRatio
 
 class UserLoss {
     
-    constructor() {
-        this.interval = 10 //sec
+    /**
+     * @param {string} operator
+     * @param {number} rate
+     */
+    constructor(operator, rate) {
+        this.operator = operator
+        this.rate = rate
         this.description = 'Detect users with abnormal amount of profit in last 24 hours'
     }
     
@@ -33,21 +38,25 @@ class UserLoss {
     async testLimits(operator, from, to){
         const limits = Config.limits.users
         const indicators = Config.indicators
+        operator = this.operator
+        let rate = this.rate
         
         let db = await Database.getSegmentsInstance(operator)
         let SQL = `SELECT
                        userId,
-                       SUM(payout)-SUM(bets) AS profit,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) AS profitGames,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames,
-                       SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                       SUM(bonusPayout-bonusBets) AS profitBonuses,
+                       ROUND(${rate} * (SUM(payout)-SUM(bets)), 2) AS profit,
+                       ROUND(${rate} * (SUM(payout-jackpotPayout) - SUM(bets-jackpotBets)), 2) AS profitGames,
+                       ROUND(${rate} * (SUM(payout-jackpotPayout) - SUM(bets-jackpotBets)), 2) - IFNULL(h.hugeWins, 0) AS profitCapGames,
+                       ROUND(${rate} * (SUM(jackpotPayout - jackpotBets)), 2) AS profitJackpots,
+                       ROUND(${rate} * (SUM(bonusPayout-bonusBets)), 2) AS profitBonuses,
                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly_live
                    LEFT JOIN (
-                       SELECT userId, SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
+                       SELECT
+                          userId,
+                          ROUND(${rate} * (SUM(payout-jackpotPayout)-SUM(bets-jackpotBets)), 2) AS hugeWins
                        FROM user_huge_wins
-                       WHERE (period BETWEEN ? and ?) AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+                       WHERE (period BETWEEN ? and ?) AND ROUND(${rate} * (payout-jackpotPayout), 2) >= ${indicators.hugeWinIsAbove}
                        GROUP BY userId
                    ) h USING (userId)
                    WHERE (period BETWEEN ? AND ?)
@@ -58,8 +67,7 @@ class UserLoss {
                        OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
                        OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
                    `
-    
-    
+        
         let found = await db.query(SQL, [from, to, from, to])
         if (!found.length) return []
         // console.log(`-> Found ${found.length} users`)

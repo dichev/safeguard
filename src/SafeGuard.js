@@ -30,13 +30,7 @@ class SafeGuard {
         
         this.operator = operator
         
-        this.tests = [
-            new DailyJackpots(),
-            new UserLoss(),
-            new GameLoss(),
-            new OperatorLoss(),
-        ]
-        
+        this.tests = []
         this.alerts = new Alert(operator)
         this.killSwitch = new KillSwitch(operator)
         this.log = new Log(operator)
@@ -58,6 +52,15 @@ class SafeGuard {
     
     async activate(){
         try {
+            let rate = await this.getCurrencyRate()
+    
+            this.tests = [
+                new DailyJackpots(this.operator, rate),
+                new UserLoss(this.operator, rate),
+                new GameLoss(this.operator, rate),
+                new OperatorLoss(this.operator, rate),
+            ]
+
             // noinspection InfiniteLoopJS
             while (true) {
                 await this.check()
@@ -88,6 +91,45 @@ class SafeGuard {
         await this.log.end(logId, result)
 
         await Database.killConnectionsByNamePrefix(this.operator)
+    }
+    
+    /**
+     * TODO: this will be used temporary until all segments switch to GBP aggregations
+     *       the biggest issue of dynamic ratios is that it complicate the queries and could lead to errors
+     *       because the current implementation is temporary it use FIXED rates (they don't change each day)
+     *
+     * @return {Promise<number>}
+     */
+    async getCurrencyRate(){
+        let rate = 1
+        
+        let db = await Database.getPlatformInstance(this.operator)
+        let baseCurrency = await db.query(`SELECT value FROM settings WHERE type = 'base.currency'`)
+        baseCurrency = baseCurrency[0].value
+        
+        if(baseCurrency !== 'GBP') {
+    
+            const TO_GBP = { // 2018-01-28
+                USD: '0.760248',
+                EUR: '0.867009',
+                GEL: '0.286349',
+                CNY: '0.112830',
+                RMB: '0.112830',
+                HKD: '0.0968926',
+            }
+    
+            // NOTE: So far not all operators contains currency ratio of their base currency to GBP
+            // let row = await db.query(`SELECT rate FROM currencies_exchange_rates WHERE fromCurrency = ? AND toCurrency = 'GBP' ORDER BY lastSyncTime DESC LIMIT 1`, [baseCurrency])
+            // if (!rate[0] || !row[0].rate) throw Error(`Can't find rate for ${baseCurrency} to GBP`)
+            // rate = row[0].rate
+    
+            rate = TO_GBP[baseCurrency]
+            if(!rate) throw Error(`Can't find rate for ${baseCurrency} to GBP`)
+            
+            console.warn(prefix(this.operator) + `Base currency is ${baseCurrency} (conversion ratio will be ${baseCurrency} to GBP = ${rate})`)
+        }
+        
+        return rate
     }
     
     

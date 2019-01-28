@@ -8,7 +8,13 @@ const prefix = require('../lib/Utils').prefix
 
 class DailyJackpots {
     
-    constructor() {
+    /**
+     * @param {string} operator
+     * @param {number} rate
+     */
+    constructor(operator, rate) {
+        this.operator = operator
+        this.rate = rate
         this.description = 'Detect abnormal daily jackpot wins'
     }
     
@@ -28,10 +34,15 @@ class DailyJackpots {
     
     async testDailyJackpotWonTwoTimeSameDay(operator, now){
         const limits = Config.limits.jackpots
-        
+        operator = this.operator
+        let rate = this.rate
+    
         let db = await Database.getJackpotInstance(operator)
     
-        let SQL = `SELECT DATE(timeWon), potId, COUNT(*) as cnt, SUM(pot)
+        let SQL = `SELECT
+                      DATE(timeWon),
+                      potId, COUNT(*) as cnt,
+                      ROUND(${rate} * SUM(pot),2) as potSum
                    FROM _jackpot_history h
                    JOIN _jackpot_config c ON(c.id = h.potId and c.type = 'time')
                    WHERE DATE(timeWon) = DATE(?)

@@ -10,7 +10,13 @@ const WARNING_LIMIT = Config.indicators.warningsRatio
 
 class OperatorLoss {
     
-    constructor() {
+    /**
+     * @param {string} operator
+     * @param {number} rate
+     */
+    constructor(operator, rate) {
+        this.operator = operator
+        this.rate = rate
         this.description = 'Detect operators with abnormal amount of profit in last 24 hours'
     }
     
@@ -33,24 +39,26 @@ class OperatorLoss {
     async testLimits(operator, from, to){
         const limits = Config.limits.operators
         const indicators = Config.indicators
+        operator = this.operator
+        let rate = this.rate
         
         // from platform
         let db = await Database.getSegmentsInstance(operator)
         
         let sqlHugeWins = `
-            SELECT SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
+            SELECT ROUND(${rate} * (SUM(payout-jackpotPayout)-SUM(bets-jackpotBets)), 2) AS hugeWins
             FROM user_huge_wins
-            WHERE (period BETWEEN ? AND ?) AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+            WHERE (period BETWEEN ? AND ?) AND  ROUND(${rate} * (payout-jackpotPayout), 2) >= ${indicators.hugeWinIsAbove}
         `
         let res = await db.query(sqlHugeWins, [from, to])
         let hugeWins = res.length ? res[0].hugeWins : 0
         
         let SQL = `SELECT
-                       SUM(payout)-SUM(bets) AS profit,
-                       SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - ? AS profitCapGames,
-                       SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                       SUM(bonusPayout-bonusBets) AS profitBonuses,
+                       ROUND(${rate} * (SUM(payout)-SUM(bets)), 2) AS profit,
+                       ROUND(${rate} * (SUM(payout-jackpotPayout) - SUM(bets-jackpotBets)), 2) AS profitGames,
+                       ROUND(${rate} * (SUM(payout-jackpotPayout) - SUM(bets-jackpotBets)), 2) - ? AS profitCapGames,
+                       ROUND(${rate} * (SUM(jackpotPayout - jackpotBets)), 2) AS profitJackpots,
+                       ROUND(${rate} * (SUM(bonusPayout-bonusBets)), 2) AS profitBonuses,
                        SUM(mplr) AS pureProfit
                    FROM user_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
