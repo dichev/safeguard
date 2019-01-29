@@ -70,7 +70,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromGames_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_users_lossFromGames_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
@@ -178,7 +178,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromGames_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_games_lossFromGames_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -267,7 +267,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromGames_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_operators_lossFromGames_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -369,7 +369,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_cappedLossFromGames_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_users_cappedLossFromGames_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
@@ -476,7 +476,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_cappedLossFromGames_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_games_cappedLossFromGames_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -566,7 +566,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_cappedLossFromGames_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_operators_cappedLossFromGames_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -669,7 +669,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_pureLossFromGames_x{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_users_pureLossFromGames_x{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
@@ -775,7 +775,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_pureLossFromGames_x{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_games_pureLossFromGames_x{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -864,7 +864,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_pureLossFromGames_x{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_operators_pureLossFromGames_x{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -966,7 +966,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromJackpots_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_users_lossFromJackpots_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
@@ -1055,7 +1055,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromJackpots_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_games_lossFromJackpots_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -1144,7 +1144,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromJackpots_gbp{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_operators_lossFromJackpots_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -1246,7 +1246,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_jackpots_daily_won_same_day{operator=~\"$operator\",operator!~\"$exclude\"}",
+          "expr": "safeguard_jackpots_daily_won_same_day{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{jackpot}}",
@@ -1419,46 +1419,6 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {
-          "tags": [],
-          "text": "none",
-          "value": [
-            "none"
-          ]
-        },
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
-        "multi": true,
-        "name": "exclude",
-        "options": [
-          {
-            "selected": true,
-            "text": "none",
-            "value": "none"
-          },
-          {
-            "selected": false,
-            "text": "ugs1",
-            "value": "ugs1"
-          },
-          {
-            "selected": false,
-            "text": "ugs2",
-            "value": "ugs2"
-          },
-          {
-            "selected": false,
-            "text": "ugs3",
-            "value": "ugs3"
-          }
-        ],
-        "query": "none,ugs1,ugs2,ugs3",
-        "skipUrlSync": false,
-        "type": "custom"
       }
     ]
   },
