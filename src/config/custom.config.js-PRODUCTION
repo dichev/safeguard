@@ -1,7 +1,7 @@
 'use strict'
 
 const Config = require('./Config.js')
-const OPERATORS = require('/opt/servers-conf/automate.json').safeguard // [{ name, db.host, db.prefix, db.sharedJackpots }]
+const OPERATORS = require('/opt/servers-conf/automate.json').safeguard // [{ name, db.host, db.prefix, db.sharedJackpot }]
 
 const HOST = '127.0.0.1'
 const USER = 'safeguard'
@@ -24,8 +24,8 @@ for(let operator of OPERATORS){
         bonus:       { database: operator.db.prefix + 'bonus',       host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
     }
 
-    if (operator.sharedJackpots) {
-        operators[operator.name]['jackpot'].database = operator.sharedJackpots // Only betfairmars/paddymars AND pokerstars/pokerstars-dk have shared jackpot database.
+    if (operator.db.sharedJackpot) {
+        operators[operator.name]['jackpot'].database = operator.db.sharedJackpot // Only betfairmars/paddymars AND pokerstars/pokerstars-dk have shared jackpot database.
     }
 }
 
