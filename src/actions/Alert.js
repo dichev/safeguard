@@ -26,15 +26,20 @@ class Alert {
         let type = trigger.userId || trigger.potId || trigger.gameName || this.operator
         let key = trigger.name + '_' + type
         if(!trigger.name || !type) console.warn('Invalid data:', {trigger})
-        if(this.alerts[key]){
-            let diff = Math.abs(perc - this.alerts[key])
+    
+        
+        let before = this.alerts[key]
+        
+        if(before){
+            let diff = Math.abs(perc - before.perc)
             if(diff < ALERT_GAP) {
+                before.time = Date.now()
                 console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg, `(diff ${diff})`)
                 return
             }
         }
-        this.alerts[key] = perc
-        
+    
+        this.alerts[key] = {perc: perc, time: Date.now()}
         
         console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg)
     
@@ -54,6 +59,19 @@ class Alert {
     
         let db = await Database.getLocalInstance()
         await db.query(`INSERT INTO alerts (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
+    }
+    
+    /**
+     * Clean up metrics which didn't triggered
+     * @param {Number} timestamp - all metrics before this timestamp will be cleaned
+     */
+    cleanup(timestamp) {
+        for (let alert in this.alerts) if (this.alerts.hasOwnProperty(alert)) {
+            if (this.alerts[alert].time < timestamp) {
+                // console.warn(`clean alert ${alert}`, this.alerts[alert])
+                delete this.alerts[alert]
+            }
+        }
     }
 }
 

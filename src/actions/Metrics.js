@@ -5,8 +5,9 @@ class Metrics {
     constructor(operator) {
         this.operator = operator
         this.metrics = {}
-        this.metrics[`safeguard_tracking{operator="${this.operator}"}`] = 1
+        this.metrics[`safeguard_tracking{operator="${this.operator}"}`] = { value: 1, time: Date.now() }
     }
+    
     
     /**
      * @param {Trigger} trigger
@@ -25,12 +26,27 @@ class Metrics {
         else {
             name = `safeguard_${trigger.name}{operator="${this.operator}"}`
         }
-        this.metrics[name] = trigger.value
+        this.metrics[name] = { value: trigger.value, time: Date.now() }
+    }
+    
+    /**
+     * Clean up metrics which didn't triggered
+     * @param {Number} timestamp - all metrics before this timestamp will be cleaned
+     */
+    cleanup(timestamp){
+        this.metrics[`safeguard_tracking{operator="${this.operator}"}`].time = Date.now()
+        
+        for(let metric in this.metrics) if(this.metrics.hasOwnProperty(metric)){
+            if(this.metrics[metric].time < timestamp){
+                // console.warn(`clean metric ${metric}`, this.metrics[metric])
+                delete this.metrics[metric]
+            }
+        }
     }
     
     export(){
         let output = ''
-        for(let [metric, value] of Object.entries(this.metrics)){
+        for(let [metric, {value, time}] of Object.entries(this.metrics)){
             // output += `# HELP ${metric} infoo`
             // output += `# TYPE ${metric} gauge`
             output += `${metric} ${value}\n`

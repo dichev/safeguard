@@ -77,6 +77,7 @@ class SafeGuard {
         let logId = await this.log.start()
         let result = { alerts: 0, blocked: 0 }
         try {
+            let startAt = Date.now()
             for (let test of this.tests) {
                 let triggers = await test.exec()
                 for(let trigger of triggers) {
@@ -84,6 +85,8 @@ class SafeGuard {
                     await this._handleTrigger(trigger)
                 }
             }
+            this._metrics.cleanup(startAt)
+            this.alerts.cleanup(startAt)
         } catch (err) {
             await this.log.error(logId, err)
             throw err
