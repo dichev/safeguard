@@ -1,6 +1,7 @@
 'use strict'
 
 const Database = require('./lib/Database')
+const prefix = require('./lib/Utils').prefix
 
 class Log {
     
@@ -8,30 +9,24 @@ class Log {
         this.operator = operator
     }
     
-    async start(){
-        // console.log('Log started', name)
-        let db = await Database.getLocalInstance()
-        let res = await db.query(`INSERT INTO log (operator, status, timeStarted) VALUES (?, 'PROGRESS', NOW(3))`, [this.operator])
-        return res.insertId
-    }
-    
-    async end(logId, details = null){
-        // console.log('Log end', name, details)
-        let json = details ? JSON.stringify(details) : null
-        let db = await Database.getLocalInstance()
-        await db.query(`UPDATE log SET result = ?, status = 'DONE', timeEnded = NOW(3), duration = TIMEDIFF(timeEnded, timeStarted) WHERE id = ?`, [json, logId])
-    }
-    
-    async error(logId, error){
+    async error(error, startedAt = null){
         try {
             let json = JSON.stringify({error: error.toString()})
             let db = await Database.getLocalInstance()
-            await db.query(`UPDATE log SET result = ?, status = 'ERROR', timeEnded = NOW(3), duration = TIMEDIFF(timeEnded, timeStarted) WHERE id = ?`, [json, logId])
-        }catch (e) {
+            await db.query(`INSERT INTO log (operator, status, result, timeStarted, timeEnded) VALUES (?, ?, ?, FROM_UNIXTIME(? / 1000), NOW(3))`, [this.operator, 'ERROR', json, startedAt || Date.now()])
+        } catch (e) {
             console.error(e)
             // we shouldn't mask the original error by throwing new error here
         }
     }
+    
+    async warn(data, startedAt = null){
+        let json = JSON.stringify(data)
+        console.warn(prefix('log') + json)
+        let db = await Database.getLocalInstance()
+        await db.query(`INSERT INTO log (operator, status, result, timeStarted, timeEnded) VALUES (?, ?, ?, FROM_UNIXTIME(? / 1000), NOW(3))`, [this.operator, 'WARN', json, startedAt || Date.now()])
+    }
+
 }
 
 module.exports = Log

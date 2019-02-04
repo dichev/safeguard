@@ -107,7 +107,8 @@ const Config = {
     },
     
     logs: {
-        prefixTimestamp: true
+        prefixTimestamp: true,
+        warnIfDurationAbove: 300 // ms
     }
 }
 

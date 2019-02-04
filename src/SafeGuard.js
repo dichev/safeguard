@@ -74,10 +74,9 @@ class SafeGuard {
     
     async check(){
         console.log(prefix(this.operator) + `Checking for anomalies..`)
-        let logId = await this.log.start()
         let result = { alerts: 0, blocked: 0 }
+        let startAt = Date.now()
         try {
-            let startAt = Date.now()
             for (let test of this.tests) {
                 let triggers = await test.exec()
                 for(let trigger of triggers) {
@@ -87,11 +86,15 @@ class SafeGuard {
             }
             this._metrics.cleanup(startAt)
             this.alerts.cleanup(startAt)
+            
+            let duration = Date.now() - startAt
+            if(duration > Config.logs.warnIfDurationAbove) {
+                await this.log.warn({msg: `Too long execution time: ${duration}ms`, result}, startAt)
+            }
         } catch (err) {
-            await this.log.error(logId, err)
+            await this.log.error(err, startAt)
             throw err
         }
-        await this.log.end(logId, result)
 
         await Database.killConnectionsByNamePrefix(this.operator)
     }
