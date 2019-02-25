@@ -22,7 +22,7 @@ class Log {
     
     async warn(data, startedAt = null){
         let json = JSON.stringify(data)
-        console.warn(prefix('log') + json)
+        console.warn(prefix(this.operator) + json)
         let db = await Database.getLocalInstance()
         await db.query(`INSERT INTO log (operator, status, result, timeStarted, timeEnded) VALUES (?, ?, ?, FROM_UNIXTIME(? / 1000), NOW(3))`, [this.operator, 'WARN', json, startedAt || Date.now()])
     }
