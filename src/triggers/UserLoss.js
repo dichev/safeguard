@@ -44,7 +44,7 @@ class UserLoss {
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
-                   FROM user_summary_hourly_live
+                   FROM user_games_summary_hourly_live
                    LEFT JOIN (
                        SELECT
                          userId,

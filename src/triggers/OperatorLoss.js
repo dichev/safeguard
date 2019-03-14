@@ -54,7 +54,7 @@ class OperatorLoss {
                        SUM(jackpotPayout - jackpotBets) AS profitJackpots,
                        SUM(bonusPayout-bonusBets) AS profitBonuses,
                        SUM(mplr) AS pureProfit
-                   FROM user_summary_hourly_live
+                   FROM user_games_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
                    HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
                        OR profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
