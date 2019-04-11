@@ -35,13 +35,13 @@ class DailyJackpots {
     
         let SQL = `SELECT
                       DATE(timeWon),
-                      potId, COUNT(*) as cnt, 
+                      potId, COUNT(*) as timedJackpotWonCount,
                       SUM(pot)
                    FROM _jackpot_history h
                    JOIN _jackpot_config c ON(c.id = h.potId and c.type = 'time')
                    WHERE DATE(timeWon) = DATE(?)
                    GROUP BY potId, DATE(timeWon)
-                   HAVING cnt >= ${limits.timedJackpotWonCount}`
+                   HAVING timedJackpotWonCount >= ${limits.timedJackpotWonCount}`
         
     
         let found = await db.query(SQL, [now])
@@ -51,10 +51,10 @@ class DailyJackpots {
         for (let pot of found) {
             triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
-                value: pot.cnt,
+                value: pot.timedJackpotWonCount,
                 threshold: limits.timedJackpotWonCount,
                 potId: pot.potId,
-                msg: `Daily jackpot won ${pot.cnt} times same day`,
+                msg: `Daily jackpot won ${pot.timedJackpotWonCount} times same day`,
                 period: now,
                 name: 'jackpots_daily_won_same_day',
             }))

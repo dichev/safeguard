@@ -39,11 +39,11 @@ class UserLoss {
         let SQL = `SELECT
                        userId,
                        SUM(payout)-SUM(bets) AS profit,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) AS profitGames,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames,
-                       SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                       SUM(bonusPayout-bonusBets) AS profitBonuses,
-                       SUM(mplr) AS pureProfit
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) AS lossFromGames_gbp,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS cappedLossFromGames_gbp,
+                       SUM(jackpotPayout - jackpotBets) AS lossFromJackpots_gbp,
+                       SUM(bonusPayout-bonusBets) AS lossFromBonuses_gbp,
+                       SUM(mplr) AS pureLossFromGames_x
                    FROM user_games_summary_hourly_live
                    LEFT JOIN (
                        SELECT
@@ -55,11 +55,11 @@ class UserLoss {
                    ) h USING (userId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
-                   HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
-                       OR profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
-                       OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
-                       OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
-                       OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
+                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp * WARNING_LIMIT}
+                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp * WARNING_LIMIT}
+                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp * WARNING_LIMIT}
+                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp * WARNING_LIMIT}
+                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x * WARNING_LIMIT}
                    `
         
     
@@ -69,60 +69,60 @@ class UserLoss {
     
         let triggers = []
         for (let user of found) {
-            if(user.profitGames >= limits.lossFromGames * WARNING_LIMIT){
+            if(user.lossFromGames_gbp >= limits.lossFromGames_gbp * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: user.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.profitGames,
-                    threshold: limits.lossFromGames,
+                    action: user.lossFromGames_gbp < limits.lossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    value: user.lossFromGames_gbp,
+                    threshold: limits.lossFromGames_gbp,
                     userId: user.userId,
-                    msg: `Detected user #${user.userId} with net profit of ${user.profitGames} GBP from games in last 24 hours`,
+                    msg: `Detected user #${user.userId} with net profit of ${user.lossFromGames_gbp} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'users_lossFromGames_gbp',
                 }))
             }
             
-            if(user.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT) {
+            if(user.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp * WARNING_LIMIT) {
                 triggers.push(new Trigger({
-                    action: user.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    action: user.cappedLossFromGames_gbp < limits.cappedLossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                     userId: user.userId,
-                    value: user.profitCapGames,
-                    threshold: limits.cappedLossFromGames,
-                    msg: `Detected user #${user.userId} with capped profit of ${user.profitCapGames} GBP for last 24 hours`,
+                    value: user.cappedLossFromGames_gbp,
+                    threshold: limits.cappedLossFromGames_gbp,
+                    msg: `Detected user #${user.userId} with capped profit of ${user.cappedLossFromGames_gbp} GBP for last 24 hours`,
                     period: {from, to},
                     name: 'users_cappedLossFromGames_gbp',
                 }))
             }
             
-            if(user.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
+            if(user.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: user.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.profitJackpots,
-                    threshold: limits.lossFromJackpots,
+                    action: user.lossFromJackpots_gbp < limits.lossFromJackpots_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    value: user.lossFromJackpots_gbp,
+                    threshold: limits.lossFromJackpots_gbp,
                     userId: user.userId,
-                    msg: `Detected user #${user.userId} with net profit of ${user.profitJackpots} GBP from jackpots in last 24 hours`,
+                    msg: `Detected user #${user.userId} with net profit of ${user.lossFromJackpots_gbp} GBP from jackpots in last 24 hours`,
                     period: {from, to},
                     name: 'users_lossFromJackpots_gbp',
                 }))
             }
-            if(user.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
+            if(user.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: user.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.profitBonuses,
-                    threshold: limits.lossFromBonuses,
+                    action: user.lossFromBonuses_gbp < limits.lossFromBonuses_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    value: user.lossFromBonuses_gbp,
+                    threshold: limits.lossFromBonuses_gbp,
                     userId: user.userId,
-                    msg: `Detected user #${user.userId} with net profit of ${user.profitBonuses} GBP from bonuses in last 24 hours`,
+                    msg: `Detected user #${user.userId} with net profit of ${user.lossFromBonuses_gbp} GBP from bonuses in last 24 hours`,
                     period: {from, to},
                     name: 'users_lossFromBonuses_gbp',
                 }))
             }
             
-            if(user.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT){
+            if(user.pureLossFromGames_x >= limits.pureLossFromGames_x * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: user.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.pureProfit,
-                    threshold: limits.pureLossFromGames,
+                    action: user.pureLossFromGames_x < limits.pureLossFromGames_x ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    value: user.pureLossFromGames_x,
+                    threshold: limits.pureLossFromGames_x,
                     userId: user.userId,
-                    msg: `Detected user #${user.userId} with pure mplr win of x${user.pureProfit} in last 24 hours`,
+                    msg: `Detected user #${user.userId} with pure mplr win of x${user.pureLossFromGames_x} in last 24 hours`,
                     period: {from, to},
                     name: 'users_pureLossFromGames_x',
                 }))

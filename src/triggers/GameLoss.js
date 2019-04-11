@@ -42,11 +42,11 @@ class GameLoss {
         let SQL = `SELECT
                        gameId,
                        SUM(payout)-SUM(bets) AS profit,
-                       SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS profitCapGames,
-                       SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                       SUM(bonusPayout-bonusBets) AS profitBonuses,
-                       SUM(mplr) AS pureProfit
+                       SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS lossFromGames_gbp,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS cappedLossFromGames_gbp,
+                       SUM(jackpotPayout - jackpotBets) AS lossFromJackpots_gbp,
+                       SUM(bonusPayout-bonusBets) AS lossFromBonuses_gbp,
+                       SUM(mplr) AS pureLossFromGames_x
                    FROM user_games_summary_hourly_live
                    LEFT JOIN (
                        SELECT
@@ -58,11 +58,11 @@ class GameLoss {
                    ) h USING (gameId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId
-                   HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
-                       OR profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
-                       OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
-                       OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
-                       OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
+                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp * WARNING_LIMIT}
+                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp * WARNING_LIMIT}
+                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp * WARNING_LIMIT}
+                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp * WARNING_LIMIT}
+                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x * WARNING_LIMIT}
                    `
 
         let found = await db.query(SQL, [from, to, from, to])
@@ -71,62 +71,62 @@ class GameLoss {
     
         let triggers = []
         for (let game of found) {
-            if(game.profitGames >= limits.lossFromGames * WARNING_LIMIT){
-                let action = game.profitGames >= limits.lossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
+            if(game.lossFromGames_gbp >= limits.lossFromGames_gbp * WARNING_LIMIT){
+                let action = game.lossFromGames_gbp >= limits.lossFromGames_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 triggers.push(new Trigger({
                     action: action,
-                    value: game.profitGames,
-                    threshold: limits.lossFromGames,
+                    value: game.lossFromGames_gbp,
+                    threshold: limits.lossFromGames_gbp,
                     gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with net profit of ${game.profitGames} GBP from games in last 24 hours`,
+                    msg: `Detected game #${game.gameId} with net profit of ${game.lossFromGames_gbp} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'games_lossFromGames_gbp',
                 }))
             }
-            if(game.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT){
-                let action = game.profitCapGames >= limits.cappedLossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
+            if(game.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp * WARNING_LIMIT){
+                let action = game.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 triggers.push(new Trigger({
                     action: action,
-                    value: game.profitCapGames,
-                    threshold: limits.cappedLossFromGames,
+                    value: game.cappedLossFromGames_gbp,
+                    threshold: limits.cappedLossFromGames_gbp,
                     gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with capped profit of ${game.profitCapGames} GBP from games in last 24 hours`,
+                    msg: `Detected game #${game.gameId} with capped profit of ${game.cappedLossFromGames_gbp} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'games_cappedLossFromGames_gbp',
                 }))
             }
-            if(game.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
-                let action = game.profitJackpots >= limits.lossFromJackpots ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
+            if(game.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp * WARNING_LIMIT){
+                let action = game.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 triggers.push(new Trigger({
                     action: action,
-                    value: game.profitJackpots,
-                    threshold: limits.lossFromJackpots,
+                    value: game.lossFromJackpots_gbp,
+                    threshold: limits.lossFromJackpots_gbp,
                     gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with net profit of ${game.profitJackpots} GBP from jackpots in last 24 hours`,
+                    msg: `Detected game #${game.gameId} with net profit of ${game.lossFromJackpots_gbp} GBP from jackpots in last 24 hours`,
                     period: {from, to},
                     name: 'games_lossFromJackpots_gbp',
                 }))
             }
-            if(game.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
-                let action = game.profitBonuses >= limits.lossFromBonuses ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
+            if(game.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp * WARNING_LIMIT){
+                let action = game.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 triggers.push(new Trigger({
                     action: action,
-                    value: game.profitBonuses,
-                    threshold: limits.lossFromBonuses,
+                    value: game.lossFromBonuses_gbp,
+                    threshold: limits.lossFromBonuses_gbp,
                     gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with net profit of ${game.profitBonuses} GBP from bonuses in last 24 hours`,
+                    msg: `Detected game #${game.gameId} with net profit of ${game.lossFromBonuses_gbp} GBP from bonuses in last 24 hours`,
                     period: {from, to},
                     name: 'games_lossFromBonuses_gbp',
                 }))
             }
-            if(game.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
-                let action = game.pureProfit >= limits.pureLossFromGames ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
+            if(game.pureLossFromGames_x    >= limits.pureLossFromGames_x * WARNING_LIMIT) {
+                let action = game.pureLossFromGames_x    >= limits.pureLossFromGames_x ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
                 triggers.push(new Trigger({
                     action: action,
-                    value: game.pureProfit,
-                    threshold: limits.pureLossFromGames,
+                    value: game.pureLossFromGames_x   ,
+                    threshold: limits.pureLossFromGames_x,
                     gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with pure mplr win of x${game.pureProfit} in last 24 hours`,
+                    msg: `Detected game #${game.gameId} with pure mplr win of x${game.pureLossFromGames_x   } in last 24 hours`,
                     period: {from, to},
                     name: 'games_pureLossFromGames_x',
                 }))

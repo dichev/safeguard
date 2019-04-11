@@ -49,18 +49,18 @@ class OperatorLoss {
         
         let SQL = `SELECT
                        SUM(payout)-SUM(bets) AS profit,
-                       SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS profitGames,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - ? AS profitCapGames,
-                       SUM(jackpotPayout - jackpotBets) AS profitJackpots,
-                       SUM(bonusPayout-bonusBets) AS profitBonuses,
-                       SUM(mplr) AS pureProfit
+                       SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS lossFromGames_gbp,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - ? AS cappedLossFromGames_gbp,
+                       SUM(jackpotPayout - jackpotBets) AS lossFromJackpots_gbp,
+                       SUM(bonusPayout-bonusBets) AS lossFromBonuses_gbp,
+                       SUM(mplr) AS pureLossFromGames_x
                    FROM user_games_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
-                   HAVING profitGames >= ${limits.lossFromGames * WARNING_LIMIT}
-                       OR profitCapGames >= ${limits.cappedLossFromGames * WARNING_LIMIT}
-                       OR profitJackpots >= ${limits.lossFromJackpots * WARNING_LIMIT}
-                       OR profitBonuses >= ${limits.lossFromBonuses * WARNING_LIMIT}
-                       OR pureProfit >= ${limits.pureLossFromGames * WARNING_LIMIT}
+                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp * WARNING_LIMIT}
+                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp * WARNING_LIMIT}
+                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp * WARNING_LIMIT}
+                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp * WARNING_LIMIT}
+                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x * WARNING_LIMIT}
                    `
         let found = await db.query(SQL, [hugeWins, from, to])
         if (!found.length) return []
@@ -69,52 +69,52 @@ class OperatorLoss {
     
         let triggers = []
         for (let row of found) {
-            if(row.profitGames >= limits.lossFromGames * WARNING_LIMIT){
+            if(row.lossFromGames_gbp >= limits.lossFromGames_gbp * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: row.profitGames < limits.lossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.profitGames,
-                    threshold: limits.lossFromGames,
-                    msg: `Detected operator #${this.operator} with net profit of ${row.profitGames} GBP from games in last 24 hours`,
+                    action: row.lossFromGames_gbp < limits.lossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                    value: row.lossFromGames_gbp,
+                    threshold: limits.lossFromGames_gbp,
+                    msg: `Detected operator #${this.operator} with net profit of ${row.lossFromGames_gbp} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'operators_lossFromGames_gbp',
                 }))
             }
-            if(row.profitCapGames >= limits.cappedLossFromGames * WARNING_LIMIT){
+            if(row.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: row.profitCapGames < limits.cappedLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.profitGames,
-                    threshold: limits.cappedLossFromGames,
-                    msg: `Detected operator #${this.operator} with capped profit of ${row.profitCapGames} GBP from games in last 24 hours`,
+                    action: row.cappedLossFromGames_gbp < limits.cappedLossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                    value: row.lossFromGames_gbp,
+                    threshold: limits.cappedLossFromGames_gbp,
+                    msg: `Detected operator #${this.operator} with capped profit of ${row.cappedLossFromGames_gbp} GBP from games in last 24 hours`,
                     period: {from, to},
                     name: 'operators_cappedLossFromGames_gbp',
                 }))
             }
-            if(row.profitJackpots >= limits.lossFromJackpots * WARNING_LIMIT){
+            if(row.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: row.profitJackpots < limits.lossFromJackpots ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.profitJackpots,
-                    threshold: limits.lossFromJackpots,
-                    msg: `Detected operator #${this.operator} with net profit of ${row.profitJackpots} GBP from jackpots in last 24 hours`,
+                    action: row.lossFromJackpots_gbp < limits.lossFromJackpots_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                    value: row.lossFromJackpots_gbp,
+                    threshold: limits.lossFromJackpots_gbp,
+                    msg: `Detected operator #${this.operator} with net profit of ${row.lossFromJackpots_gbp} GBP from jackpots in last 24 hours`,
                     period: {from, to},
                     name: 'operators_lossFromJackpots_gbp',
                 }))
             }
-            if(row.profitBonuses >= limits.lossFromBonuses * WARNING_LIMIT){
+            if(row.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp * WARNING_LIMIT){
                 triggers.push(new Trigger({
-                    action: row.profitBonuses < limits.lossFromBonuses ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.profitBonuses,
-                    threshold: limits.lossFromBonuses,
-                    msg: `Detected operator #${this.operator} with net profit of ${row.profitBonuses} GBP from bonuses in last 24 hours`,
+                    action: row.lossFromBonuses_gbp < limits.lossFromBonuses_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                    value: row.lossFromBonuses_gbp,
+                    threshold: limits.lossFromBonuses_gbp,
+                    msg: `Detected operator #${this.operator} with net profit of ${row.lossFromBonuses_gbp} GBP from bonuses in last 24 hours`,
                     period: {from, to},
                     name: 'operators_lossFromBonuses_gbp',
                 }))
             }
-            if (row.pureProfit >= limits.pureLossFromGames * WARNING_LIMIT) {
+            if (row.pureLossFromGames_x >= limits.pureLossFromGames_x * WARNING_LIMIT) {
                 triggers.push(new Trigger({
-                    action: row.pureProfit < limits.pureLossFromGames ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: row.pureProfit,
-                    threshold: limits.pureLossFromGames,
-                    msg: `Detected operator #${this.operator} with pure mplr win of x${row.pureProfit} in last 24 hours`,
+                    action: row.pureLossFromGames_x < limits.pureLossFromGames_x ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                    value: row.pureLossFromGames_x,
+                    threshold: limits.pureLossFromGames_x,
+                    msg: `Detected operator #${this.operator} with pure mplr win of x${row.pureLossFromGames_x} in last 24 hours`,
                     period: {from, to},
                     name: 'operators_pureLossFromGames_x',
                 }))
