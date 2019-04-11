@@ -271,7 +271,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -280,7 +280,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromGames_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_users_lossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
@@ -288,17 +288,17 @@
           "target": ""
         },
         {
-          "expr": "500*1000",
+          "expr": "safeguard_users_lossFromGames_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "50*1000",
+          "expr": "safeguard_users_lossFromGames_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -387,7 +387,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -396,7 +396,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromGames_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_games_lossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -404,17 +404,17 @@
           "target": ""
         },
         {
-          "expr": "500*1000",
+          "expr": "safeguard_games_lossFromGames_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "50*1000",
+          "expr": "safeguard_games_lossFromGames_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -501,7 +501,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -510,7 +510,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromGames_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_operators_lossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -518,17 +518,17 @@
           "target": ""
         },
         {
-          "expr": "500*1000",
+          "expr": "safeguard_operators_lossFromGames_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "50*1000",
+          "expr": "safeguard_operators_lossFromGames_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -629,7 +629,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -646,19 +646,17 @@
           "target": ""
         },
         {
-          "expr": "100*1000",
+          "expr": "safeguard_users_cappedLossFromGames_gbp_threshold_block",
           "format": "time_series",
-          "instant": false,
-          "interval": "",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "20*1000",
+          "expr": "safeguard_users_cappedLossFromGames_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -745,7 +743,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -754,7 +752,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_cappedLossFromGames_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_games_cappedLossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{game}} ({{operator}})",
@@ -762,17 +760,17 @@
           "target": ""
         },
         {
-          "expr": "100*1000",
+          "expr": "safeguard_games_cappedLossFromGames_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "20*1000",
+          "expr": "safeguard_games_cappedLossFromGames_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -859,7 +857,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -868,7 +866,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_cappedLossFromGames_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_operators_cappedLossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -876,17 +874,17 @@
           "target": ""
         },
         {
-          "expr": "100*1000",
+          "expr": "safeguard_operators_cappedLossFromGames_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "20*1000",
+          "expr": "safeguard_operators_cappedLossFromGames_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -986,7 +984,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1003,17 +1001,17 @@
           "target": ""
         },
         {
-          "expr": "30000",
+          "expr": "safeguard_users_pureLossFromGames_x_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "8000",
+          "expr": "safeguard_users_pureLossFromGames_x_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1100,7 +1098,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1109,7 +1107,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_pureLossFromGames_x{operator=~\"$operator\"}",
+          "expr": "safeguard_games_pureLossFromGames_x",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -1117,17 +1115,17 @@
           "target": ""
         },
         {
-          "expr": "50000",
+          "expr": "safeguard_games_pureLossFromGames_x_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "8000",
+          "expr": "safeguard_games_pureLossFromGames_x_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1214,7 +1212,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1223,7 +1221,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_pureLossFromGames_x{operator=~\"$operator\"}",
+          "expr": "safeguard_operators_pureLossFromGames_x",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -1231,17 +1229,17 @@
           "target": ""
         },
         {
-          "expr": "30000",
+          "expr": "safeguard_operators_pureLossFromGames_x_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "5000",
+          "expr": "safeguard_operators_pureLossFromGames_x_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1341,7 +1339,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1350,7 +1348,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromJackpots_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_users_lossFromJackpots_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
@@ -1358,17 +1356,17 @@
           "target": ""
         },
         {
-          "expr": "2000*1000",
+          "expr": "safeguard_users_lossFromJackpots_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "100*1000",
+          "expr": "safeguard_users_lossFromJackpots_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1455,7 +1453,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1464,7 +1462,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromJackpots_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_games_lossFromJackpots_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -1472,17 +1470,17 @@
           "target": ""
         },
         {
-          "expr": "2000*1000",
+          "expr": "safeguard_games_lossFromJackpots_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "100*1000",
+          "expr": "safeguard_games_lossFromJackpots_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1569,7 +1567,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1578,7 +1576,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromJackpots_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_operators_lossFromJackpots_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -1586,17 +1584,17 @@
           "target": ""
         },
         {
-          "expr": "2000*1000",
+          "expr": "safeguard_operators_lossFromJackpots_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== blockthreshold ===",
+          "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "100*1000",
+          "expr": "safeguard_operators_lossFromJackpots_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1696,7 +1694,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1705,7 +1703,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromBonuses_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_users_lossFromBonuses_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
@@ -1713,17 +1711,17 @@
           "target": ""
         },
         {
-          "expr": "50*1000",
+          "expr": "safeguard_users_lossFromBonuses_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "500",
+          "expr": "safeguard_users_lossFromBonuses_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1812,7 +1810,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1821,7 +1819,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromBonuses_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_games_lossFromBonuses_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -1829,17 +1827,17 @@
           "target": ""
         },
         {
-          "expr": "50*1000",
+          "expr": "safeguard_games_lossFromBonuses_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 10,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "500",
+          "expr": "safeguard_games_lossFromBonuses_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 10,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -1926,7 +1924,7 @@
           "fill": 0
         },
         {
-          "alias": "=== alert threshold ===",
+          "alias": "=== warn threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1935,7 +1933,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromBonuses_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_operators_lossFromBonuses_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -1943,17 +1941,17 @@
           "target": ""
         },
         {
-          "expr": "50*1000",
+          "expr": "safeguard_operators_lossFromBonuses_gbp_threshold_block",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "500",
+          "expr": "safeguard_operators_lossFromBonuses_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== alert threshold ===",
+          "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
       ],
@@ -2052,7 +2050,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_jackpots_daily_won_same_day{operator=~\"$operator\"}",
+          "expr": "safeguard_jackpots_daily_won_same_day",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{jackpot}}",
