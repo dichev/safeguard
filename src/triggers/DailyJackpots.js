@@ -41,7 +41,7 @@ class DailyJackpots {
                    JOIN _jackpot_config c ON(c.id = h.potId and c.type = 'time')
                    WHERE DATE(timeWon) = DATE(?)
                    GROUP BY potId, DATE(timeWon)
-                   HAVING timedJackpotWonCount >= ${limits.timedJackpotWonCount}`
+                   HAVING timedJackpotWonCount >= ${limits.timedJackpotWonCount.block}`
         
     
         let found = await db.query(SQL, [now])
@@ -52,7 +52,7 @@ class DailyJackpots {
             triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
                 value: pot.timedJackpotWonCount,
-                threshold: limits.timedJackpotWonCount,
+                threshold: limits.timedJackpotWonCount.block,
                 potId: pot.potId,
                 msg: `Daily jackpot won ${pot.timedJackpotWonCount} times same day`,
                 period: now,

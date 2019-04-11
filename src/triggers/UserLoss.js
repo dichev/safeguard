@@ -6,8 +6,6 @@ const Config = require('../config/Config')
 const moment = require('moment')
 const prefix = require('../lib/Utils').prefix
 
-const WARNING_LIMIT = Config.indicators.warningsRatio
-
 class UserLoss {
     
     /**
@@ -55,11 +53,11 @@ class UserLoss {
                    ) h USING (userId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
-                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp * WARNING_LIMIT}
-                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp * WARNING_LIMIT}
-                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp * WARNING_LIMIT}
-                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp * WARNING_LIMIT}
-                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x * WARNING_LIMIT}
+                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp.warn}
+                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp.warn}
+                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp.warn}
+                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp.warn}
+                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x.warn}
                    `
         
     
@@ -73,11 +71,11 @@ class UserLoss {
                 let value = user[metric]
                 let threshold = limits[metric]
                 
-                if (value >= threshold * WARNING_LIMIT) {
+                if (value >= threshold.warn) {
                     triggers.push(new Trigger({
-                        action: value < threshold ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                        action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
                         value: value,
-                        threshold: threshold,
+                        threshold: threshold.block,
                         userId: user.userId,
                         msg: `Detected user #${user.userId} with ${metric} of ${value} in last 24 hours`, //TODO:!
                         period: {from, to},

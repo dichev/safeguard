@@ -6,8 +6,6 @@ const Config = require('../config/Config')
 const moment = require('moment')
 const prefix = require('../lib/Utils').prefix
 
-const WARNING_LIMIT = Config.indicators.warningsRatio
-
 class GameLoss {
     
     /**
@@ -58,11 +56,11 @@ class GameLoss {
                    ) h USING (gameId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId
-                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp * WARNING_LIMIT}
-                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp * WARNING_LIMIT}
-                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp * WARNING_LIMIT}
-                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp * WARNING_LIMIT}
-                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x * WARNING_LIMIT}
+                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp.warn}
+                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp.warn}
+                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp.warn}
+                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp.warn}
+                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x.warn}
                    `
 
         let found = await db.query(SQL, [from, to, from, to])
@@ -75,11 +73,11 @@ class GameLoss {
                 let value = game[metric]
                 let threshold = limits[metric]
         
-                if (value >= threshold * WARNING_LIMIT) {
+                if (value >= threshold.warn) {
                     triggers.push(new Trigger({
-                        action: value < threshold ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT,
+                        action: value < threshold.block ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT,
                         value: value,
-                        threshold: threshold,
+                        threshold: threshold.block,
                         gameName: game.gameId,
                         msg: `Detected game #${game.gameId} with ${metric} of ${value} in last 24 hours`,
                         period: {from, to},

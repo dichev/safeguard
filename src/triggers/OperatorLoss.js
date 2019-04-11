@@ -6,8 +6,6 @@ const Config = require('../config/Config')
 const moment = require('moment')
 const prefix = require('../lib/Utils').prefix
 
-const WARNING_LIMIT = Config.indicators.warningsRatio
-
 class OperatorLoss {
     
     /**
@@ -56,11 +54,11 @@ class OperatorLoss {
                        SUM(mplr) AS pureLossFromGames_x
                    FROM user_games_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
-                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp * WARNING_LIMIT}
-                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp * WARNING_LIMIT}
-                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp * WARNING_LIMIT}
-                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp * WARNING_LIMIT}
-                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x * WARNING_LIMIT}
+                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp.warn}
+                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp.warn}
+                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp.warn}
+                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp.warn}
+                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x.warn}
                    `
         let found = await db.query(SQL, [hugeWins, from, to])
         if (!found.length) return []
@@ -73,11 +71,11 @@ class OperatorLoss {
                 let value = row[metric]
                 let threshold = limits[metric]
         
-                if (value >= threshold * WARNING_LIMIT) {
+                if (value >= threshold.warn) {
                     triggers.push(new Trigger({
-                        action: value < threshold ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                        action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                         value: value,
-                        threshold: threshold,
+                        threshold: threshold.block,
                         msg: `Detected operator #${this.operator} with ${metric} of ${value} in last 24 hours`,
                         period: {from, to},
                         name: `operators_${metric}`
