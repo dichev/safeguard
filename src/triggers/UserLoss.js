@@ -79,7 +79,7 @@ class UserLoss {
                         userId: user.userId,
                         msg: `Detected user #${user.userId} with ${metric} of ${value} in last 24 hours`, //TODO:!
                         period: {from, to},
-                        name: `user_${metric}`
+                        name: `users_${metric}`
                     }))
                 }
             }
