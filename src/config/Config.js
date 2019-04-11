@@ -17,7 +17,7 @@ const Config = {
         
         jackpots: {
             // timed jackpot won 2 times in N minutes
-            timedJackpotWonCount: { block: 2 }
+            timedJackpotWonCount: { block: 2, warn: 2 }
         },
         
         
