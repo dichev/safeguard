@@ -69,65 +69,22 @@ class UserLoss {
     
         let triggers = []
         for (let user of found) {
-            if(user.lossFromGames_gbp >= limits.lossFromGames_gbp * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: user.lossFromGames_gbp < limits.lossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.lossFromGames_gbp,
-                    threshold: limits.lossFromGames_gbp,
-                    userId: user.userId,
-                    msg: `Detected user #${user.userId} with net profit of ${user.lossFromGames_gbp} GBP from games in last 24 hours`,
-                    period: {from, to},
-                    name: 'users_lossFromGames_gbp',
-                }))
+            for (let metric of Object.keys(limits)) {
+                let value = user[metric]
+                let threshold = limits[metric]
+                
+                if (value >= threshold * WARNING_LIMIT) {
+                    triggers.push(new Trigger({
+                        action: value < threshold ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                        value: value,
+                        threshold: threshold,
+                        userId: user.userId,
+                        msg: `Detected user #${user.userId} with ${metric} of ${value} in last 24 hours`, //TODO:!
+                        period: {from, to},
+                        name: `user_${metric}`
+                    }))
+                }
             }
-            
-            if(user.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp * WARNING_LIMIT) {
-                triggers.push(new Trigger({
-                    action: user.cappedLossFromGames_gbp < limits.cappedLossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    userId: user.userId,
-                    value: user.cappedLossFromGames_gbp,
-                    threshold: limits.cappedLossFromGames_gbp,
-                    msg: `Detected user #${user.userId} with capped profit of ${user.cappedLossFromGames_gbp} GBP for last 24 hours`,
-                    period: {from, to},
-                    name: 'users_cappedLossFromGames_gbp',
-                }))
-            }
-            
-            if(user.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: user.lossFromJackpots_gbp < limits.lossFromJackpots_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.lossFromJackpots_gbp,
-                    threshold: limits.lossFromJackpots_gbp,
-                    userId: user.userId,
-                    msg: `Detected user #${user.userId} with net profit of ${user.lossFromJackpots_gbp} GBP from jackpots in last 24 hours`,
-                    period: {from, to},
-                    name: 'users_lossFromJackpots_gbp',
-                }))
-            }
-            if(user.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: user.lossFromBonuses_gbp < limits.lossFromBonuses_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.lossFromBonuses_gbp,
-                    threshold: limits.lossFromBonuses_gbp,
-                    userId: user.userId,
-                    msg: `Detected user #${user.userId} with net profit of ${user.lossFromBonuses_gbp} GBP from bonuses in last 24 hours`,
-                    period: {from, to},
-                    name: 'users_lossFromBonuses_gbp',
-                }))
-            }
-            
-            if(user.pureLossFromGames_x >= limits.pureLossFromGames_x * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: user.pureLossFromGames_x < limits.pureLossFromGames_x ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: user.pureLossFromGames_x,
-                    threshold: limits.pureLossFromGames_x,
-                    userId: user.userId,
-                    msg: `Detected user #${user.userId} with pure mplr win of x${user.pureLossFromGames_x} in last 24 hours`,
-                    period: {from, to},
-                    name: 'users_pureLossFromGames_x',
-                }))
-            }
-    
         }
     
         return triggers

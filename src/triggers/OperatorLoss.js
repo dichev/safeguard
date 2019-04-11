@@ -69,57 +69,21 @@ class OperatorLoss {
     
         let triggers = []
         for (let row of found) {
-            if(row.lossFromGames_gbp >= limits.lossFromGames_gbp * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: row.lossFromGames_gbp < limits.lossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.lossFromGames_gbp,
-                    threshold: limits.lossFromGames_gbp,
-                    msg: `Detected operator #${this.operator} with net profit of ${row.lossFromGames_gbp} GBP from games in last 24 hours`,
-                    period: {from, to},
-                    name: 'operators_lossFromGames_gbp',
-                }))
+            for (let metric of Object.keys(limits)) {
+                let value = row[metric]
+                let threshold = limits[metric]
+        
+                if (value >= threshold * WARNING_LIMIT) {
+                    triggers.push(new Trigger({
+                        action: value < threshold ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                        value: value,
+                        threshold: threshold,
+                        msg: `Detected operator #${this.operator} with ${metric} of ${value} in last 24 hours`,
+                        period: {from, to},
+                        name: `operators_${metric}`
+                    }))
+                }
             }
-            if(row.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: row.cappedLossFromGames_gbp < limits.cappedLossFromGames_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.lossFromGames_gbp,
-                    threshold: limits.cappedLossFromGames_gbp,
-                    msg: `Detected operator #${this.operator} with capped profit of ${row.cappedLossFromGames_gbp} GBP from games in last 24 hours`,
-                    period: {from, to},
-                    name: 'operators_cappedLossFromGames_gbp',
-                }))
-            }
-            if(row.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: row.lossFromJackpots_gbp < limits.lossFromJackpots_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.lossFromJackpots_gbp,
-                    threshold: limits.lossFromJackpots_gbp,
-                    msg: `Detected operator #${this.operator} with net profit of ${row.lossFromJackpots_gbp} GBP from jackpots in last 24 hours`,
-                    period: {from, to},
-                    name: 'operators_lossFromJackpots_gbp',
-                }))
-            }
-            if(row.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp * WARNING_LIMIT){
-                triggers.push(new Trigger({
-                    action: row.lossFromBonuses_gbp < limits.lossFromBonuses_gbp ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
-                    value: row.lossFromBonuses_gbp,
-                    threshold: limits.lossFromBonuses_gbp,
-                    msg: `Detected operator #${this.operator} with net profit of ${row.lossFromBonuses_gbp} GBP from bonuses in last 24 hours`,
-                    period: {from, to},
-                    name: 'operators_lossFromBonuses_gbp',
-                }))
-            }
-            if (row.pureLossFromGames_x >= limits.pureLossFromGames_x * WARNING_LIMIT) {
-                triggers.push(new Trigger({
-                    action: row.pureLossFromGames_x < limits.pureLossFromGames_x ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
-                    value: row.pureLossFromGames_x,
-                    threshold: limits.pureLossFromGames_x,
-                    msg: `Detected operator #${this.operator} with pure mplr win of x${row.pureLossFromGames_x} in last 24 hours`,
-                    period: {from, to},
-                    name: 'operators_pureLossFromGames_x',
-                }))
-            }
-    
         }
     
         return triggers

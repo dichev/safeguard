@@ -71,65 +71,21 @@ class GameLoss {
     
         let triggers = []
         for (let game of found) {
-            if(game.lossFromGames_gbp >= limits.lossFromGames_gbp * WARNING_LIMIT){
-                let action = game.lossFromGames_gbp >= limits.lossFromGames_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                triggers.push(new Trigger({
-                    action: action,
-                    value: game.lossFromGames_gbp,
-                    threshold: limits.lossFromGames_gbp,
-                    gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with net profit of ${game.lossFromGames_gbp} GBP from games in last 24 hours`,
-                    period: {from, to},
-                    name: 'games_lossFromGames_gbp',
-                }))
-            }
-            if(game.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp * WARNING_LIMIT){
-                let action = game.cappedLossFromGames_gbp >= limits.cappedLossFromGames_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                triggers.push(new Trigger({
-                    action: action,
-                    value: game.cappedLossFromGames_gbp,
-                    threshold: limits.cappedLossFromGames_gbp,
-                    gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with capped profit of ${game.cappedLossFromGames_gbp} GBP from games in last 24 hours`,
-                    period: {from, to},
-                    name: 'games_cappedLossFromGames_gbp',
-                }))
-            }
-            if(game.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp * WARNING_LIMIT){
-                let action = game.lossFromJackpots_gbp >= limits.lossFromJackpots_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                triggers.push(new Trigger({
-                    action: action,
-                    value: game.lossFromJackpots_gbp,
-                    threshold: limits.lossFromJackpots_gbp,
-                    gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with net profit of ${game.lossFromJackpots_gbp} GBP from jackpots in last 24 hours`,
-                    period: {from, to},
-                    name: 'games_lossFromJackpots_gbp',
-                }))
-            }
-            if(game.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp * WARNING_LIMIT){
-                let action = game.lossFromBonuses_gbp >= limits.lossFromBonuses_gbp ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                triggers.push(new Trigger({
-                    action: action,
-                    value: game.lossFromBonuses_gbp,
-                    threshold: limits.lossFromBonuses_gbp,
-                    gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with net profit of ${game.lossFromBonuses_gbp} GBP from bonuses in last 24 hours`,
-                    period: {from, to},
-                    name: 'games_lossFromBonuses_gbp',
-                }))
-            }
-            if(game.pureLossFromGames_x    >= limits.pureLossFromGames_x * WARNING_LIMIT) {
-                let action = game.pureLossFromGames_x    >= limits.pureLossFromGames_x ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT
-                triggers.push(new Trigger({
-                    action: action,
-                    value: game.pureLossFromGames_x   ,
-                    threshold: limits.pureLossFromGames_x,
-                    gameName: game.gameId,
-                    msg: `Detected game #${game.gameId} with pure mplr win of x${game.pureLossFromGames_x   } in last 24 hours`,
-                    period: {from, to},
-                    name: 'games_pureLossFromGames_x',
-                }))
+            for (let metric of Object.keys(limits)) {
+                let value = game[metric]
+                let threshold = limits[metric]
+        
+                if (value >= threshold * WARNING_LIMIT) {
+                    triggers.push(new Trigger({
+                        action: value < threshold ? Trigger.actions.BLOCK_GAME : Trigger.actions.ALERT,
+                        value: value,
+                        threshold: threshold,
+                        gameName: game.gameId,
+                        msg: `Detected game #${game.gameId} with ${metric} of ${value} in last 24 hours`,
+                        period: {from, to},
+                        name: `operators_${metric}`
+                    }))
+                }
             }
         }
         
