@@ -69,6 +69,10 @@ class DatabasePool {
         
         if(ssh) await sshClient.connect(ssh)
         await mysqlClient.connect(cfg, sshClient)
+        await mysqlClient.query(`
+            SET SESSION max_heap_table_size  = 1024 * 1024 * 128,
+                SESSION tmp_table_size       = 1024 * 1024 * 128
+        `);
         return {mysqlClient, sshClient }
     }
     
