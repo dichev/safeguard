@@ -25,6 +25,205 @@
         "x": 0,
         "y": 0
       },
+      "id": 35,
+      "panels": [],
+      "title": "Heartbeat",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 0,
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 31,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 3,
+      "points": true,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_tracking",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}}",
+          "refId": "A",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "",
+      "tooltip": {
+        "shared": true,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": false,
+        "values": [
+          "current"
+        ]
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "none",
+          "label": "STATUS",
+          "logBase": 1,
+          "max": "1",
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 0,
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 33,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 3,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_tracking",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}}",
+          "refId": "A",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "",
+      "tooltip": {
+        "shared": true,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": false,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "none",
+          "label": "STATUS",
+          "logBase": 1,
+          "max": "1",
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
       "id": 25,
       "panels": [],
       "title": "Extreme loss in last 24 hours (cumulative, jackpot/bonuses are excluded)",
@@ -35,14 +234,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 1
+        "y": 6
       },
       "id": 5,
       "legend": {
@@ -60,11 +259,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -76,26 +286,23 @@
           "legendFormat": "{{operator}} #{{user}}",
           "refId": "A",
           "target": ""
-        }
-      ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 300000,
-          "yaxis": "left"
         },
         {
-          "colorMode": "ok",
-          "fill": true,
-          "line": true,
-          "op": "lt",
-          "value": 60000,
-          "yaxis": "left"
+          "expr": "500*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "50*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -119,7 +326,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": "0",
+          "min": null,
           "show": true
         },
         {
@@ -141,14 +348,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 1
+        "y": 6
       },
       "id": 10,
       "legend": {
@@ -168,11 +375,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -184,6 +402,20 @@
           "legendFormat": "{{operator}} {{game}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "500*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "50*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -232,14 +464,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 1
+        "y": 6
       },
       "id": 16,
       "legend": {
@@ -257,11 +489,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -273,6 +516,20 @@
           "legendFormat": "{{operator}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "500*1000",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "50*1000",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -322,7 +579,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 6
+        "y": 11
       },
       "id": 23,
       "panels": [],
@@ -334,15 +591,16 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 7
+        "y": 12
       },
+      "hideTimeOverride": false,
       "id": 2,
       "legend": {
         "alignAsTable": false,
@@ -359,42 +617,52 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_cappedLossFromGames_gbp{operator=~\"$operator\"}",
+          "expr": "safeguard_users_cappedLossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
           "refId": "A",
           "target": ""
-        }
-      ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 20000,
-          "yaxis": "left"
         },
         {
-          "colorMode": "ok",
-          "fill": true,
-          "line": true,
-          "op": "lt",
-          "value": 4000,
-          "yaxis": "left"
+          "expr": "100*1000",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "20*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -404,7 +672,6 @@
         "sort": 2,
         "value_type": "individual"
       },
-      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -419,7 +686,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": "0",
+          "min": "10000",
           "show": true
         },
         {
@@ -441,14 +708,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 7
+        "y": 12
       },
       "id": 12,
       "legend": {
@@ -466,11 +733,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -479,9 +757,23 @@
           "expr": "safeguard_games_cappedLossFromGames_gbp{operator=~\"$operator\"}",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} {{game}}",
+          "legendFormat": "{{game}} ({{operator}})",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "100*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "20*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -494,7 +786,6 @@
         "sort": 2,
         "value_type": "individual"
       },
-      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -531,14 +822,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 7
+        "y": 12
       },
       "id": 17,
       "legend": {
@@ -556,11 +847,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -572,6 +874,20 @@
           "legendFormat": "{{operator}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "100*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "20*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -584,7 +900,6 @@
         "sort": 2,
         "value_type": "individual"
       },
-      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -622,7 +937,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 17
       },
       "id": 21,
       "panels": [],
@@ -634,14 +949,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 13
+        "y": 18
       },
       "id": 11,
       "legend": {
@@ -659,42 +974,50 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_pureLossFromGames_x{operator=~\"$operator\"}",
+          "expr": "safeguard_users_pureLossFromGames_x",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{user}}",
           "refId": "A",
           "target": ""
-        }
-      ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "gt",
-          "value": 10000,
-          "yaxis": "left"
         },
         {
-          "colorMode": "ok",
-          "fill": true,
-          "line": true,
-          "op": "lt",
-          "value": 2000,
-          "yaxis": "left"
+          "expr": "30000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "8000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -718,7 +1041,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": "0",
+          "min": "7000",
           "show": true
         },
         {
@@ -740,14 +1063,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 13
+        "y": 18
       },
       "id": 3,
       "legend": {
@@ -765,11 +1088,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -781,6 +1115,20 @@
           "legendFormat": "{{operator}} {{game}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "50000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "8000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -829,14 +1177,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 13
+        "y": 18
       },
       "id": 18,
       "legend": {
@@ -854,11 +1202,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -870,6 +1229,20 @@
           "legendFormat": "{{operator}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "30000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "5000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -919,7 +1292,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 23
       },
       "id": 27,
       "panels": [],
@@ -931,14 +1304,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 19
+        "y": 24
       },
       "id": 4,
       "legend": {
@@ -956,11 +1329,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -972,6 +1356,20 @@
           "legendFormat": "{{operator}} #{{user}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "2000*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "100*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -1020,14 +1418,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 19
+        "y": 24
       },
       "id": 13,
       "legend": {
@@ -1045,11 +1443,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -1061,6 +1470,20 @@
           "legendFormat": "{{operator}} {{game}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "2000*1000",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "100*1000",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -1109,14 +1532,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 19
+        "y": 24
       },
       "id": 19,
       "legend": {
@@ -1134,11 +1557,22 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -1150,6 +1584,20 @@
           "legendFormat": "{{operator}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "2000*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== blockthreshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "100*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -1199,7 +1647,364 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 29
+      },
+      "id": 37,
+      "panels": [],
+      "title": "[IN DEV] Extreme loss in last 24 hours from bonuses",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 30
+      },
+      "id": 38,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_users_lossFromBonuses_gbp{operator=~\"$operator\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} #{{user}}",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "50*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "500",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "bonuses loss from users",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 30
+      },
+      "id": 39,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": false,
+        "sideWidth": null,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_games_lossFromBonuses_gbp{operator=~\"$operator\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} {{game}}",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "50*1000",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "500",
+          "format": "time_series",
+          "intervalFactor": 10,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "bonuses loss from games",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 30
+      },
+      "id": 40,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== alert threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_operators_lossFromBonuses_gbp{operator=~\"$operator\"}",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}}",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "50*1000",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "500",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== alert threshold ===",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "bonuses loss from operators",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 35
       },
       "id": 29,
       "panels": [],
@@ -1211,14 +2016,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": "Safeguard",
       "description": "",
       "fill": 1,
       "gridPos": {
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 25
+        "y": 36
       },
       "id": 30,
       "legend": {
@@ -1236,6 +2041,7 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
+      "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -1295,102 +2101,10 @@
         "align": false,
         "alignLevel": null
       }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Prometheus",
-      "description": "",
-      "fill": 0,
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 8,
-        "y": 25
-      },
-      "id": 31,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": false,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null as zero",
-      "percentage": false,
-      "pointradius": 3,
-      "points": true,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_tracking",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}}",
-          "refId": "A",
-          "target": ""
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Safeguard Heartbeats",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "series",
-        "name": null,
-        "show": false,
-        "values": [
-          "current"
-        ]
-      },
-      "yaxes": [
-        {
-          "decimals": 0,
-          "format": "none",
-          "label": "STATUS",
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
     }
   ],
-  "refresh": "1m",
-  "schemaVersion": 16,
+  "refresh": false,
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1398,14 +2112,15 @@
       {
         "allValue": null,
         "current": {
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
-        "datasource": "Prometheus",
+        "datasource": "Safeguard",
         "definition": "label_values(safeguard_tracking, operator)",
         "hide": 0,
         "includeAll": true,
-        "label": null,
+        "label": "Operator",
         "multi": true,
         "name": "operator",
         "options": [],
@@ -1423,7 +2138,7 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
@@ -1451,8 +2166,8 @@
       "30d"
     ]
   },
-  "timezone": "",
+  "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 1
+  "version": 43
 }

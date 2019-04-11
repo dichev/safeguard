@@ -11,7 +11,7 @@ docker-compose up
 ```
 
 In browser go to:
-- **Grafana:** [http://localhost:3000](http://localhost:3000) (admin : admin) - look for SafeGuard dashboard
+- **Grafana:** [http://localhost:4444](http://localhost:3000) (admin : admin) - look for SafeGuard dashboard
 - **Prometheus:** [http://localhost:9090/graph](http://localhost:9090/graph)
 
 ```bash
@@ -22,6 +22,6 @@ When this script is stopped it will destroy the container automatically (it's in
 
 ### Metrics source
 ```
-curl http://localhost:3000/heartbeat
-curl http://localhost:3000/metrics
+curl http://localhost:4444/heartbeat
+curl http://localhost:4444/metrics
 ```
