@@ -290,14 +290,14 @@
         {
           "expr": "safeguard_users_lossFromGames_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_users_lossFromGames_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -406,14 +406,14 @@
         {
           "expr": "safeguard_games_lossFromGames_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_games_lossFromGames_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -648,14 +648,14 @@
         {
           "expr": "safeguard_users_cappedLossFromGames_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_users_cappedLossFromGames_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -762,14 +762,14 @@
         {
           "expr": "safeguard_games_cappedLossFromGames_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_games_cappedLossFromGames_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -876,14 +876,14 @@
         {
           "expr": "safeguard_operators_cappedLossFromGames_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_operators_cappedLossFromGames_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -1003,14 +1003,14 @@
         {
           "expr": "safeguard_users_pureLossFromGames_x_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_users_pureLossFromGames_x_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -1117,14 +1117,14 @@
         {
           "expr": "safeguard_games_pureLossFromGames_x_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_games_pureLossFromGames_x_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -1231,14 +1231,14 @@
         {
           "expr": "safeguard_operators_pureLossFromGames_x_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_operators_pureLossFromGames_x_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -1358,14 +1358,14 @@
         {
           "expr": "safeguard_users_lossFromJackpots_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_users_lossFromJackpots_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -1586,14 +1586,14 @@
         {
           "expr": "safeguard_operators_lossFromJackpots_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_operators_lossFromJackpots_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -1713,14 +1713,14 @@
         {
           "expr": "safeguard_users_lossFromBonuses_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_users_lossFromBonuses_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
@@ -1829,14 +1829,14 @@
         {
           "expr": "safeguard_games_lossFromBonuses_gbp_threshold_block",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
           "expr": "safeguard_games_lossFromBonuses_gbp_threshold_warn",
           "format": "time_series",
-          "intervalFactor": 10,
+          "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
           "refId": "C"
         }
