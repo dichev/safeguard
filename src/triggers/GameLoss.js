@@ -81,7 +81,7 @@ class GameLoss {
                         gameName: game.gameId,
                         msg: `Detected game #${game.gameId} with ${metric} of ${value} in last 24 hours`,
                         period: {from, to},
-                        name: `operators_${metric}`
+                        name: `games_${metric}`
                     }))
                 }
             }
