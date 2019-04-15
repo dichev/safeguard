@@ -1,11 +1,16 @@
 'use strict'
 
+const Config = require('../config/Config')
+
+const pool = []
+
 class Metrics {
     
     constructor(operator) {
         this.operator = operator
         this.metrics = {}
         this.metrics[`safeguard_tracking{operator="${this.operator}"}`] = { value: 1, time: Date.now() }
+        pool.push(this)
     }
     
     
@@ -52,6 +57,26 @@ class Metrics {
             output += `${metric} ${value}\n`
         }
         // console.log(output)
+        return output
+    }
+    
+    static exportAll() {
+        let output = ''
+        
+        // export thresholds
+        for (let type in Config.limits) {
+            for (let name in Config.limits[type]) {
+                let {warn, block} = Config.limits[type][name]
+                output += `safeguard_${type}_${name}_threshold_warn ${warn}\n`
+                output += `safeguard_${type}_${name}_threshold_block ${block}\n`
+            }
+        }
+    
+        // export metrics by operator
+        for (let metrics of pool) {
+            output += metrics.export()
+        }
+        
         return output
     }
     

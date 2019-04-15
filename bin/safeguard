@@ -37,7 +37,6 @@ program
     let guards = []
     for (let operator of operators) {
         let guard = new Safeguard(operator)
-        if(server) server.addMetrics(() => guard.metrics())
         guards.push(guard)
     }
     
