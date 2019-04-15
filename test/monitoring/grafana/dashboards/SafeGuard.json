@@ -2101,39 +2101,12 @@
       }
     }
   ],
-  "refresh": false,
-  "schemaVersion": 18,
+  "refresh": "5s",
+  "schemaVersion": 16,
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": [
-      {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "Safeguard",
-        "definition": "label_values(safeguard_tracking, operator)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Operator",
-        "multi": true,
-        "name": "operator",
-        "options": [],
-        "query": "label_values(safeguard_tracking, operator)",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      }
-    ]
+    "list": []
   },
   "time": {
     "from": "now-7d",
