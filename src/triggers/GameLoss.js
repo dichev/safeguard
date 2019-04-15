@@ -44,6 +44,8 @@ class GameLoss {
                        SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS cappedLossFromGames_gbp,
                        SUM(jackpotPayout - jackpotBets) AS lossFromJackpots_gbp,
                        SUM(bonusPayout-bonusBets) AS lossFromBonuses_gbp,
+                       SUM(bonusBets) AS lossFromBonuses_bets_gbp,
+                       SUM(bonusPayout) AS lossFromBonuses_pays_gbp,
                        SUM(mplr) AS pureLossFromGames_x
                    FROM user_games_summary_hourly_live
                    LEFT JOIN (
@@ -56,11 +58,13 @@ class GameLoss {
                    ) h USING (gameId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY gameId
-                   HAVING lossFromGames_gbp       >= ${limits.lossFromGames_gbp.warn}
-                       OR cappedLossFromGames_gbp >= ${limits.cappedLossFromGames_gbp.warn}
-                       OR lossFromJackpots_gbp    >= ${limits.lossFromJackpots_gbp.warn}
-                       OR lossFromBonuses_gbp     >= ${limits.lossFromBonuses_gbp.warn}
-                       OR pureLossFromGames_x     >= ${limits.pureLossFromGames_x.warn}
+                   HAVING lossFromGames_gbp        >= ${limits.lossFromGames_gbp.warn}
+                       OR cappedLossFromGames_gbp  >= ${limits.cappedLossFromGames_gbp.warn}
+                       OR lossFromJackpots_gbp     >= ${limits.lossFromJackpots_gbp.warn}
+                       OR lossFromBonuses_gbp      >= ${limits.lossFromBonuses_gbp.warn}
+                       OR lossFromBonuses_bets_gbp >= ${limits.lossFromBonuses_bets_gbp.warn}
+                       OR lossFromBonuses_pays_gbp >= ${limits.lossFromBonuses_pays_gbp.warn}
+                       OR pureLossFromGames_x      >= ${limits.pureLossFromGames_x.warn}
                    `
 
         let found = await db.query(SQL, [from, to, from, to])

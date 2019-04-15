@@ -1997,12 +1997,378 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 35
+      },
+      "id": 41,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== warn threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_users_lossFromBonuses_pays_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} #{{user}} (bonus pays)",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "safeguard_users_lossFromBonuses_pays_gbp_threshold_block",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "safeguard_users_lossFromBonuses_pays_gbp_threshold_warn",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== warn threshold ===",
+          "refId": "C"
+        },
+        {
+          "expr": "safeguard_users_lossFromBonuses_bets_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} #{{user}} (bonus bets)",
+          "refId": "D",
+          "target": ""
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "bonuses loss from users",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 35
+      },
+      "id": 42,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": true,
+        "min": false,
+        "rightSide": true,
+        "show": false,
+        "sideWidth": null,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== warn threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_games_lossFromBonuses_pays_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} {{game}} (bonus pays)",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "safeguard_games_lossFromBonuses_pays_gbp_threshold_block",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "safeguard_games_lossFromBonusespays_gbp_threshold_warn",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== warn threshold ===",
+          "refId": "C"
+        },
+        {
+          "expr": "safeguard_games_lossFromBonuses_bets_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} {{game}} (bonus bets)",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "bonuses loss from games",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 35
+      },
+      "id": 43,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== warn threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_operators_lossFromBonuses_pays_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} (bonus pays)",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "safeguard_operators_lossFromBonuses_pays_gbp_threshold_block",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "safeguard_operators_lossFromBonuses_pays_gbp_threshold_warn",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== warn threshold ===",
+          "refId": "C"
+        },
+        {
+          "expr": "safeguard_operators_lossFromBonuses_bets_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} (bonus bets)",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "bonuses loss from operators",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 40
       },
       "id": 29,
       "panels": [],
@@ -2021,7 +2387,7 @@
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 36
+        "y": 41
       },
       "id": 30,
       "legend": {
@@ -2109,7 +2475,7 @@
     "list": []
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -2140,5 +2506,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 43
+  "version": 35
 }

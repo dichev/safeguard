@@ -33,6 +33,8 @@ const Config = {
             
             // £100,000 from bonuses for last 24 hours
             lossFromBonuses_gbp: { block: 50000, warn: 500 }, // GBP //TODO: better check the total sum(bonusPayout) exceed 500k
+            lossFromBonuses_bets_gbp: { block: 1000, warn: 100 }, // GBP
+            lossFromBonuses_pays_gbp: { block: 10000, warn: 1000 }, // GBP
             
             // TODO: there are 2 cayetano games with maxMplr = 50000
             pureLossFromGames_x: { block: 30000, warn: 8000} // as multiplier //TODO: rename to mplr
@@ -54,6 +56,8 @@ const Config = {
             
             // £100,000 from bonuses for last 24 hours
             lossFromBonuses_gbp: { block: 50000, warn: 500 }, // GBP
+            lossFromBonuses_bets_gbp: { block: 100000, warn: 10000 }, // GBP
+            lossFromBonuses_pays_gbp: { block: 100000, warn: 10000 }, // GBP
     
             pureLossFromGames_x: { block: 50000, warn: 8000}  // as multiplier
         },
@@ -70,6 +74,8 @@ const Config = {
             
             // £100,000 from bonuses for last 24 hours
             lossFromBonuses_gbp: { block: 50000, warn: 500 }, // GBP
+            lossFromBonuses_bets_gbp: { block: 150000, warn: 20000 }, // GBP
+            lossFromBonuses_pays_gbp: { block: 150000, warn: 20000 }, // GBP
     
             pureLossFromGames_x: { block: 30000, warn: 5000} // as multiplier
         },
