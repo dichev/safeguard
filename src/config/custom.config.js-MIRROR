@@ -10,21 +10,24 @@ const PASS = cfg.access.mysql.readOnly.password
 
 let operators = {}
 for(let operator of Object.values(cfg.operators)){
-    const SSH = { host: cfg.databases[cfg.operators[operator.name].databases].backups,  username: 'dopamine',  agent: 'pageant',  agentForward: true }
+    const databases = cfg.databases[cfg.operators[operator.name].databases].backups
+    const SSH = { host: databases.master,  username: 'dopamine',  agent: 'pageant',  agentForward: true }
+
     operators[operator.name] = {
-        platform:    { database: operator.dbPrefix + 'platform',    host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        demo:        { database: operator.dbPrefix + 'demo',        host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        panel:       { database: operator.dbPrefix + 'panel',       host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        jackpot:     { database: operator.dbPrefix + 'jackpot',     host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        stats:       { database: operator.dbPrefix + 'stats',       host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        segments:    { database: operator.dbPrefix + 'segments',    host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        tournaments: { database: operator.dbPrefix + 'tournaments', host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        rewards:     { database: operator.dbPrefix + 'rewards',     host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
-        bonus:       { database: operator.dbPrefix + 'bonus',       host: HOST,  user: USER,   password: PASS,   ssh: SSH  },
+        platform:    { database: operator.dbPrefix + 'platform',    host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        demo:        { database: operator.dbPrefix + 'demo',        host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        panel:       { database: operator.dbPrefix + 'panel',       host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        jackpot:     { database: operator.dbPrefix + 'jackpot',     host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        stats:       { database: operator.dbPrefix + 'stats',       host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        segments:    { database: operator.dbPrefix + 'segments',    host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        tournaments: { database: operator.dbPrefix + 'tournaments', host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        rewards:     { database: operator.dbPrefix + 'rewards',     host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
+        bonus:       { database: operator.dbPrefix + 'bonus',       host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
     }
 
     if(operator.sharedJackpot) {
-        operators[operator.name]['jackpot'].database = operator.sharedJackpot // Only betfairmars/paddymars AND pokerstars/pokerstars-dk have shared jackpot database.
+        operators[operator.name]['jackpot'].database = operator.sharedJackpot
+        operators[operator.name]['jackpot'].ssh = { host: databases.jackpots, username: 'dopamine',  agent: 'pageant',  agentForward: true }
     }
 }
 

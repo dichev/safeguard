@@ -25,7 +25,9 @@ for(let operator of OPERATORS){
     }
 
     if (operator.db.sharedJackpot) {
-        operators[operator.name]['jackpot'].database = operator.db.sharedJackpot // Only betfairmars/paddymars AND pokerstars/pokerstars-dk have shared jackpot database.
+        operators[operator.name]['jackpot'].database = operator.db.sharedJackpot
+        operators[operator.name]['jackpot'].host = operator.db.sharedJackpotHost
+
     }
 }
 
