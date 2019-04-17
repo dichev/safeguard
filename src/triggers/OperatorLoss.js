@@ -31,7 +31,7 @@ class OperatorLoss {
     }
 
     async testLimits(from, to){
-        const limits = Config.limits.operators
+        const thresholds = Config.thresholds.operators
         const indicators = Config.indicators
         
         // from platform
@@ -55,12 +55,12 @@ class OperatorLoss {
                        SUM(mplr) AS pureLossFromGames_x
                    FROM user_games_summary_hourly_live
                    WHERE (period BETWEEN ? AND ?)
-                   HAVING lossFromGames_gbp        >= ${limits.lossFromGames_gbp.warn}
-                       OR cappedLossFromGames_gbp  >= ${limits.cappedLossFromGames_gbp.warn}
-                       OR lossFromJackpots_gbp     >= ${limits.lossFromJackpots_gbp.warn}
-                       OR lossFromBonuses_bets_gbp >= ${limits.lossFromBonuses_bets_gbp.warn}
-                       OR lossFromBonuses_pays_gbp >= ${limits.lossFromBonuses_pays_gbp.warn}
-                       OR pureLossFromGames_x      >= ${limits.pureLossFromGames_x.warn}
+                   HAVING lossFromGames_gbp        >= ${thresholds.lossFromGames_gbp.warn}
+                       OR cappedLossFromGames_gbp  >= ${thresholds.cappedLossFromGames_gbp.warn}
+                       OR lossFromJackpots_gbp     >= ${thresholds.lossFromJackpots_gbp.warn}
+                       OR lossFromBonuses_bets_gbp >= ${thresholds.lossFromBonuses_bets_gbp.warn}
+                       OR lossFromBonuses_pays_gbp >= ${thresholds.lossFromBonuses_pays_gbp.warn}
+                       OR pureLossFromGames_x      >= ${thresholds.pureLossFromGames_x.warn}
                    `
         let found = await db.query(SQL, [hugeWins, from, to])
         if (!found.length) return []
@@ -69,9 +69,9 @@ class OperatorLoss {
     
         let triggers = []
         for (let row of found) {
-            for (let metric of Object.keys(limits)) {
+            for (let metric of Object.keys(thresholds)) {
                 let value = row[metric]
-                let threshold = limits[metric]
+                let threshold = thresholds[metric]
         
                 if (value >= threshold.warn) {
                     triggers.push(new Trigger({

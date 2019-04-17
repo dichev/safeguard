@@ -64,9 +64,9 @@ class Metrics {
         let output = ''
         
         // export thresholds
-        for (let type in Config.limits) {
-            for (let name in Config.limits[type]) {
-                let {warn, block} = Config.limits[type][name]
+        for (let type in Config.thresholds) {
+            for (let name in Config.thresholds[type]) {
+                let {warn, block} = Config.thresholds[type][name]
                 output += `safeguard_${type}_${name}_threshold_warn ${warn}\n`
                 output += `safeguard_${type}_${name}_threshold_block ${block}\n`
             }

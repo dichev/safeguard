@@ -9,75 +9,49 @@ const Config = {
     
     
     indicators: {
-        hugeWinIsAbove: 1000 // GBP //TODO: remove it
+        hugeWinIsAbove: 1000 //TODO: remove it
     },
     
-    
-    limits: {
+    thresholds: {
         
         jackpots: {
-            // timed jackpot won 2 times in N minutes
-            timedJackpotWonCount: { block: 2, warn: 2 }
+            timedJackpotWonCount:     { block: 2, warn: 2 }
         },
-        
         
         users: {
-            //'£500,000 from games for last 24 hours'
-            lossFromGames_gbp: { block: 500000, warn: 50000 }, // GBP
-            
-            // £10,000 from games for last 24 hours excluding wins above £10,000',
-            cappedLossFromGames_gbp: { block: 100000, warn: 20000, capWinsAbove: 1000 }, // GBP
-            
-            // £2,000,000 from jackpots for last 24 hours
-            lossFromJackpots_gbp: { block: 2000000, warn: 100000 }, // GBP //TODO: alert when jackpot seed is above 900k
-            
-            // £100,000 from bonuses for last 24 hours
-            lossFromBonuses_bets_gbp: { block: 10000, warn: 1000 }, // GBP //TODO: limit bonus pays in platform?
-            lossFromBonuses_pays_gbp: { block: 10000, warn: 1000 }, // GBP
-            
-            // TODO: there are 2 cayetano games with maxMplr = 50000
-            pureLossFromGames_x: { block: 30000, warn: 8000} // as multiplier //TODO: rename to mplr
-            
-            //TODO: cappedPureLossFromGames
+            lossFromGames_gbp:        { block:  500000, warn:  50000 },
+            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000 },
+            lossFromJackpots_gbp:     { block: 2000000, warn: 100000 },
+            lossFromBonuses_bets_gbp: { block:   10000, warn:   1000 },
+            lossFromBonuses_pays_gbp: { block:   10000, warn:   1000 },
+            pureLossFromGames_x:      { block:   30000, warn:   8000 },
         },
         
-        
-        
         games: {
-            //'£500,000 from the game for last 24 hours'
-            lossFromGames_gbp: { block: 500000, warn: 50000 }, // GBP
-            
-            // £10,000 from the game for last 24 hours excluding wins above £10,000',
-            cappedLossFromGames_gbp: { block: 100000, warn: 20000, capWinsAbove: 1000 }, // GBP //TODO: grrr bonus collect is tracked as payout
-            
-            // £2,000,000 from jackpots for last 24 hours
-            lossFromJackpots_gbp: { block: 2000000, warn: 100000 }, // GBP
-            
-            // £100,000 from bonuses for last 24 hours
-            lossFromBonuses_bets_gbp: { block: 100000, warn: 20000 }, // GBP
-            lossFromBonuses_pays_gbp: { block: 100000, warn: 20000 }, // GBP
-    
-            pureLossFromGames_x: { block: 50000, warn: 8000}  // as multiplier
+            lossFromGames_gbp:        { block:  500000, warn:  50000 },
+            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000 },
+            lossFromJackpots_gbp:     { block: 2000000, warn: 100000 },
+            lossFromBonuses_bets_gbp: { block:  100000, warn:  20000 },
+            lossFromBonuses_pays_gbp: { block:  100000, warn:  20000 },
+            pureLossFromGames_x:      { block:   50000, warn:   8000 },
         },
         
         operators: {
-            //'£500,000 from the game for last 24 hours'
-            lossFromGames_gbp: { block: 500000, warn: 50000 }, // GBP
-            
-            // £10,000 from the game for last 24 hours excluding wins above £10,000',
-            cappedLossFromGames_gbp: { block: 100000, warn: 20000, capWinsAbove: 1000 }, // GBP
-            
-            // £2,000,000 from jackpots for last 24 hours
-            lossFromJackpots_gbp: { block: 2000000, warn: 100000 }, // GBP
-            
-            // £100,000 from bonuses for last 24 hours
-            lossFromBonuses_bets_gbp: { block: 150000, warn: 30000 }, // GBP
-            lossFromBonuses_pays_gbp: { block: 150000, warn: 30000 }, // GBP
-    
-            pureLossFromGames_x: { block: 30000, warn: 5000} // as multiplier
+            lossFromGames_gbp:        { block:  500000, warn:  50000 },
+            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000 },
+            lossFromJackpots_gbp:     { block: 2000000, warn: 100000 },
+            lossFromBonuses_bets_gbp: { block:  150000, warn:  30000 },
+            lossFromBonuses_pays_gbp: { block:  150000, warn:  30000 },
+            pureLossFromGames_x:      { block:   30000, warn:   5000 },
         },
-        
-        
+    
+    
+        //TODO: alert when jackpot seed is above 900k
+        //TODO: limit bonus pays in platform?
+        //TODO: there are 2 cayetano games with maxMplr = 50000
+        //TODO: rename pureLoss to mplr
+        //TODO: cappedPureLossFromGames
+        //TODO: grrr bonus collect is tracked as payout
     },
     
     

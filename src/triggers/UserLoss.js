@@ -30,7 +30,7 @@ class UserLoss {
     }
 
     async testLimits(from, to){
-        const limits = Config.limits.users
+        const thresholds = Config.thresholds.users
         const indicators = Config.indicators
         
         let db = await Database.getSegmentsInstance(this.operator)
@@ -54,12 +54,12 @@ class UserLoss {
                    ) h USING (userId)
                    WHERE (period BETWEEN ? AND ?)
                    GROUP BY userId
-                   HAVING lossFromGames_gbp        >= ${limits.lossFromGames_gbp.warn}
-                       OR cappedLossFromGames_gbp  >= ${limits.cappedLossFromGames_gbp.warn}
-                       OR lossFromJackpots_gbp     >= ${limits.lossFromJackpots_gbp.warn}
-                       OR lossFromBonuses_bets_gbp >= ${limits.lossFromBonuses_bets_gbp.warn}
-                       OR lossFromBonuses_pays_gbp >= ${limits.lossFromBonuses_pays_gbp.warn}
-                       OR pureLossFromGames_x      >= ${limits.pureLossFromGames_x.warn}
+                   HAVING lossFromGames_gbp        >= ${thresholds.lossFromGames_gbp.warn}
+                       OR cappedLossFromGames_gbp  >= ${thresholds.cappedLossFromGames_gbp.warn}
+                       OR lossFromJackpots_gbp     >= ${thresholds.lossFromJackpots_gbp.warn}
+                       OR lossFromBonuses_bets_gbp >= ${thresholds.lossFromBonuses_bets_gbp.warn}
+                       OR lossFromBonuses_pays_gbp >= ${thresholds.lossFromBonuses_pays_gbp.warn}
+                       OR pureLossFromGames_x      >= ${thresholds.pureLossFromGames_x.warn}
                    `
         
     
@@ -69,9 +69,9 @@ class UserLoss {
     
         let triggers = []
         for (let user of found) {
-            for (let metric of Object.keys(limits)) {
+            for (let metric of Object.keys(thresholds)) {
                 let value = user[metric]
-                let threshold = limits[metric]
+                let threshold = thresholds[metric]
                 
                 if (value >= threshold.warn) {
                     triggers.push(new Trigger({

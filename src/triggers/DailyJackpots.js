@@ -29,7 +29,7 @@ class DailyJackpots {
     }
     
     async testDailyJackpotWonTwoTimeSameDay(now){
-        const limits = Config.limits.jackpots
+        const thresholds = Config.thresholds.jackpots
     
         let db = await Database.getJackpotInstance(this.operator)
     
@@ -41,7 +41,7 @@ class DailyJackpots {
                    JOIN _jackpot_config c ON(c.id = h.potId and c.type = 'time')
                    WHERE DATE(timeWon) = DATE(?)
                    GROUP BY potId, DATE(timeWon)
-                   HAVING timedJackpotWonCount >= ${limits.timedJackpotWonCount.block}`
+                   HAVING timedJackpotWonCount >= ${thresholds.timedJackpotWonCount.block}`
         
     
         let found = await db.query(SQL, [now])
@@ -52,7 +52,7 @@ class DailyJackpots {
             triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
                 value: pot.timedJackpotWonCount,
-                threshold: limits.timedJackpotWonCount.block,
+                threshold: thresholds.timedJackpotWonCount.block,
                 potId: pot.potId,
                 msg: `Daily jackpot won ${pot.timedJackpotWonCount} times same day`,
                 period: now,
