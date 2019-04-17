@@ -10,7 +10,7 @@ const Config = {
     thresholds: {
         
         jackpots: {
-            timedJackpotWonCount:     { block: 2, warn: 2 }
+            timedJackpotWonCount:     { block: 2, warn: 1.1 }
         },
         
         users: {

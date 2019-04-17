@@ -2257,6 +2257,10 @@
           "alias": "=== block threshold ===",
           "color": "#bf1b00",
           "fill": 0
+        },
+        {
+          "alias": "=== warn threshold ===",
+          "color": "#508642"
         }
       ],
       "spaceLength": 10,
@@ -2277,6 +2281,13 @@
           "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
+        },
+        {
+          "expr": "safeguard_jackpots_timedJackpotWonCount_threshold_warn",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== warn threshold ===",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -2361,5 +2372,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 45
+  "version": 46
 }
