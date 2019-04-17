@@ -78,7 +78,7 @@ class UserLoss {
                         value: value,
                         threshold: threshold.block,
                         userId: user.userId,
-                        msg: `Detected user #${user.userId} with ${metric} of ${value} in last 24 hours`, //TODO:!
+                        msg: `Detected user #${user.userId} with ${metric} of ${value} in last 24 hours`,
                         period: {from, to},
                         name: `users_${metric}`
                     }))

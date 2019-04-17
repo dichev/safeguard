@@ -17,8 +17,9 @@ CREATE TABLE IF NOT EXISTS `alerts` (
   `gameName` varchar(100) DEFAULT NULL,
   `details` json DEFAULT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE IF NOT EXISTS `blocked` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -33,8 +34,9 @@ CREATE TABLE IF NOT EXISTS `blocked` (
   `gameName` varchar(100) DEFAULT NULL,
   `details` json DEFAULT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
@@ -44,8 +46,10 @@ CREATE TABLE IF NOT EXISTS `log` (
   `timeStarted` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `timeEnded` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `timeStarted` (`timeStarted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `timeStarted` (`timeStarted`),
+  KEY `status` (`status`),
+  KEY `operator_timeStarted` (`operator`,`timeStarted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

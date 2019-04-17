@@ -75,6 +75,8 @@ class SafeGuard {
         let result = { alerts: 0, blocked: 0 }
         let startAt = Date.now()
         try {
+            let logs = await this.log.history()
+            if(logs.length) logs.map(log => this._metrics.collectLogs(log))
             for (let test of this.tests) {
                 let triggers = await test.exec()
                 for(let trigger of triggers) {
@@ -87,10 +89,10 @@ class SafeGuard {
             
             let duration = Date.now() - startAt
             if(duration > Config.logs.warnIfDurationAbove) {
-                await this.log.warn({msg: `Too long execution time: ${duration}ms`, result}, startAt)
+                await this.log.warn({msg: `Too long execution time (above ${Config.logs.warnIfDurationAbove}ms)`, duration: `${duration}ms`}, startAt)
             }
         } catch (err) {
-            await this.log.error(err, startAt)
+            await this.log.error({ msg: err.toString() }, startAt)
             throw err
         }
 
@@ -134,7 +136,7 @@ class SafeGuard {
         }
     
         await this.alerts.notify(trigger, isBlocked)
-        this._metrics.collect(trigger)
+        this._metrics.collectTrigger(trigger)
     }
     
     /*

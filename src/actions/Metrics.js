@@ -17,7 +17,7 @@ class Metrics {
     /**
      * @param {Trigger} trigger
      */
-    collect(trigger){
+    collectTrigger(trigger){
         let name = ''
         if(trigger.userId){
             name = `safeguard_${trigger.name}{operator="${this.operator}",user="${trigger.userId}"}`
@@ -32,6 +32,17 @@ class Metrics {
             name = `safeguard_${trigger.name}{operator="${this.operator}"}`
         }
         this.metrics[name] = { value: trigger.value, time: Date.now() }
+    }
+    
+    /**
+     * @param options
+     * @param {int} options.count
+     * @param {string} options.status
+     * @param {msg} options.msg
+     * @retunr Array
+     */
+    collectLogs({ count, status, msg }){
+        this.metrics[`safeguard_logs_${status.toLowerCase()}{operator="${this.operator}",msg="${msg}"}`] = { value: count, time: Date.now() }
     }
     
     /**
