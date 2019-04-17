@@ -1666,350 +1666,6 @@
         "x": 0,
         "y": 30
       },
-      "id": 38,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "=== block threshold ===",
-          "color": "#C4162A",
-          "fill": 0
-        },
-        {
-          "alias": "=== warn threshold ===",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_users_lossFromBonuses_gbp",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}} #{{user}}",
-          "refId": "A",
-          "target": ""
-        },
-        {
-          "expr": "safeguard_users_lossFromBonuses_gbp_threshold_block",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== block threshold ===",
-          "refId": "B"
-        },
-        {
-          "expr": "safeguard_users_lossFromBonuses_gbp_threshold_warn",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
-          "refId": "C"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "bonuses loss from users",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "currencyGBP",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Safeguard",
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 8,
-        "y": 30
-      },
-      "id": 39,
-      "legend": {
-        "alignAsTable": true,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": false,
-        "sideWidth": null,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "=== block threshold ===",
-          "color": "#C4162A",
-          "fill": 0
-        },
-        {
-          "alias": "=== warn threshold ===",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_games_lossFromBonuses_gbp",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}} {{game}}",
-          "refId": "A",
-          "target": ""
-        },
-        {
-          "expr": "safeguard_games_lossFromBonuses_gbp_threshold_block",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== block threshold ===",
-          "refId": "B"
-        },
-        {
-          "expr": "safeguard_games_lossFromBonuses_gbp_threshold_warn",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
-          "refId": "C"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "bonuses loss from games",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "currencyGBP",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Safeguard",
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 16,
-        "y": 30
-      },
-      "id": 40,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "=== block threshold ===",
-          "color": "#C4162A",
-          "fill": 0
-        },
-        {
-          "alias": "=== warn threshold ===",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_operators_lossFromBonuses_gbp",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}}",
-          "refId": "A",
-          "target": ""
-        },
-        {
-          "expr": "safeguard_operators_lossFromBonuses_gbp_threshold_block",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== block threshold ===",
-          "refId": "B"
-        },
-        {
-          "expr": "safeguard_operators_lossFromBonuses_gbp_threshold_warn",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
-          "refId": "C"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "bonuses loss from operators",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "currencyGBP",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Safeguard",
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 0,
-        "y": 35
-      },
       "id": 41,
       "legend": {
         "alignAsTable": false,
@@ -2130,7 +1786,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 35
+        "y": 30
       },
       "id": 42,
       "legend": {
@@ -2186,7 +1842,7 @@
           "refId": "B"
         },
         {
-          "expr": "safeguard_games_lossFromBonusespays_gbp_threshold_warn",
+          "expr": "safeguard_games_lossFromBonuses_pays_gbp_threshold_warn",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
@@ -2253,7 +1909,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 35
+        "y": 30
       },
       "id": 43,
       "legend": {
@@ -2368,7 +2024,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 40
+        "y": 35
       },
       "id": 29,
       "panels": [],
@@ -2387,7 +2043,7 @@
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 41
+        "y": 36
       },
       "id": 30,
       "legend": {
@@ -2397,7 +2053,7 @@
         "hideEmpty": false,
         "max": false,
         "min": false,
-        "show": true,
+        "show": false,
         "total": false,
         "values": false
       },
@@ -2467,7 +2123,7 @@
       }
     }
   ],
-  "refresh": "5s",
+  "refresh": "1m",
   "schemaVersion": 16,
   "style": "dark",
   "tags": [],
@@ -2475,7 +2131,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
