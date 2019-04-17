@@ -7,11 +7,6 @@ const Config = {
         initialThrottleBetweenOperators: 0.5, // sec
     },
     
-    
-    indicators: {
-        hugeWinIsAbove: 1000 //TODO: remove it
-    },
-    
     thresholds: {
         
         jackpots: {

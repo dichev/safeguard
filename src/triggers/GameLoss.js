@@ -33,7 +33,6 @@ class GameLoss {
 
     async testLimits(from, to){
         const thresholds = Config.thresholds.games
-        const indicators = Config.indicators
         
         // from platform
         let db = await Database.getSegmentsInstance(this.operator)
@@ -52,7 +51,7 @@ class GameLoss {
                          gameId,
                          SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
                        FROM user_huge_wins
-                       WHERE (period BETWEEN ? and ?) AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+                       WHERE (period BETWEEN ? and ?) AND payout-jackpotPayout >= ${thresholds.cappedLossFromGames_gbp.capWinsAbove}
                        GROUP BY gameId
                    ) h USING (gameId)
                    WHERE (period BETWEEN ? AND ?)

@@ -32,7 +32,6 @@ class OperatorLoss {
 
     async testLimits(from, to){
         const thresholds = Config.thresholds.operators
-        const indicators = Config.indicators
         
         // from platform
         let db = await Database.getSegmentsInstance(this.operator)
@@ -40,7 +39,7 @@ class OperatorLoss {
         let sqlHugeWins = `
             SELECT SUM(payout-jackpotPayout)-SUM(bets-jackpotBets) AS hugeWins
             FROM user_huge_wins
-            WHERE (period BETWEEN ? AND ?) AND payout-jackpotPayout >= ${indicators.hugeWinIsAbove}
+            WHERE (period BETWEEN ? AND ?) AND payout-jackpotPayout >= ${thresholds.cappedLossFromGames_gbp.capWinsAbove}
         `
         let res = await db.query(sqlHugeWins, [from, to])
         let hugeWins = res.length ? res[0].hugeWins : 0
