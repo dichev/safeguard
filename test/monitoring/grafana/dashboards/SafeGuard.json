@@ -1649,7 +1649,7 @@
       },
       "id": 37,
       "panels": [],
-      "title": "[IN DEV] Extreme loss in last 24 hours from bonuses",
+      "title": "Extreme loss in last 24 hours from bonuses",
       "type": "row"
     },
     {
@@ -2066,25 +2066,38 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#bf1b00",
+          "fill": 0
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_jackpots_daily_won_same_day",
+          "expr": "safeguard_jackpots_timedJackpotWonCount",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{jackpot}}",
           "refId": "A",
           "target": ""
+        },
+        {
+          "expr": "safeguard_jackpots_timedJackpotWonCount_threshold_block",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Daily jackpot won more than once at same day",
+      "title": "Timed jackpot won more than once during its active period",
       "tooltip": {
         "shared": true,
         "sort": 2,

@@ -6,7 +6,7 @@ const Config = require('../config/Config')
 const moment = require('moment')
 const prefix = require('../lib/Utils').prefix
 
-class DailyJackpots {
+class Jackpots {
     
     /**
      * @param {string} operator
@@ -25,24 +25,25 @@ class DailyJackpots {
         now = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
         console.verbose(prefix(this.operator) + this.description)
     
-        return await this.testDailyJackpotWonTwoTimeSameDay(now)
+        return await this.testTimedJackpotWonTwoTimeSameDay(now)
     }
     
-    async testDailyJackpotWonTwoTimeSameDay(now){
+    async testTimedJackpotWonTwoTimeSameDay(now){
         const thresholds = Config.thresholds.jackpots
     
         let db = await Database.getJackpotInstance(this.operator)
     
-        let SQL = `SELECT
-                      DATE(timeWon),
-                      potId, COUNT(*) as timedJackpotWonCount,
-                      SUM(pot)
-                   FROM _jackpot_history h
-                   JOIN _jackpot_config c ON(c.id = h.potId and c.type = 'time')
-                   WHERE DATE(timeWon) = DATE(?)
-                   GROUP BY potId, DATE(timeWon)
-                   HAVING timedJackpotWonCount >= ${thresholds.timedJackpotWonCount.block}`
-        
+        let SQL = `
+            SELECT
+                p.potId,
+                c.name,
+                timePeriods - interval c.repeatOffsetSeconds SECOND AS periodFrom,
+                p.timePeriods AS periodEnd,
+                (SELECT COUNT(*) FROM _jackpot_history h WHERE h.potId = p.potId AND h.timeWon > periodFrom) AS timedJackpotWonCount
+            FROM _jackpot_pots p
+            JOIN _jackpot_config c ON(c.id = p.potId and c.type = 'time' AND state != 'disabled')
+            HAVING timedJackpotWonCount >= ${thresholds.timedJackpotWonCount.block}
+        `
     
         let found = await db.query(SQL, [now])
         if (!found) return []
@@ -54,9 +55,9 @@ class DailyJackpots {
                 value: pot.timedJackpotWonCount,
                 threshold: thresholds.timedJackpotWonCount.block,
                 potId: pot.potId,
-                msg: `Daily jackpot won ${pot.timedJackpotWonCount} times same day`,
+                msg: `Timed jackpot won ${pot.timedJackpotWonCount} times, but is expected to be won just once during its period ${pot.periodFrom}..${pot.periodEnd}`,
                 period: now,
-                name: 'jackpots_daily_won_same_day',
+                name: 'jackpots_timedJackpotWonCount',
             }))
         }
     
@@ -64,4 +65,4 @@ class DailyJackpots {
     }
 }
 
-module.exports = DailyJackpots
+module.exports = Jackpots

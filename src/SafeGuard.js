@@ -6,7 +6,7 @@ const moment = require('moment')
 require('moment-recur')
 const Config = require('./config/Config')
 const Database = require('./lib/Database')
-const DailyJackpots = require('./triggers/DailyJackpots')
+const Jackpots = require('./triggers/Jackpots')
 const UserLoss = require('./triggers/UserLoss')
 const GameLoss = require('./triggers/GameLoss')
 const OperatorLoss = require('./triggers/OperatorLoss')
@@ -53,7 +53,7 @@ class SafeGuard {
     async activate(){
         try {
             this.tests = [
-                new DailyJackpots(this.operator),
+                new Jackpots(this.operator),
                 new UserLoss(this.operator),
                 new GameLoss(this.operator),
                 new OperatorLoss(this.operator),
