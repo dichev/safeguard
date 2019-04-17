@@ -9,7 +9,7 @@ class Metrics {
     constructor(operator) {
         this.operator = operator
         this.metrics = {}
-        this.metrics[`safeguard_tracking{operator="${this.operator}"}`] = { value: 1, time: Date.now() }
+        this.metrics[`safeguard_tracking{operator="${this.operator}"}`] = { value: 0, time: Date.now() }
         pool.push(this)
     }
     
@@ -40,6 +40,7 @@ class Metrics {
      */
     cleanup(timestamp){
         this.metrics[`safeguard_tracking{operator="${this.operator}"}`].time = Date.now()
+        this.metrics[`safeguard_tracking{operator="${this.operator}"}`].value = 1
         
         for(let metric in this.metrics) if(this.metrics.hasOwnProperty(metric)){
             if(this.metrics[metric].time < timestamp){

@@ -226,7 +226,7 @@
       },
       "id": 25,
       "panels": [],
-      "title": "Extreme loss in last 24 hours (cumulative, jackpot/bonuses are excluded)",
+      "title": "Extreme net loss in last 24 hours (cumulative, jackpot/bonuses are excluded)",
       "type": "row"
     },
     {
@@ -583,7 +583,7 @@
       },
       "id": 23,
       "panels": [],
-      "title": "Extreme loss in last 24 hours without the wins > £1000  (cumulative, jackpot/bonuses are excluded)",
+      "title": "Extreme net loss without the wins > £1000  in last 24 hours  (cumulative, jackpot/bonuses are excluded)",
       "type": "row"
     },
     {
@@ -1294,7 +1294,7 @@
       },
       "id": 27,
       "panels": [],
-      "title": "Extreme jackpot loss in last 24 hours (cummulative)",
+      "title": "Extreme jackpot net loss in last 24 hours (cummulative)",
       "type": "row"
     },
     {
@@ -1649,7 +1649,7 @@
       },
       "id": 37,
       "panels": [],
-      "title": "Extreme loss in last 24 hours from bonuses",
+      "title": "Extreme gross loss from bonuses in last 24 hours",
       "type": "row"
     },
     {
