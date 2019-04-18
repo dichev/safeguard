@@ -54,9 +54,9 @@ program
         
         for (let date of interval) {
             for (let guard of guards) {
-                await guard.check(date)
+                await guard.history(date)
             }
-            console.log(`-`.repeat(140))
+            // console.log(`-`.repeat(140))
         }
     
         await Safeguard.closeDatabaseConnections()

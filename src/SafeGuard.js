@@ -2,6 +2,7 @@
 
 require('dopamine-toolbox').lib.console.upgrade()
 
+const moment = require('moment')
 const Config = require('./config/Config')
 const Database = require('./lib/Database')
 const Jackpots = require('./triggers/Jackpots')
@@ -43,6 +44,8 @@ class SafeGuard {
         this.log = new Log(operator)
         
         this._metrics = new Metrics(operator)
+        
+        this._startDate = null
     }
     
     /**
@@ -74,6 +77,24 @@ class SafeGuard {
         } catch (err) {
             return this.errorHandler(err)
         }
+    }
+    
+    async history(date) {
+        date = moment.utc(date, 'YYYY-MM-DD', true)
+        
+        if(!this._startDate) {
+            let db = await Database.getSegmentsInstance(this.operator)
+            let row = await db.query(`SELECT MIN(period) as startDate FROM user_games_summary_daily`)
+            this._startDate = row[0] && row[0].startDate ? moment.utc(row[0].startDate) : moment.utc()
+            if (date.isBefore(this._startDate)) {
+                console.warn(prefix(this.operator) + `First transactions are recorded at ${this._startDate.format('YYYY-MM-DD')}, so skipping the periods until then..`)
+            }
+        }
+        
+        if(date.isSameOrAfter(this._startDate)) {
+            await this.check(date.format('YYYY-MM-DD'))
+        }
+        
     }
     
     async check(date = false){

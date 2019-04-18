@@ -32,7 +32,7 @@ class Jackpots {
     async execHistoric(date) {
         if(!historicWarnShown) {
             historicWarnShown = true
-            console.warn('WARNING! Jackpots anomaly tests are not supported historic mode')
+            console.warn('WARNING! Jackpots anomaly tests are not supported historic mode and will be skipped..')
         }
         return []
     }
