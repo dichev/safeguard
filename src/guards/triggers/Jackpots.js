@@ -1,9 +1,9 @@
 'use strict'
 
 const Trigger = require('./types/Trigger')
-const Database = require('../lib/Database')
-const Config = require('../config/Config')
-const prefix = require('../lib/Utils').prefix
+const Database = require('../../lib/Database')
+const Config = require('../../config/Config')
+const prefix = require('../../lib/Utils').prefix
 
 let historicWarnShown = false
 

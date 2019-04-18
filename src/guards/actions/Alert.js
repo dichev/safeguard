@@ -1,8 +1,8 @@
 'use strict'
 
-const Database = require('../lib/Database')
+const Database = require('../../lib/Database')
 const Trigger = require('../triggers/types/Trigger')
-const prefix = require('../lib/Utils').prefix
+const prefix = require('../../lib/Utils').prefix
 
 const ALERT_GAP = 1 // percent
 
