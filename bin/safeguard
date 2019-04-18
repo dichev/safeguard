@@ -49,6 +49,9 @@ program
         } else {
             from = to = program.history
         }
+    
+        if(moment.utc(from).isAfter(moment.utc(to))) throw Error('Invalid dates! The history start period can not be after the end period')
+        if(moment.utc(to).isSameOrAfter(moment.utc().startOf('day'))) throw Error('Invalid dates! The history end period must be before today')
         
         let interval = moment().recur(from, to).all('YYYY-MM-DD');
         
