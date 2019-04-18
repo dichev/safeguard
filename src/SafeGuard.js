@@ -25,12 +25,21 @@ class SafeGuard {
         await db.query('TRUNCATE alerts; TRUNCATE blocked; TRUNCATE log;')
     }
     
+    static async closeDatabaseConnections(){
+        Database.killAllConnections()
+    }
+    
     constructor(operator) {
         if(!Config.credentials.databases.operators[operator]) throw Error('There is no such operator: ' + operator)
         
         this.operator = operator
         
-        this.tests = []
+        this.tests = [
+            // new Jackpots(this.operator), //TODO: tmp!
+            new UserLoss(this.operator),
+            new GameLoss(this.operator),
+            new OperatorLoss(this.operator),
+        ]
         this.alerts = new Alert(operator)
         this.killSwitch = new KillSwitch(operator)
         this.log = new Log(operator)
@@ -52,13 +61,6 @@ class SafeGuard {
     
     async activate(){
         try {
-            this.tests = [
-                new Jackpots(this.operator),
-                new UserLoss(this.operator),
-                new GameLoss(this.operator),
-                new OperatorLoss(this.operator),
-            ]
-
             // noinspection InfiniteLoopJS
             while (true) {
                 await this.check()
@@ -72,15 +74,14 @@ class SafeGuard {
     
     async check(){
         console.log(prefix(this.operator) + `Checking for anomalies..`)
-        let result = { alerts: 0, blocked: 0 }
         let startAt = Date.now()
         try {
             let logs = await this.log.history()
             if(logs.length) logs.map(log => this._metrics.collectLogs(log))
+            
             for (let test of this.tests) {
                 let triggers = await test.exec()
                 for(let trigger of triggers) {
-                    trigger.action === Trigger.actions.ALERT ? result.alerts++ : result.blocked++
                     await this._handleTrigger(trigger)
                 }
             }
@@ -99,7 +100,26 @@ class SafeGuard {
         await Database.killConnectionsByNamePrefix(this.operator)
     }
     
+    async history(date) {
+        console.log(prefix(this.operator) + `[${date}] Checking for anomalies..`)
         
+        let startAt = Date.now()
+        try {
+            for (let test of this.tests) {
+                let triggers = await test.execHistoric(date)
+                for (let trigger of triggers) {
+                    await this._handleTrigger(trigger)
+                }
+            }
+            this.alerts.cleanup(startAt)
+        } catch (err) {
+            await this.log.error({msg: err.toString()}, startAt)
+            throw err
+        }
+    
+        // await Database.killConnectionsByNamePrefix(this.operator) // faster if we keep the connections
+    }
+    
     /**
      * @param {Trigger} trigger
      * @return {Promise<void>}
@@ -139,26 +159,9 @@ class SafeGuard {
         this._metrics.collectTrigger(trigger)
     }
     
-    /*
-    // TODO: will be supported later
-    async history(from, to = null){
-        to = to || moment().utc().format('YYYY-MM-DD')
-        let interval = moment().recur(from, to).all('YYYY-MM-DD');
-        
-        for(let date of interval){
-            // let [from, to] =  [`${date} 00:00:00`, `${date} 23:59:59`]
-            console.log(prefix(this.operator) + `Execution for ${date}`)
-            for (let test of this.tests) {
-                let logId = await this.log.start(test.constructor.name)
-                let result = await test.exec(`${date} 23:59:59`)
-                await this.log.end(logId, test.constructor.name, {period: date})
-            }
-        }
-        
-        await Database.killAllConnections()
-    }
-    */
     
+    //TODO: checkRecordsExists()
+  
     
     /**
      * @param {Error} error

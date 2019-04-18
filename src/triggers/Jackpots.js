@@ -13,22 +13,29 @@ class Jackpots {
      */
     constructor(operator) {
         this.operator = operator
-        this.description = 'Detect abnormal daily jackpot wins'
     }
-    
     
     /**
-     * @param {string} now
+     * Checks in last 24 hours
      * @return {Promise<Array<Trigger>>}
      */
-    async exec(now = null){
-        now = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
-        console.verbose(prefix(this.operator) + this.description)
-    
-        return await this.testTimedJackpotWonTwoTimeSameDay(now)
+    async exec(){
+        return await this.testTimedJackpotWonTwoTimeSameDay()
     }
     
-    async testTimedJackpotWonTwoTimeSameDay(now){
+    /**
+     * Check by day
+     * @param {string} date
+     * @return {Promise<Array<Trigger>>}
+     */
+    async execHistoric(date) {
+        throw Error('Jackpots: Not supported historic mode')
+    }
+
+    
+    async testTimedJackpotWonTwoTimeSameDay(){
+        console.verbose(prefix(this.operator), {historic, from, to})
+        
         const thresholds = Config.thresholds.jackpots
     
         let db = await Database.getJackpotInstance(this.operator)

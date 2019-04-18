@@ -39,7 +39,7 @@ class Alert {
             }
         }
     
-        this.alerts[key] = {perc: perc, time: Date.now()}
+        this.alerts[key] = {perc: perc, time: trigger.period.to}
         
         console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg)
     
@@ -54,6 +54,7 @@ class Alert {
             gameName: trigger.gameName,
             message: trigger.msg || 'above warning limit',
             details: null,
+            time: trigger.period.to
         }
     
     
