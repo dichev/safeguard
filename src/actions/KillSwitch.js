@@ -98,6 +98,8 @@ class KillSwitch {
             gameName: trigger.gameName,
             message: `Blocked #${trigger.userId || trigger.gameName || trigger.potId || this.operator}`,
             details: null,
+            periodFrom: trigger.period.from,
+            periodTo: trigger.period.to,
         }
         
         let db = await Database.getLocalInstance()

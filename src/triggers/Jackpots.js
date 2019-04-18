@@ -3,8 +3,9 @@
 const Trigger = require('./types/Trigger')
 const Database = require('../lib/Database')
 const Config = require('../config/Config')
-const moment = require('moment')
 const prefix = require('../lib/Utils').prefix
+
+let historicWarnShown = false
 
 class Jackpots {
     
@@ -13,22 +14,33 @@ class Jackpots {
      */
     constructor(operator) {
         this.operator = operator
-        this.description = 'Detect abnormal daily jackpot wins'
     }
-    
     
     /**
-     * @param {string} now
+     * Checks in last 24 hours
      * @return {Promise<Array<Trigger>>}
      */
-    async exec(now = null){
-        now = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
-        console.verbose(prefix(this.operator) + this.description)
-    
-        return await this.testTimedJackpotWonTwoTimeSameDay(now)
+    async exec(){
+        return await this.testTimedJackpotWonTwoTimeSameDay()
     }
     
-    async testTimedJackpotWonTwoTimeSameDay(now){
+    /**
+     * Check by day
+     * @param {string} date
+     * @return {Promise<Array<Trigger>>}
+     */
+    async execHistoric(date) {
+        if(!historicWarnShown) {
+            historicWarnShown = true
+            console.warn('WARNING! Jackpots anomaly tests are not supported historic mode and will be skipped..')
+        }
+        return []
+    }
+
+    
+    async testTimedJackpotWonTwoTimeSameDay(){
+        console.verbose(prefix(this.operator))
+        
         const thresholds = Config.thresholds.jackpots
     
         let db = await Database.getJackpotInstance(this.operator)
@@ -45,7 +57,7 @@ class Jackpots {
             HAVING timedJackpotWonCount >= ${thresholds.timedJackpotWonCount.block}
         `
     
-        let found = await db.query(SQL, [now])
+        let found = await db.query(SQL)
         if (!found) return []
     
         let triggers = []

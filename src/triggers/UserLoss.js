@@ -5,6 +5,7 @@ const Database = require('../lib/Database')
 const Config = require('../config/Config')
 const moment = require('moment')
 const prefix = require('../lib/Utils').prefix
+const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
 class UserLoss {
     
@@ -13,23 +14,34 @@ class UserLoss {
      */
     constructor(operator) {
         this.operator = operator
-        this.description = 'Detect users with abnormal amount of profit in last 24 hours'
     }
     
     /**
-     * @param {string} now
+     * Checks in last 24 hours
      * @return {Promise<Array<Trigger>>}
      */
-    async exec(now = null){
-        let to = now || moment().utc().format('YYYY-MM-DD HH:mm:ss')
-        let from = moment(to).subtract(24, 'hours').format('YYYY-MM-DD HH:mm:ss')
-        
-        console.verbose(prefix(this.operator) + this.description)
+    async exec(){
+        let to = moment.utc().format(DATETIME_FORMAT)
+        let from = moment.utc(to).subtract({hours: 23, minutes: 59, seconds: 59}).format(DATETIME_FORMAT)
+        return await this.testLimits(from, to, false)
+    }
     
-        return await this.testLimits(from, to)
+    /**
+     * Check by day
+     * @param {string} date
+     * @return {Promise<Array<Trigger>>}
+     */
+    async execHistoric(date) {
+        let from = moment.utc(date, 'YYYY-MM-DD', true).format(DATETIME_FORMAT)
+        let to = moment.utc(from).add({ hours: 23, minutes: 59, seconds: 59}).format(DATETIME_FORMAT)
+        return await this.testLimits(from, to, true)
     }
 
-    async testLimits(from, to){
+    async testLimits(from, to, historic = false){
+        if (!historic && moment.duration(moment.utc().diff(moment.utc(from))).asHours() > 25) throw Error(`There is no available hourly data for this period: ${from}..${to}`)
+        console.verbose(prefix(this.operator), {historic, from, to})
+        
+        const table = historic ? `user_games_summary_daily` : `user_games_summary_hourly_live`
         const thresholds = Config.thresholds.users
         
         let db = await Database.getSegmentsInstance(this.operator)
@@ -42,7 +54,7 @@ class UserLoss {
                        SUM(bonusBets) AS lossFromBonuses_bets_gbp,
                        SUM(bonusPayout) AS lossFromBonuses_pays_gbp,
                        SUM(mplr) AS pureLossFromGames_x
-                   FROM user_games_summary_hourly_live
+                   FROM ${table}
                    LEFT JOIN (
                        SELECT
                          userId,

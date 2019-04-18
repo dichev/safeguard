@@ -3,7 +3,6 @@
 require('dopamine-toolbox').lib.console.upgrade()
 
 const moment = require('moment')
-require('moment-recur')
 const Config = require('./config/Config')
 const Database = require('./lib/Database')
 const Jackpots = require('./triggers/Jackpots')
@@ -25,17 +24,28 @@ class SafeGuard {
         await db.query('TRUNCATE alerts; TRUNCATE blocked; TRUNCATE log;')
     }
     
+    static async closeDatabaseConnections(){
+        Database.killAllConnections()
+    }
+    
     constructor(operator) {
         if(!Config.credentials.databases.operators[operator]) throw Error('There is no such operator: ' + operator)
         
         this.operator = operator
         
-        this.tests = []
+        this.tests = [
+            new Jackpots(this.operator),
+            new UserLoss(this.operator),
+            new GameLoss(this.operator),
+            new OperatorLoss(this.operator),
+        ]
         this.alerts = new Alert(operator)
         this.killSwitch = new KillSwitch(operator)
         this.log = new Log(operator)
         
         this._metrics = new Metrics(operator)
+        
+        this._startDate = null
     }
     
     /**
@@ -52,16 +62,15 @@ class SafeGuard {
     
     async activate(){
         try {
-            this.tests = [
-                new Jackpots(this.operator),
-                new UserLoss(this.operator),
-                new GameLoss(this.operator),
-                new OperatorLoss(this.operator),
-            ]
-
             // noinspection InfiniteLoopJS
             while (true) {
+                let logs = await this.log.history()
+                if (logs.length) logs.map(log => this._metrics.collectLogs(log))
+                
                 await this.check()
+    
+                await Database.killConnectionsByNamePrefix(this.operator)
+                
                 console.verbose(prefix(this.operator) + `Next iteration will be after ${Config.schedule.intervalBetweenIterations} sec`)
                 await sleep(Config.schedule.intervalBetweenIterations)
             }
@@ -70,17 +79,31 @@ class SafeGuard {
         }
     }
     
-    async check(){
-        console.log(prefix(this.operator) + `Checking for anomalies..`)
-        let result = { alerts: 0, blocked: 0 }
+    async history(date) {
+        date = moment.utc(date, 'YYYY-MM-DD', true)
+        
+        if(!this._startDate) {
+            let db = await Database.getSegmentsInstance(this.operator)
+            let row = await db.query(`SELECT MIN(period) as startDate FROM user_games_summary_daily`)
+            this._startDate = row[0] && row[0].startDate ? moment.utc(row[0].startDate) : moment.utc()
+            if (date.isBefore(this._startDate)) {
+                console.warn(prefix(this.operator) + `First transactions are recorded at ${this._startDate.format('YYYY-MM-DD')}, so skipping the periods until then..`)
+            }
+        }
+        
+        if(date.isSameOrAfter(this._startDate)) {
+            await this.check(date.format('YYYY-MM-DD'))
+        }
+        
+    }
+    
+    async check(date = false){
+        console.log(prefix(this.operator) + (date ? `[${date}] ` : '') + `Checking for anomalies..`)
         let startAt = Date.now()
         try {
-            let logs = await this.log.history()
-            if(logs.length) logs.map(log => this._metrics.collectLogs(log))
             for (let test of this.tests) {
-                let triggers = await test.exec()
+                let triggers = date ? await test.execHistoric(date) : await test.exec()
                 for(let trigger of triggers) {
-                    trigger.action === Trigger.actions.ALERT ? result.alerts++ : result.blocked++
                     await this._handleTrigger(trigger)
                 }
             }
@@ -95,11 +118,9 @@ class SafeGuard {
             await this.log.error({ msg: err.toString() }, startAt)
             throw err
         }
-
-        await Database.killConnectionsByNamePrefix(this.operator)
     }
     
-        
+    
     /**
      * @param {Trigger} trigger
      * @return {Promise<void>}
@@ -139,26 +160,9 @@ class SafeGuard {
         this._metrics.collectTrigger(trigger)
     }
     
-    /*
-    // TODO: will be supported later
-    async history(from, to = null){
-        to = to || moment().utc().format('YYYY-MM-DD')
-        let interval = moment().recur(from, to).all('YYYY-MM-DD');
-        
-        for(let date of interval){
-            // let [from, to] =  [`${date} 00:00:00`, `${date} 23:59:59`]
-            console.log(prefix(this.operator) + `Execution for ${date}`)
-            for (let test of this.tests) {
-                let logId = await this.log.start(test.constructor.name)
-                let result = await test.exec(`${date} 23:59:59`)
-                await this.log.end(logId, test.constructor.name, {period: date})
-            }
-        }
-        
-        await Database.killAllConnections()
-    }
-    */
     
+    //TODO: checkRecordsExists()
+  
     
     /**
      * @param {Error} error

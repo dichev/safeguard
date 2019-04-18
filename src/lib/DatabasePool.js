@@ -5,6 +5,9 @@ const MySQL = require('dopamine-toolbox').MySQL;
 const EventEmitter = require('events').EventEmitter
 
 // TODO: move me to toolbox
+
+let pool = {}
+
 class DatabasePool {
    
     
@@ -16,9 +19,9 @@ class DatabasePool {
     static async getInstance(name, cfg) {
         let key = name + '|' + cfg.database
         
-        if (!this._instances) this._instances = {}
-        if (!this._instances[key]) {
-            this._instances[key] = {
+        if (!pool) pool = {}
+        if (!pool[key]) {
+            pool[key] = {
                 state: 'init',
                 emitter: new EventEmitter(),
                 mysqlClient: null,
@@ -27,7 +30,7 @@ class DatabasePool {
         }
         
         
-        let instance = this._instances[key]
+        let instance = pool[key]
         
         if (instance.state === 'init') {
             instance.state = 'connecting'
@@ -77,16 +80,16 @@ class DatabasePool {
     }
     
     static killAllConnections(){
-        Object.keys(this._instances).forEach(name => this.killConnectionById(name))
+        Object.keys(pool).forEach(name => this.killConnectionById(name))
     }
     
     static killConnectionsByNamePrefix(name){
-        Object.keys(this._instances).filter(n => n.startsWith(name + '|') === true).forEach(name => this.killConnectionById(name))
+        Object.keys(pool).filter(n => n.startsWith(name + '|') === true).forEach(name => this.killConnectionById(name))
     }
     
     static killConnection(db) {
-        for(let id in this._instances) if(this._instances.hasOwnProperty(id)) {
-            if(this._instances[id].mysqlClient === db){
+        for(let id in pool) if(pool.hasOwnProperty(id)) {
+            if(pool[id].mysqlClient === db){
                 this.killConnectionById(id)
                 return
             }
@@ -96,7 +99,7 @@ class DatabasePool {
     
     
     static killConnectionById(id) {
-        let conn = this._instances[id]
+        let conn = pool[id]
         if(!conn) return console.error('Can\'t end missing connection:', id)
         
         if (conn.mysqlClient) {
@@ -107,7 +110,7 @@ class DatabasePool {
             // console.log(`[${id}] End ssh connection..`)
             conn.sshClient.disconnect()
         }
-        delete this._instances[id]
+        delete pool[id]
     }
     
     /**
