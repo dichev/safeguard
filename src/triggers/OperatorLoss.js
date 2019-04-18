@@ -38,7 +38,7 @@ class OperatorLoss {
     }
 
     async testLimits(from, to, historic = false){
-        if (!historic && moment.duration(moment.utc().diff(moment.utc(from))).asHours() > 24) throw Error(`There is no available hourly data for this period: ${from}..${to}`)
+        if (!historic && moment.duration(moment.utc().diff(moment.utc(from))).asHours() > 25) throw Error(`There is no available hourly data for this period: ${from}..${to}`)
         console.verbose(prefix(this.operator), {historic, from, to})
     
         const table = historic ? `user_games_summary_daily` : `user_games_summary_hourly_live`
