@@ -39,7 +39,7 @@ class Jackpots {
 
     
     async testTimedJackpotWonTwoTimeSameDay(){
-        console.verbose(prefix(this.operator), {historic, from, to})
+        console.verbose(prefix(this.operator))
         
         const thresholds = Config.thresholds.jackpots
     
@@ -57,7 +57,7 @@ class Jackpots {
             HAVING timedJackpotWonCount >= ${thresholds.timedJackpotWonCount.block}
         `
     
-        let found = await db.query(SQL, [now])
+        let found = await db.query(SQL)
         if (!found) return []
     
         let triggers = []
