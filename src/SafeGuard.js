@@ -2,8 +2,6 @@
 
 require('dopamine-toolbox').lib.console.upgrade()
 
-const moment = require('moment')
-require('moment-recur')
 const Config = require('./config/Config')
 const Database = require('./lib/Database')
 const Jackpots = require('./triggers/Jackpots')
@@ -63,7 +61,13 @@ class SafeGuard {
         try {
             // noinspection InfiniteLoopJS
             while (true) {
+                let logs = await this.log.history()
+                if (logs.length) logs.map(log => this._metrics.collectLogs(log))
+                
                 await this.check()
+    
+                await Database.killConnectionsByNamePrefix(this.operator)
+                
                 console.verbose(prefix(this.operator) + `Next iteration will be after ${Config.schedule.intervalBetweenIterations} sec`)
                 await sleep(Config.schedule.intervalBetweenIterations)
             }
@@ -72,15 +76,16 @@ class SafeGuard {
         }
     }
     
-    async check(){
-        console.log(prefix(this.operator) + `Checking for anomalies..`)
+    async history(date){
+        await this.check(date)
+    }
+    
+    async check(date = false){
+        console.log(prefix(this.operator) + (date ? `[${date}] ` : '') + `Checking for anomalies..`)
         let startAt = Date.now()
         try {
-            let logs = await this.log.history()
-            if(logs.length) logs.map(log => this._metrics.collectLogs(log))
-            
             for (let test of this.tests) {
-                let triggers = await test.exec()
+                let triggers = date ? await test.execHistoric(date) : await test.exec()
                 for(let trigger of triggers) {
                     await this._handleTrigger(trigger)
                 }
@@ -96,29 +101,8 @@ class SafeGuard {
             await this.log.error({ msg: err.toString() }, startAt)
             throw err
         }
-
-        await Database.killConnectionsByNamePrefix(this.operator)
     }
     
-    async history(date) {
-        console.log(prefix(this.operator) + `[${date}] Checking for anomalies..`)
-        
-        let startAt = Date.now()
-        try {
-            for (let test of this.tests) {
-                let triggers = await test.execHistoric(date)
-                for (let trigger of triggers) {
-                    await this._handleTrigger(trigger)
-                }
-            }
-            this.alerts.cleanup(startAt)
-        } catch (err) {
-            await this.log.error({msg: err.toString()}, startAt)
-            throw err
-        }
-    
-        // await Database.killConnectionsByNamePrefix(this.operator) // faster if we keep the connections
-    }
     
     /**
      * @param {Trigger} trigger
