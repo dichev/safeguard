@@ -3,8 +3,9 @@
 const Trigger = require('./types/Trigger')
 const Database = require('../lib/Database')
 const Config = require('../config/Config')
-const moment = require('moment')
 const prefix = require('../lib/Utils').prefix
+
+let historicWarnShown = false
 
 class Jackpots {
     
@@ -29,7 +30,11 @@ class Jackpots {
      * @return {Promise<Array<Trigger>>}
      */
     async execHistoric(date) {
-        throw Error('Jackpots: Not supported historic mode')
+        if(!historicWarnShown) {
+            historicWarnShown = true
+            console.warn('WARNING! Jackpots anomaly tests are not supported historic mode')
+        }
+        return []
     }
 
     

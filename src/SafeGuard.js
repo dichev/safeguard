@@ -33,7 +33,7 @@ class SafeGuard {
         this.operator = operator
         
         this.tests = [
-            // new Jackpots(this.operator), //TODO: tmp!
+            new Jackpots(this.operator),
             new UserLoss(this.operator),
             new GameLoss(this.operator),
             new OperatorLoss(this.operator),
