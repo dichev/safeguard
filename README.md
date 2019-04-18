@@ -20,6 +20,9 @@ Now you should be able to run it simply like that:
 ```bash
 node bin/safeguard --help
 node bin/safeguard -o bede,rank
+node bin/safeguard -o bede,rank --serve
+node bin/safeguard -o bede,rank --history 2019-04-01..2019-04-18
+
 ```
 
 

@@ -2,6 +2,8 @@
 
 'use strict';
 
+require('moment-recur')
+const moment = require('moment')
 const program = require('commander')
 const sleep = require('../src/lib/Utils').sleep
 const Safeguard = require('../src/SafeGuard')
@@ -13,10 +15,10 @@ const OPERATORS = Object.keys(require('../src/config/Config').credentials.databa
 
 program
     .option('-o, --operators <operators>', `Comma-separated list on which operators to be executed. Available: ${OPERATORS}. Default: all `)
-    // .option('-m, --mode <parallel|sequential>', `Run multiple operators in parallel or one by one. Default: parallel `)
     .option('-v, --verbose', 'Display error stack trace')
     .option('--clean', `Fresh start - will clean the safeguard database logs and alerts`)
-    .option('--no-server', `Normally the safeguard expose http server, to provide prometheus metrics. This will disable it`)
+    .option('--serve', `Expose http server to provide prometheus metrics`)
+    .option('--history <date|range>', `Check for anomalies in previous periods. You can define the period as date(2018-04-01) or as range(2018-04-01..2018-04-05)`)
     
     .version(require('../package.json').version)
     .parse(process.argv)
@@ -25,26 +27,49 @@ program
 
 ;(async function () {
     
-    let server = null
-    if(program.server) {
-        server = new Server()
+    if(program.serve) {
+        if(program.history) throw Error('The server is not supported with --history')
+        let server = new Server()
         server.listen()
     }
-    
-    if(program.clean) await Safeguard.cleanDatabaseLogs()
+
+    if(program.clean) {
+        await Safeguard.cleanDatabaseLogs()
+    }
 
     let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : OPERATORS
-    let guards = []
-    for (let operator of operators) {
-        let guard = new Safeguard(operator)
-        guards.push(guard)
+    let guards = operators.map(operator => new Safeguard(operator))
+    
+    
+    if(program.history){
+        console.warn(`\n=== Running in history mode for ${program.history} ===\n`)
+        let from, to
+        if (program.history.indexOf('..') !== -1) {
+            [from, to] = program.history.split('..')
+        } else {
+            from = to = program.history
+        }
+        
+        let interval = moment().recur(from, to).all('YYYY-MM-DD');
+        
+        for (let date of interval) {
+            for (let guard of guards) {
+                await guard.check(date)
+            }
+            console.log(`-`.repeat(140))
+        }
+    
+        await Safeguard.closeDatabaseConnections()
     }
     
-    // run each operator in parallel
-    await Promise.all(guards.map(async (guard, i) => {
-        await sleep(i * THROTTLE) // throttle db connections
-        await guard.activate()
-    }))
+    else {
+        // run each operator in parallel
+        await Promise.all(guards.map(async (guard, i) => {
+            await sleep(i * THROTTLE) // throttle db connections
+            await guard.activate()
+        }))
+    }
+    
 })()
 .catch(err  => {
     program.verbose ? console.error(err.stack) : console.error(err.message || err)

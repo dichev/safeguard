@@ -76,10 +76,6 @@ class SafeGuard {
         }
     }
     
-    async history(date){
-        await this.check(date)
-    }
-    
     async check(date = false){
         console.log(prefix(this.operator) + (date ? `[${date}] ` : '') + `Checking for anomalies..`)
         let startAt = Date.now()
