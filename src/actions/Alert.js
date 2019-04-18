@@ -54,7 +54,8 @@ class Alert {
             gameName: trigger.gameName,
             message: trigger.msg || 'above warning limit',
             details: null,
-            time: trigger.period.to
+            periodFrom: trigger.period.from,
+            periodTo: trigger.period.to,
         }
     
     

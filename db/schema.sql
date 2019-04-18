@@ -17,8 +17,11 @@ CREATE TABLE IF NOT EXISTS `alerts` (
   `gameName` varchar(100) DEFAULT NULL,
   `details` json DEFAULT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `periodFrom` datetime NOT NULL,
+  `periodTo` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `time` (`time`)
+  KEY `time` (`time`),
+  KEY `periodFrom_periodTo` (`periodFrom`,`periodTo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE IF NOT EXISTS `blocked` (
@@ -33,9 +36,12 @@ CREATE TABLE IF NOT EXISTS `blocked` (
   `userId` int(10) unsigned DEFAULT NULL,
   `gameName` varchar(100) DEFAULT NULL,
   `details` json DEFAULT NULL,
+  `periodFrom` datetime NOT NULL,
+  `periodTo` datetime NOT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `time` (`time`)
+  KEY `time` (`time`),
+  KEY `periodFrom_periodTo` (`periodFrom`,`periodTo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE IF NOT EXISTS `log` (
