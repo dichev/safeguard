@@ -81,7 +81,7 @@ class UserLoss {
         let triggers = []
         for (let user of found) {
             for (let metric of Object.keys(thresholds)) {
-                let value = user[metric]
+                let value = parseFloat(user[metric])
                 let threshold = thresholds[metric]
                 
                 if (value >= threshold.warn) {
@@ -90,7 +90,7 @@ class UserLoss {
                         value: value,
                         threshold: threshold.block,
                         userId: user.userId,
-                        msg: `Detected user #${user.userId} with ${metric} of ${value} in last 24 hours`,
+                        msg: threshold.msg.replace('{{USER}}', user.userId).replace('{{VALUE}}', value.toFixed(2)),
                         period: {from, to},
                         name: `users_${metric}`
                     }))

@@ -96,7 +96,7 @@ class KillSwitch {
             operator: this.operator,
             userId: trigger.userId,
             gameName: trigger.gameName,
-            message: `Blocked #${trigger.userId || trigger.gameName || trigger.potId || this.operator}`,
+            message: trigger.msg,
             details: null,
             periodFrom: trigger.period.from,
             periodTo: trigger.period.to,

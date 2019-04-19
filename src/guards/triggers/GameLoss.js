@@ -81,16 +81,16 @@ class GameLoss {
         let triggers = []
         for (let game of found) {
             for (let metric of Object.keys(thresholds)) {
-                let value = game[metric]
+                let value = parseFloat(game[metric])
                 let threshold = thresholds[metric]
-        
+    
                 if (value >= threshold.warn) {
                     triggers.push(new Trigger({
                         action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
                         value: value,
                         threshold: threshold.block,
                         gameName: game.gameId,
-                        msg: `Detected game #${game.gameId} with ${metric} of ${value} in last 24 hours`,
+                        msg: threshold.msg.replace('{{GAME}}', game.gameId).replace('{{VALUE}}', value.toFixed(2)),
                         period: {from, to},
                         name: `games_${metric}`
                     }))

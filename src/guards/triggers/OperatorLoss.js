@@ -80,7 +80,7 @@ class OperatorLoss {
         let triggers = []
         for (let row of found) {
             for (let metric of Object.keys(thresholds)) {
-                let value = row[metric]
+                let value = parseFloat(row[metric])
                 let threshold = thresholds[metric]
         
                 if (value >= threshold.warn) {
@@ -88,7 +88,7 @@ class OperatorLoss {
                         action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
                         value: value,
                         threshold: threshold.block,
-                        msg: `Detected operator #${this.operator} with ${metric} of ${value} in last 24 hours`,
+                        msg: threshold.msg.replace('{{OPERATOR}}', this.operator).replace('{{VALUE}}', value.toFixed(2)),
                         period: {from, to},
                         name: `operators_${metric}`
                     }))

@@ -67,7 +67,7 @@ class Jackpots {
                 value: pot.timedJackpotWonCount,
                 threshold: thresholds.timedJackpotWonCount.block,
                 potId: pot.potId,
-                msg: `Timed jackpot won ${pot.timedJackpotWonCount} times, but is expected to be won just once during its period ${pot.periodFrom}..${pot.periodEnd}`,
+                msg: thresholds.timedJackpotWonCount.msg.replace('{{JACKPOT}}', pot.name).replace('{{VALUE}}', pot.timedJackpotWonCount) + ` ${pot.periodFrom}..${pot.periodEnd}`,
                 period: now,
                 name: 'jackpots_timedJackpotWonCount',
             }))

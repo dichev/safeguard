@@ -10,34 +10,34 @@ const Config = {
     thresholds: {
         
         jackpots: {
-            timedJackpotWonCount:     { block: 2, warn: 1.1 }
+            timedJackpotWonCount:     { block: 2,       warn: 1.1,                        msg: 'Timed jackpot {{JACKPOT} was won {{VALUE}} times, but is expected to be won just once during its period' },
         },
         
         users: {
-            lossFromGames_gbp:        { block:  500000, warn:  50000 },
-            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000 },
-            lossFromJackpots_gbp:     { block: 2000000, warn: 100000 },
-            lossFromBonuses_bets_gbp: { block:   10000, warn:   1000 },
-            lossFromBonuses_pays_gbp: { block:   10000, warn:   1000 },
-            pureLossFromGames_x:      { block:   30000, warn:   8000 },
+            lossFromGames_gbp:        { block:  500000, warn:  50000,                     msg: 'Detected user #{{USER}} with extreme net loss of £{{VALUE}} from games in last 24 hours' },
+            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000, msg: 'Detected game #{{USER}} with extreme capped net loss of £{{VALUE}} from games in last 24 hours (single wins above £1000 are excluded' },
+            lossFromJackpots_gbp:     { block: 2000000, warn: 100000,                     msg: 'Detected user #{{USER}} with extreme net loss of £{{VALUE}} from jackpots in last 24 hours' },
+            lossFromBonuses_bets_gbp: { block:   10000, warn:   1000,                     msg: 'Detected user #{{USER}} with extreme gross loss of £{{VALUE}} from bonus pays in last 24 hours' },
+            lossFromBonuses_pays_gbp: { block:   10000, warn:   1000,                     msg: 'Detected user #{{USER}} with extreme gross loss of £{{VALUE}} from bonus bets in last 24 hours' },
+            pureLossFromGames_x:      { block:   30000, warn:   8000,                     msg: 'Detected user #{{USER}} with extreme pure math loss of x{{VALUE}} in last 24 hours' },
         },
         
         games: {
-            lossFromGames_gbp:        { block:  500000, warn:  50000 },
-            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000 },
-            lossFromJackpots_gbp:     { block: 2000000, warn: 100000 },
-            lossFromBonuses_bets_gbp: { block:  100000, warn:  20000 },
-            lossFromBonuses_pays_gbp: { block:  100000, warn:  20000 },
-            pureLossFromGames_x:      { block:   50000, warn:   8000 },
+            lossFromGames_gbp:        { block:  500000, warn:  50000,                     msg: 'Detected game {{GAME}} with extreme net loss of £{{VALUE}} from games in last 24 hours' },
+            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000, msg: 'Detected game {{GAME}} with extreme capped net loss of £{{VALUE}} from games in last 24 hours (single wins above £1000 are excluded' },
+            lossFromJackpots_gbp:     { block: 2000000, warn: 100000,                     msg: 'Detected game {{GAME}} with extreme net loss of £{{VALUE}} from jackpots in last 24 hours' },
+            lossFromBonuses_bets_gbp: { block:  100000, warn:  20000,                     msg: 'Detected game {{GAME}} with extreme gross loss of £{{VALUE}} from bonus pays in last 24 hours' },
+            lossFromBonuses_pays_gbp: { block:  100000, warn:  20000,                     msg: 'Detected game {{GAME}} with extreme gross loss of £{{VALUE}} from bonus bets in last 24 hours' },
+            pureLossFromGames_x:      { block:   50000, warn:   8000,                     msg: 'Detected game {{GAME}} with extreme pure math loss of x{{VALUE}} in last 24 hours' },
         },
         
         operators: {
-            lossFromGames_gbp:        { block:  500000, warn:  50000 },
-            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000 },
-            lossFromJackpots_gbp:     { block: 2000000, warn: 100000 },
-            lossFromBonuses_bets_gbp: { block:  150000, warn:  30000 },
-            lossFromBonuses_pays_gbp: { block:  150000, warn:  30000 },
-            pureLossFromGames_x:      { block:   30000, warn:   5000 },
+            lossFromGames_gbp:        { block:  500000, warn:  50000,                     msg: 'Detected operator {{OPERATOR}} with extreme net loss of £{{VALUE}} from games in last 24 hours' },
+            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000, msg: 'Detected operator {{OPERATOR}} with extreme capped net loss of £{{VALUE}} from games in last 24 hours (single wins above £1000 are excluded' },
+            lossFromJackpots_gbp:     { block: 2000000, warn: 100000,                     msg: 'Detected operator {{OPERATOR}} with extreme net loss of £{{VALUE}} from jackpots in last 24 hours' },
+            lossFromBonuses_bets_gbp: { block:  150000, warn:  30000,                     msg: 'Detected operator {{OPERATOR}} with extreme gross loss of £{{VALUE}} from bonus pays in last 24 hours' },
+            lossFromBonuses_pays_gbp: { block:  150000, warn:  30000,                     msg: 'Detected operator {{OPERATOR}} with extreme gross loss of £{{VALUE}} from bonus bets in last 24 hours' },
+            pureLossFromGames_x:      { block:   30000, warn:   5000,                     msg: 'Detected operator {{OPERATOR}} with extreme pure math loss of x{{VALUE}} in last 24 hours' },
         },
     
     
