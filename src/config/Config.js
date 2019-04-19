@@ -39,14 +39,7 @@ const Config = {
             lossFromBonuses_pays_gbp: { block:  150000, warn:  30000,                     msg: 'Detected operator {{OPERATOR}} with extreme gross loss of £{{VALUE}} from bonus bets in last 24 hours' },
             pureLossFromGames_x:      { block:   30000, warn:   5000,                     msg: 'Detected operator {{OPERATOR}} with extreme pure math loss of x{{VALUE}} in last 24 hours' },
         },
-    
-    
-        //TODO: alert when jackpot seed is above 900k
-        //TODO: limit bonus pays in platform?
-        //TODO: there are 2 cayetano games with maxMplr = 50000
-        //TODO: rename pureLoss to mplr
-        //TODO: cappedPureLossFromGames
-        //TODO: grrr bonus collect is tracked as payout
+
     },
     
     
