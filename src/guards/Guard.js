@@ -85,19 +85,10 @@ class Guard {
                 break;
         
             case Trigger.actions.BLOCK_USER:
-                isBlocked = await this.killSwitch.blockUser(trigger)
-                break;
-        
             case Trigger.actions.BLOCK_GAME:
-                isBlocked = await this.killSwitch.blockGame(trigger)
-                break;
-        
             case Trigger.actions.BLOCK_JACKPOT:
-                isBlocked = await this.killSwitch.blockJackpots(trigger)
-                break;
-        
             case Trigger.actions.BLOCK_OPERATOR:
-                isBlocked = await this.killSwitch.blockOperator(trigger)
+                isBlocked = await this.killSwitch.block(trigger)
                 break;
         
             default:

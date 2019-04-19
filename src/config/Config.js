@@ -15,7 +15,7 @@ const Config = {
         
         users: {
             lossFromGames_gbp:        { block:  500000, warn:  50000,                     msg: 'Detected user #{{USER}} with extreme net loss of £{{VALUE}} from games in last 24 hours' },
-            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000, msg: 'Detected game #{{USER}} with extreme capped net loss of £{{VALUE}} from games in last 24 hours (single wins above £1000 are excluded' },
+            cappedLossFromGames_gbp:  { block:  100000, warn:  20000, capWinsAbove: 1000, msg: 'Detected user #{{USER}} with extreme capped net loss of £{{VALUE}} from games in last 24 hours (single wins above £1000 are excluded' },
             lossFromJackpots_gbp:     { block: 2000000, warn: 100000,                     msg: 'Detected user #{{USER}} with extreme net loss of £{{VALUE}} from jackpots in last 24 hours' },
             lossFromBonuses_bets_gbp: { block:   10000, warn:   1000,                     msg: 'Detected user #{{USER}} with extreme gross loss of £{{VALUE}} from bonus pays in last 24 hours' },
             lossFromBonuses_pays_gbp: { block:   10000, warn:   1000,                     msg: 'Detected user #{{USER}} with extreme gross loss of £{{VALUE}} from bonus bets in last 24 hours' },

@@ -1,0 +1,26 @@
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+CREATE TABLE IF NOT EXISTS `_platform_blocked` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `message` varchar(255) NOT NULL,
+  `blocked` enum('YES','NO') NOT NULL,
+  `type` enum('USER','GAME','JACKPOT','OPERATOR') NOT NULL,
+  `userId` int(10) unsigned DEFAULT NULL,
+  `gameName` varchar(100) DEFAULT NULL,
+  `jackpotGroup` varchar(100) DEFAULT NULL,
+  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `resolution` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `time` (`time`),
+  KEY `userId` (`userId`),
+  KEY `gameName` (`gameName`),
+  KEY `jackpotGroup` (`jackpotGroup`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

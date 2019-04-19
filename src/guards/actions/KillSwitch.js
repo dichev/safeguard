@@ -7,77 +7,32 @@ class KillSwitch {
     
     constructor(operator) {
         this.operator = operator
-        this._blocked = {
-            users: [],
-            games: [],
-            jackpots: [],
-            operators: [],
-        }
+        this._blocked = []
     }
     
     /**
      * @param {Trigger} trigger
      * @return {Promise<boolean>}
      */
-    async blockUser(trigger) {
-        if(this._blocked.users.includes(trigger.userId)) return true // TODO: this should be combined with mysql checks
+    async block(trigger) {
+        if (this._blocked.includes(trigger.uid)) return true // TODO: this should be combined with mysql checks
         
-        console.log(prefix(this.operator) + `[BLOCK] Disable user #${trigger.userId}`)
-        let SQL = `UPDATE users SET blocked = 1 WHERE id = :id`
-        this._blocked.users.push(trigger.userId)
-    
-        // console.log('   '+SQL.replace(':id', userId))
-        
+        console.log(prefix(this.operator) + `[BLOCK] Disable #${trigger.uid}`)
         await this.log(trigger)
-        return true
-    }
     
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<boolean>}
-     */
-    async blockGame(trigger) {
-        if(this._blocked.games.includes(trigger.gameName)) return true // TODO: this should be combined with mysql checks
-    
-        console.log(prefix(this.operator) + `[BLOCK] Disable game #${trigger.gameName}`)
-        let SQL = `UPDATE games SET status = 0 WHERE id = :id`
-        this._blocked.games.push(trigger.gameName)
-    
-        // console.log('   '+SQL.replace(':id', gameName))
+        this._blocked.push(trigger.uid)
         
-        await this.log(trigger)
-        return true
-    }
-    
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<boolean>}
-     */
-    async blockJackpots(trigger) {
-        let ID =  trigger.jackpotGroup + '_' + trigger.jackpotPot
-        if (this._blocked.jackpots.includes(ID)) return true
         
-        console.log(prefix(this.operator) + `[BLOCK] Disable jackpots: #${ID}`)
-        let SQL = `UPDATE settings SET value = 'false' WHERE type = 'modules.jackpots'`
-        // console.log('   '+SQL.replace(':id', user.userId))
-        this._blocked.jackpots.push(ID)
-    
-        await this.log(trigger)
-        return true
-    }
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<boolean>}
-     */
-    async blockOperator(trigger) {
-        if (this._blocked.operators.includes(this.operator)) return true
+        // TODO: try catch + permissions checks
+        // TODO: temporary using local instance during testing
         
-        console.log(prefix(this.operator) + `[BLOCK] Disable operator #${this.operator}`)
-        let SQL = `UPDATE settings SET value = 'true' WHERE type = 'maintenance'`
-        // console.log('   '+SQL.replace(':id', user.userId))
-        this._blocked.operators.push(this.operator)
+        let db = await Database.getLocalInstance()
+        await db.query(`
+            INSERT INTO _platform_blocked (message, blocked, type, userId, gameName, jackpotGroup)
+            VALUES (?, ?, ?, ?, ?, ?);
+        `, [trigger.msg, 'YES', trigger.type, trigger.userId, trigger.gameName, trigger.jackpotGroup])
+        
+        
         return true
     }
     
