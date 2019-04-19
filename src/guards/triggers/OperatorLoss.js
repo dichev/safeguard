@@ -89,9 +89,10 @@ class OperatorLoss {
                         type: Trigger.types.OPERATOR,
                         value: value,
                         threshold: threshold.block,
+                        operator: this.operator,
                         msg: threshold.msg.replace('{{OPERATOR}}', this.operator).replace('{{VALUE}}', value.toFixed(2)),
                         period: {from, to},
-                        name: `operators_${metric}`
+                        name: `operators_${metric}`,
                     }))
                 }
             }

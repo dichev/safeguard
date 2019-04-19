@@ -70,6 +70,7 @@ class Jackpots {
                 type: Trigger.types.JACKPOT,
                 value: pot.timedJackpotWonCount,
                 threshold: thresholds.timedJackpotWonCount.block,
+                operator: this.operator,
                 jackpotGroup: pot.groupId,
                 jackpotPot: pot.potId,
                 msg: thresholds.timedJackpotWonCount.msg.replace('{{JACKPOT}}', `[${pot.groupId}_${pot.potId}] "${pot.name}"`).replace('{{VALUE}}', pot.timedJackpotWonCount) + ` ${pot.periodFrom}..${pot.periodEnd}`,

@@ -90,10 +90,11 @@ class GameLoss {
                         type: Trigger.types.GAME,
                         value: value,
                         threshold: threshold.block,
+                        operator: this.operator,
                         gameName: game.gameId,
                         msg: threshold.msg.replace('{{GAME}}', game.gameId).replace('{{VALUE}}', value.toFixed(2)),
                         period: {from, to},
-                        name: `games_${metric}`
+                        name: `games_${metric}`,
                     }))
                 }
             }

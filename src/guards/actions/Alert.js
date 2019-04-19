@@ -23,12 +23,7 @@ class Alert {
     async notify(trigger, blocked = false){
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let ID = trigger.userId || trigger.gameName || (trigger.jackpotGroup ? trigger.jackpotGroup + '_' + trigger.jackpotPot : '') || this.operator
-        let key = trigger.name + '_' + ID
-        if(!trigger.name || !ID) console.warn('Invalid data:', {trigger})
-    
-        
-        let before = this.alerts[key]
+        let before = this.alerts[trigger.uid]
         
         if(before){
             let diff = Math.abs(perc - before.perc)
@@ -39,7 +34,7 @@ class Alert {
             }
         }
     
-        this.alerts[key] = {perc: perc, time: trigger.period.to}
+        this.alerts[trigger.uid] = {perc: perc, time: trigger.period.to}
         
         console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg)
     
