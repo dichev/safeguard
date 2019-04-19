@@ -55,12 +55,13 @@ class KillSwitch {
      * @return {Promise<boolean>}
      */
     async blockJackpots(trigger) {
-        if (this._blocked.jackpots.includes(trigger.potId)) return true
+        let ID =  trigger.jackpotGroup + '_' + trigger.jackpotPot
+        if (this._blocked.jackpots.includes(ID)) return true
         
-        console.log(prefix(this.operator) + `[BLOCK] Disable jackpots: #${trigger.potId}`)
+        console.log(prefix(this.operator) + `[BLOCK] Disable jackpots: #${ID}`)
         let SQL = `UPDATE settings SET value = 'false' WHERE type = 'modules.jackpots'`
         // console.log('   '+SQL.replace(':id', user.userId))
-        this._blocked.jackpots.push(trigger.potId)
+        this._blocked.jackpots.push(ID)
     
         await this.log(trigger)
         return true
@@ -97,8 +98,8 @@ class KillSwitch {
             operator: this.operator,
             userId: trigger.userId,
             gameName: trigger.gameName,
+            jackpotGroup: trigger.jackpotGroup,
             message: trigger.msg,
-            details: null,
             periodFrom: trigger.period.from,
             periodTo: trigger.period.to,
         }

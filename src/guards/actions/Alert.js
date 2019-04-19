@@ -23,7 +23,7 @@ class Alert {
     async notify(trigger, blocked = false){
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let ID = trigger.userId || trigger.potId || trigger.gameName || this.operator
+        let ID = trigger.userId || trigger.gameName || (trigger.jackpotGroup ? trigger.jackpotGroup + '_' + trigger.jackpotPot : '') || this.operator
         let key = trigger.name + '_' + ID
         if(!trigger.name || !ID) console.warn('Invalid data:', {trigger})
     
@@ -53,12 +53,12 @@ class Alert {
             operator: this.operator,
             userId: trigger.userId,
             gameName: trigger.gameName,
-            message: trigger.msg || 'above warning limit',
-            details: null,
+            jackpotGroup: trigger.jackpotGroup,
+            message: trigger.msg,
             periodFrom: trigger.period.from,
             periodTo: trigger.period.to,
         }
-    
+        
     
         let db = await Database.getLocalInstance()
         await db.query(`INSERT INTO alerts (${db.toKeys(row)}) VALUES ?`, db.toValues(row))

@@ -48,12 +48,14 @@ class Jackpots {
         let SQL = `
             SELECT
                 p.potId,
-                c.name,
+                g.groupId,
+                g.name,
                 timePeriods - interval c.repeatOffsetSeconds SECOND AS periodFrom,
                 p.timePeriods AS periodEnd,
                 (SELECT COUNT(*) FROM _jackpot_history h WHERE h.potId = p.potId AND h.timeWon > periodFrom) AS timedJackpotWonCount
             FROM _jackpot_pots p
             JOIN _jackpot_config c ON(c.id = p.potId and c.type = 'time' AND state != 'disabled')
+            LEFT JOIN _jackpot_group_pots g ON(g.potId = p.potId)
             HAVING timedJackpotWonCount >= ${thresholds.timedJackpotWonCount.block}
         `
     
@@ -62,14 +64,16 @@ class Jackpots {
     
         let triggers = []
         for (let pot of found) {
+            console.warn(JSON.stringify(pot))
             triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
                 type: Trigger.types.JACKPOT,
                 value: pot.timedJackpotWonCount,
                 threshold: thresholds.timedJackpotWonCount.block,
-                potId: pot.potId,
-                msg: thresholds.timedJackpotWonCount.msg.replace('{{JACKPOT}}', pot.name).replace('{{VALUE}}', pot.timedJackpotWonCount) + ` ${pot.periodFrom}..${pot.periodEnd}`,
-                period: now,
+                jackpotGroup: pot.groupId,
+                jackpotPot: pot.potId,
+                msg: thresholds.timedJackpotWonCount.msg.replace('{{JACKPOT}}', `[${pot.groupId}_${pot.potId}] "${pot.name}"`).replace('{{VALUE}}', pot.timedJackpotWonCount) + ` ${pot.periodFrom}..${pot.periodEnd}`,
+                period: {from: pot.periodFrom, to: pot.periodEnd},
                 name: 'jackpots_timedJackpotWonCount',
             }))
         }

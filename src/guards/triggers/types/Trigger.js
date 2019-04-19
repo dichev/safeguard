@@ -7,20 +7,23 @@ class Trigger {
      * @param {Trigger.types} type
      * @param {number|null} userId
      * @param {string|null} gameName
-     * @param {number|null} potId
+     * @param {string|null} jackpotGroup
+     * @param {string|null} jackpotPot
      * @param {number} value
      * @param {number} threshold
      * @param {string} msg
      * @param {string} period
      * @param {string} name
      */
-    constructor({action, type, userId = null, gameName = null, potId = null, value, threshold, msg, period, name}) {
+    constructor({action, type, userId = null, gameName = null, jackpotGroup = null, jackpotPot = null, value, threshold, msg, period, name}) {
         if (!Trigger.actions[action]) throw Error('Invalid trigger action: ' + action)
         if (!Trigger.types[type]) throw Error('Invalid trigger type: ' + type)
+        if ((jackpotGroup && !jackpotPot) || (jackpotPot && !jackpotGroup)) throw Error(`Invalid jackpots: jackpotGroup(${jackpotGroup}) jackpotPot(${jackpotPot})`)
         
         this.userId = userId || null
         this.gameName = gameName || null
-        this.potId = potId || null
+        this.jackpotGroup = jackpotGroup || null
+        this.jackpotPot = jackpotPot || null
         
         this.type = type
         this.action = action
@@ -29,8 +32,6 @@ class Trigger {
         this.msg = msg
         this.period = period
         this.name = name
-        
-        
     }
     
 }
