@@ -87,6 +87,7 @@ class GameLoss {
                 if (value >= threshold.warn) {
                     triggers.push(new Trigger({
                         action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_GAME,
+                        type: Trigger.types.GAME,
                         value: value,
                         threshold: threshold.block,
                         gameName: game.gameId,

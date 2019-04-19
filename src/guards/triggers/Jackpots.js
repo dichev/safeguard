@@ -64,6 +64,7 @@ class Jackpots {
         for (let pot of found) {
             triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK_JACKPOT,
+                type: Trigger.types.JACKPOT,
                 value: pot.timedJackpotWonCount,
                 threshold: thresholds.timedJackpotWonCount.block,
                 potId: pot.potId,

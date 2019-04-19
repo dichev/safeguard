@@ -90,6 +90,7 @@ class KillSwitch {
         let row = {
             name: trigger.name,
             blocked: 'YES',
+            type: trigger.type,
             percent: perc / 100,
             value: trigger.value,
             threshold: trigger.threshold,

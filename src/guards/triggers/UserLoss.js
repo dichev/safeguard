@@ -87,6 +87,7 @@ class UserLoss {
                 if (value >= threshold.warn) {
                     triggers.push(new Trigger({
                         action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                        type: Trigger.types.USER,
                         value: value,
                         threshold: threshold.block,
                         userId: user.userId,

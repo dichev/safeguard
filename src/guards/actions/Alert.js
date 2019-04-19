@@ -23,9 +23,9 @@ class Alert {
     async notify(trigger, blocked = false){
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let type = trigger.userId || trigger.potId || trigger.gameName || this.operator
-        let key = trigger.name + '_' + type
-        if(!trigger.name || !type) console.warn('Invalid data:', {trigger})
+        let ID = trigger.userId || trigger.potId || trigger.gameName || this.operator
+        let key = trigger.name + '_' + ID
+        if(!trigger.name || !ID) console.warn('Invalid data:', {trigger})
     
         
         let before = this.alerts[key]
@@ -46,6 +46,7 @@ class Alert {
         let row = {
             name: trigger.name,
             blocked: blocked ? 'YES' : 'NO',
+            type: trigger.type,
             percent: perc / 100,
             value: trigger.value,
             threshold: trigger.threshold,
