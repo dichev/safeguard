@@ -1,10 +1,10 @@
 'use strict'
 
 const Trigger = require('./types/Trigger')
-const Database = require('../lib/Database')
-const Config = require('../config/Config')
+const Database = require('../../lib/Database')
+const Config = require('../../config/Config')
 const moment = require('moment')
-const prefix = require('../lib/Utils').prefix
+const prefix = require('../../lib/Utils').prefix
 const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 
 class OperatorLoss {

@@ -2,7 +2,7 @@
 
 const http = require('http')
 const prefix = require('./lib/Utils').prefix
-const Metrics = require('./actions/Metrics')
+const Metrics = require('./guards/actions/Metrics')
 
 const PORT = require('./config/Config').server.port
 const HTTP_BAD_REQUEST = 400
@@ -16,6 +16,7 @@ class Server {
     
     constructor(){
         this._server = null
+        this.metricsHandler = null
     }
     
     routes(request, response){
@@ -28,7 +29,7 @@ class Server {
         }
         else if (method === 'GET' && url === '/metrics') {
             response.setHeader('Content-Type', 'text/plain')
-            response.end(Metrics.exportAll())
+            this.metricsHandler().then(output => response.end(output))
         }
         else {
             response.setHeader('Content-Type', 'application/json')

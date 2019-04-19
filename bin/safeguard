@@ -3,13 +3,10 @@
 'use strict';
 
 require('moment-recur')
-const moment = require('moment')
 const program = require('commander')
-const sleep = require('../src/lib/Utils').sleep
-const Safeguard = require('../src/SafeGuard')
+const SafeGuard = require('../src/App')
 const Server = require('../src/Server')
 
-const THROTTLE = require('../src/config/Config').schedule.initialThrottleBetweenOperators
 const OPERATORS = Object.keys(require('../src/config/Config').credentials.databases.operators)
 
 
@@ -26,20 +23,17 @@ program
 
 
 ;(async function () {
+    let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : OPERATORS
+    let safeguard = new SafeGuard(operators)
     
     if(program.serve) {
         if(program.history) throw Error('The server is not supported with --history')
-        let server = new Server()
-        server.listen()
+        await safeguard.serve()
     }
 
     if(program.clean) {
-        await Safeguard.cleanDatabaseLogs()
+        await safeguard.cleanDatabaseLogs()
     }
-
-    let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : OPERATORS
-    let guards = operators.map(operator => new Safeguard(operator))
-    
     
     if(program.history){
         console.warn(`\n=== Running in history mode for ${program.history} ===\n`)
@@ -50,27 +44,11 @@ program
             from = to = program.history
         }
     
-        if(moment.utc(from).isAfter(moment.utc(to))) throw Error('Invalid dates! The history start period can not be after the end period')
-        if(moment.utc(to).isSameOrAfter(moment.utc().startOf('day'))) throw Error('Invalid dates! The history end period must be before today')
-        
-        let interval = moment().recur(from, to).all('YYYY-MM-DD');
-        
-        for (let date of interval) {
-            for (let guard of guards) {
-                await guard.history(date)
-            }
-            // console.log(`-`.repeat(140))
-        }
-    
-        await Safeguard.closeDatabaseConnections()
+        await safeguard.history(from, to)
     }
     
     else {
-        // run each operator in parallel
-        await Promise.all(guards.map(async (guard, i) => {
-            await sleep(i * THROTTLE) // throttle db connections
-            await guard.activate()
-        }))
+        await safeguard.activate()
     }
     
 })()

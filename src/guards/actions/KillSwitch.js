@@ -1,7 +1,7 @@
 'use strict'
 
-const Database = require('../lib/Database')
-const prefix = require('../lib/Utils').prefix
+const Database = require('../../lib/Database')
+const prefix = require('../../lib/Utils').prefix
 
 class KillSwitch {
     

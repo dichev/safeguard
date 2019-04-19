@@ -1,8 +1,7 @@
 'use strict'
 
-const Config = require('../config/Config')
+const Config = require('../../config/Config')
 
-const pool = []
 
 class Metrics {
     
@@ -10,7 +9,6 @@ class Metrics {
         this.operator = operator
         this.metrics = {}
         this.metrics[`safeguard_tracking{operator="${this.operator}"}`] = { value: 0, time: Date.now() }
-        pool.push(this)
     }
     
     
@@ -35,17 +33,6 @@ class Metrics {
     }
     
     /**
-     * @param options
-     * @param {int} options.count
-     * @param {string} options.status
-     * @param {msg} options.msg
-     * @retunr Array
-     */
-    collectLogs({ count, status, msg }){
-        this.metrics[`safeguard_logs_${status.toLowerCase()}{operator="${this.operator}",msg="${msg}"}`] = { value: count, time: Date.now() }
-    }
-    
-    /**
      * Clean up metrics which didn't triggered
      * @param {Number} timestamp - all metrics before this timestamp will be cleaned
      */
@@ -64,34 +51,12 @@ class Metrics {
     export(){
         let output = ''
         for(let [metric, {value, time}] of Object.entries(this.metrics)){
-            // output += `# HELP ${metric} infoo`
-            // output += `# TYPE ${metric} gauge`
             output += `${metric} ${value}\n`
         }
         // console.log(output)
         return output
     }
-    
-    static exportAll() {
-        let output = ''
-        
-        // export thresholds
-        for (let type in Config.thresholds) {
-            for (let name in Config.thresholds[type]) {
-                let {warn, block} = Config.thresholds[type][name]
-                output += `safeguard_${type}_${name}_threshold_warn ${warn}\n`
-                output += `safeguard_${type}_${name}_threshold_block ${block}\n`
-            }
-        }
-    
-        // export metrics by operator
-        for (let metrics of pool) {
-            output += metrics.export()
-        }
-        
-        return output
-    }
-    
+ 
 }
 
 module.exports = Metrics
