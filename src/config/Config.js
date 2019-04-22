@@ -6,11 +6,7 @@ const Config = {
     
     killSwitch: {
         enabled: true,
-        debug: {
-            storeBlockedInSafeguardDatabase: true
-        },
     },
-    
     
     schedule: {
         intervalBetweenIterations: 60, // sec
@@ -64,15 +60,18 @@ const Config = {
             
             operators: { // dynamically configured
                 OPERATOR: {
+                    killSwitch:  { database: '', host: '', user: '', password: '', ssh: {}  }, // this database must contain table _blocked
+                    
                     platform:    { database: '', host: '', user: '', password: '', ssh: {}  },
-                    demo:        { database: '', host: '', user: '', password: '', ssh: {}  },
-                    panel:       { database: '', host: '', user: '', password: '', ssh: {}  },
                     jackpot:     { database: '', host: '', user: '', password: '', ssh: {}  },
-                    stats:       { database: '', host: '', user: '', password: '', ssh: {}  },
                     segments:    { database: '', host: '', user: '', password: '', ssh: {}  },
-                    tournaments: { database: '', host: '', user: '', password: '', ssh: {}  },
-                    rewards:     { database: '', host: '', user: '', password: '', ssh: {}  },
-                    bonus:       { database: '', host: '', user: '', password: '', ssh: {}  },
+                    
+                    // demo:        { database: '', host: '', user: '', password: '', ssh: {}  },
+                    // panel:       { database: '', host: '', user: '', password: '', ssh: {}  },
+                    // stats:       { database: '', host: '', user: '', password: '', ssh: {}  },
+                    // tournaments: { database: '', host: '', user: '', password: '', ssh: {}  },
+                    // rewards:     { database: '', host: '', user: '', password: '', ssh: {}  },
+                    // bonus:       { database: '', host: '', user: '', password: '', ssh: {}  },
                     // archive:     { database: '', host: '', user: '', password: '', ssh: {}  },
                 }
             },

@@ -4,9 +4,6 @@ const Config = require('./Config.js')
 const cfg = require('configurator')
 
 Config.production = false
-Config.killSwitch.enabled = true
-Config.killSwitch.debug.storeBlockedInSafeguardDatabase = true
-
 
 const HOST = '127.0.0.1'
 const USER = cfg.access.mysql.readOnly.user
@@ -18,15 +15,11 @@ for(let operator of Object.values(cfg.operators)){
     const SSH = { host: databases.master,  username: 'dopamine',  agent: 'pageant',  agentForward: true }
 
     operators[operator.name] = {
+        killSwitch:  { database: 'safeguard', host: '127.0.0.1', user: 'root', password: '', ssh: false }, // do not attempt to add records in replications
+
         platform:    { database: operator.dbPrefix + 'platform',    host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
-        demo:        { database: operator.dbPrefix + 'demo',        host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
-        panel:       { database: operator.dbPrefix + 'panel',       host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
         jackpot:     { database: operator.dbPrefix + 'jackpot',     host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
-        stats:       { database: operator.dbPrefix + 'stats',       host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
         segments:    { database: operator.dbPrefix + 'segments',    host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
-        tournaments: { database: operator.dbPrefix + 'tournaments', host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
-        rewards:     { database: operator.dbPrefix + 'rewards',     host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
-        bonus:       { database: operator.dbPrefix + 'bonus',       host: HOST,  user: USER,   password: PASS,   ssh: SSH   },
     }
 
     if(operator.sharedJackpot) {

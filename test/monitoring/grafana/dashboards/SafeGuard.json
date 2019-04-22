@@ -14,7 +14,8 @@
   },
   "editable": true,
   "gnetId": null,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
+  "id": 74,
   "links": [],
   "panels": [
     {
@@ -167,7 +168,7 @@
         {
           "expr": "safeguard_logs_warn",
           "format": "time_series",
-          "interval": "60s",
+          "interval": "20m",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | {{msg}}",
           "refId": "A",
@@ -260,7 +261,7 @@
         {
           "expr": "safeguard_logs_error",
           "format": "time_series",
-          "interval": "60s",
+          "interval": "20m",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | {{msg}}",
           "refId": "A",
@@ -2334,14 +2335,14 @@
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 16,
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -2372,5 +2373,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 47
+  "version": 50
 }

@@ -88,15 +88,13 @@ class Guard {
     async validateDatabasePermissions(){
         let operator = this.operator
         
-        let db = await Database.getPlatformInstance(operator)
-        let dbname = Config.credentials.databases.operators[operator].platform.database
-        
+        let db = await Database.getKillSwitchInstance(operator)
         let grants = await db.query('SHOW GRANTS FOR CURRENT_USER()');
-        let expected = "GRANT SELECT, INSERT ON `" + dbname + "`.`_blocked` TO 'safeguard'@'%'"
+        let expected = "GRANT SELECT, INSERT ON `" + db.dbname + "`.`_blocked` TO 'safeguard'@'%'"
         let found = grants.map(row => Object.values(row)[0]).find(rule => rule === expected)
         if (!found) {
             console.verbose(grants.map(row => Object.values(row)[0]))
-            throw Error(`Can't find expected database permissions for ${dbname}._blocked table:\n${expected}`)
+            throw Error(`Can't find expected database permissions for ${db.dbname}._blocked table:\n ${expected}\nTry running with disabled kill switch (Config.killSwitch.enabled = false) or fix the db permissions`)
         }
     }
     

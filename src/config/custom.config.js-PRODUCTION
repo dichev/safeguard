@@ -4,9 +4,6 @@ const Config = require('./Config.js')
 const OPERATORS = require('/opt/servers-conf/automate.json').safeguard // [{ name, db.host, db.prefix, db.sharedJackpot }]
 
 Config.production = true
-Config.killSwitch.enabled = true
-Config.killSwitch.debug.storeBlockedInSafeguardDatabase = false
-
 
 const HOST = '127.0.0.1'
 const USER = 'safeguard'
@@ -18,18 +15,14 @@ let operators = {}
 for(let operator of OPERATORS){
 
     operators[operator.name] = {
+        killSwitch:  { database: operator.db.prefix + 'platform',    host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
+
         platform:    { database: operator.db.prefix + 'platform',    host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
-        demo:        { database: operator.db.prefix + 'demo',        host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
-        panel:       { database: operator.db.prefix + 'panel',       host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
         jackpot:     { database: operator.db.prefix + 'jackpot',     host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
-        stats:       { database: operator.db.prefix + 'stats',       host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
         segments:    { database: operator.db.prefix + 'segments',    host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
-        tournaments: { database: operator.db.prefix + 'tournaments', host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
-        rewards:     { database: operator.db.prefix + 'rewards',     host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
-        bonus:       { database: operator.db.prefix + 'bonus',       host: operator.db.host,  user: USER,   password: PASS,   ssh: false  },
     }
 
-    if (operator.db.sharedJackpot) {
+    if(operator.db.sharedJackpot) {
         operators[operator.name]['jackpot'].database = operator.db.sharedJackpot
         operators[operator.name]['jackpot'].host = operator.db.sharedJackpotHost
 

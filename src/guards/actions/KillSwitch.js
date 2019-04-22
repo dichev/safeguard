@@ -27,15 +27,8 @@ class KillSwitch {
         
         
         // TODO: try catch + permissions checks
-        // TODO: temporary using local instance during testing
         
-        let db;
-        if(Config.killSwitch.debug.storeBlockedInSafeguardDatabase) {
-            db = await Database.getLocalInstance()
-        } else {
-            db = await Database.getPlatformInstance()
-        }
-        
+        let db = await Database.getKillSwitchInstance(this.operator);
         
         await db.query(`
             INSERT INTO _platform_blocked (message, blocked, type, userId, gameName, jackpotGroup)

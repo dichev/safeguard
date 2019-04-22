@@ -4,15 +4,11 @@ const Config = require('./Config.js')
 
 Config.credentials.databases.operators = {
     'local': {
+        killSwitch:  { database: 'hermes_dev_platform',    host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
+
         platform:    { database: 'hermes_dev_platform',    host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
-        demo:        { database: 'hermes_dev_demo',        host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
-        panel:       { database: 'hermes_dev_panel',       host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
         jackpot:     { database: 'hermes_dev_jackpot',     host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
-        stats:       { database: 'hermes_dev_stats',       host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
         segments:    { database: 'hermes_dev_segments',    host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
-        tournaments: { database: 'hermes_dev_tournaments', host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
-        rewards:     { database: 'hermes_dev_rewards',     host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
-        bonus:       { database: 'hermes_dev_bonus',       host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },
     },
     // ...
 }

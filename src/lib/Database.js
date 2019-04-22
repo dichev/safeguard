@@ -36,16 +36,10 @@ class Database extends DatabasePool {
     /**
      * @return {Promise<MySQL>}
      */
-    static async getArchiveInstance(operator){
-        return this.getInstance(operator, Config.credentials.databases.operators[operator].archive)
+    static async getKillSwitchInstance(operator){
+        return this.getInstance(operator, Config.credentials.databases.operators[operator].killSwitch)
     }
-    
-    /**
-     * @return {Promise<MySQL>}
-     */
-    static async getAggregationsInstance(operator){
-        return this.getInstance(operator, Config.credentials.databases.aggregations)
-    }
+  
     
 }
 

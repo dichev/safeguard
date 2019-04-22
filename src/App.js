@@ -17,7 +17,12 @@ const THROTTLE = require('../src/config/Config').schedule.initialThrottleBetween
 
 class App {
     
+    /**
+     * @param {Array} operators
+     */
     constructor(operators){
+        this.operators = operators
+        
         /**@type Array<Guard> */
         this.guards = []
         for(let operator of operators) {
@@ -26,31 +31,6 @@ class App {
         
         this.log = new Log()
         this.metrics = new Metrics()
-    }
-    
-    async validateSettings(){
-        try {
-            // check for wrong configuration
-            if (Config.production) {
-                if (!Config.killSwitch.enabled) await this.log.warn('APP', {msg: `Running in PRODUCTION mode with disabled kill switch`})
-                if (Config.killSwitch.enabled && Config.killSwitch.debug.storeBlockedInSafeguardDatabase) throw Error('Running in PRODUCTION mode with debug.storeBlockedInSafeguardDatabase is not allowed')
-    
-            } else {
-                await this.log.warn('APP', {msg: `INFO | Running in non-production mode with ${Config.killSwitch.enabled ? 'enabled' : 'disabled'} kill switch and storeBlockedInSafeguardDatabase: ${Config.killSwitch.debug.storeBlockedInSafeguardDatabase} `})
-                if (Config.killSwitch.enabled && !Config.killSwitch.debug.storeBlockedInSafeguardDatabase) await this.log.warn('APP', {msg: `When running in non-production mode with kill switch enabled - is recommended to activate debug.storeBlockedInSafeguardDatabase to avoid attempts to insert block records in replications`})
-            }
-    
-            // check for wrong db permissions
-            if(Config.killSwitch.enabled && !Config.killSwitch.debug.storeBlockedInSafeguardDatabase) {
-                for (let guard of this.guards) await guard.validateDatabasePermissions()
-                Database.killAllConnections()
-            }
-            
-        } catch (err) {
-            await this.log.error('APP', {msg: err.toString()})
-            throw err
-        }
-        
     }
     
     async activate(){
@@ -129,6 +109,40 @@ class App {
         }
         
         return output
+    }
+    
+    
+    async validateSettings(){
+        try {
+            // check for wrong configuration
+            if (Config.production) {
+                if (!Config.killSwitch.enabled) {
+                    await this.log.warn('APP', {msg: `Running in PRODUCTION mode with disabled kill switch`})
+                } else {
+                    for(let operator of this.operators){
+                        let dbA = Config.credentials.databases.operators[operator].platform
+                        let dbB = Config.credentials.databases.operators[operator].killSwitch
+                        if (dbA.database !== dbB.database || dbA.host !== dbB.host || (dbA.ssh && dbA.ssh.host) !== (dbB.ssh && dbB.ssh.host)) {
+                            console.verbose(dbA.database +' ~ '+ dbB.database + '\n' + dbA.host +' ~ '+ dbB.host + '\n' + (dbA.ssh && dbA.ssh.host) +' ~ '+ (dbB.ssh && dbB.ssh.host))
+                            await this.log.warn(operator, { msg: `The killswitch database is not the same as the operator database. This will lead to fake blocking attempts in case of kill switch` })
+                        }
+                    }
+                }
+            } else {
+                await this.log.warn('APP', {msg: `INFO | Running in non-production mode with ${Config.killSwitch.enabled ? 'enabled' : 'disabled'} kill switch`})
+            }
+    
+            // check for wrong db permissions
+            if(Config.killSwitch.enabled) {
+                for (let guard of this.guards) await guard.validateDatabasePermissions()
+                Database.killAllConnections()
+            }
+            
+        } catch (err) {
+            await this.log.error('APP', {msg: err.toString()})
+            throw err
+        }
+        
     }
     
     /**
