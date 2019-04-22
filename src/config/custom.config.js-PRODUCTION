@@ -3,6 +3,11 @@
 const Config = require('./Config.js')
 const OPERATORS = require('/opt/servers-conf/automate.json').safeguard // [{ name, db.host, db.prefix, db.sharedJackpot }]
 
+Config.production = true
+Config.killSwitch.enabled = true
+Config.killSwitch.debug.storeBlockedInSafeguardDatabase = false
+
+
 const HOST = '127.0.0.1'
 const USER = 'safeguard'
 const PASS = ''

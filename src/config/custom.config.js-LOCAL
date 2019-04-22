@@ -2,7 +2,6 @@
 
 const Config = require('./Config.js')
 
-
 Config.credentials.databases.operators = {
     'local': {
         platform:    { database: 'hermes_dev_platform',    host: '127.0.0.1',  user: 'root',   password: '',   ssh: false  },

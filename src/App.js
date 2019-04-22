@@ -29,6 +29,18 @@ class App {
     }
     
     async activate(){
+        if(Config.production) {
+            if(!Config.killSwitch.enabled) await this.log.warn('APP', {msg: `Running in PRODUCTION mode with disabled kill switch`})
+            if(Config.killSwitch.enabled && Config.killSwitch.debug.storeBlockedInSafeguardDatabase) {
+                await this.log.error('APP', {msg: `Running in PRODUCTION mode with debug.storeBlockedInSafeguardDatabase is not allowed`})
+                throw Error('Running in PRODUCTION mode with debug.storeBlockedInSafeguardDatabase is not allowed')
+            }
+        } else {
+            await this.log.warn('APP', {msg: `INFO | Running in non-production mode with ${Config.killSwitch.enabled ? 'enabled' : 'disabled'} kill switch`})
+            if (Config.killSwitch.enabled && !Config.killSwitch.debug.storeBlockedInSafeguardDatabase) await this.log.warn('APP', {msg: `When running in non-production mode with kill switch enabled - is recommended to activate debug.storeBlockedInSafeguardDatabase to avoid attempts to insert block records in replications`})
+        }
+        
+        
         // run each operator in parallel
         await Promise.all(this.guards.map(async (guard, i) => {
             await sleep(i * THROTTLE) // throttle db connections

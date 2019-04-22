@@ -2,6 +2,16 @@
 
 const Config = {
     
+    production: false,
+    
+    killSwitch: {
+        enabled: true,
+        debug: {
+            storeBlockedInSafeguardDatabase: false
+        },
+    },
+    
+    
     schedule: {
         intervalBetweenIterations: 60, // sec
         initialThrottleBetweenOperators: 0.5, // sec
@@ -10,7 +20,7 @@ const Config = {
     thresholds: {
         
         jackpots: {
-            timedJackpotWonCount:     { block: 2,       warn: 1.1,                        msg: 'Timed jackpot {{JACKPOT} was won {{VALUE}} times, but is expected to be won just once during its period' },
+            timedJackpotWonCount:     { block:       2, warn:    1.1,                     msg: 'Timed jackpot {{JACKPOT} was won {{VALUE}} times, but is expected to be won just once during its period' },
         },
         
         users: {
@@ -76,7 +86,8 @@ const Config = {
     logs: {
         prefixTimestamp: true,
         warnIfDurationAbove: 1500 // ms
-    }
+    },
+    
 }
 
 module.exports = Config
@@ -88,4 +99,3 @@ try {
     if (err.code === 'MODULE_NOT_FOUND') return false;
     throw err
 }
-

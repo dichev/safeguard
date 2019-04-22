@@ -1,6 +1,7 @@
 'use strict'
 
 const Database = require('../../lib/Database')
+const Config = require('../../config/Config')
 const prefix = require('../../lib/Utils').prefix
 
 class KillSwitch {
@@ -15,6 +16,8 @@ class KillSwitch {
      * @return {Promise<boolean>}
      */
     async block(trigger) {
+        if(Config.killSwitch.enabled) return false
+        
         if (this._blocked.includes(trigger.uid)) return true // TODO: this should be combined with mysql checks
         
         console.log(prefix(this.operator) + `[BLOCK] Disable #${trigger.uid}`)
@@ -26,10 +29,17 @@ class KillSwitch {
         // TODO: try catch + permissions checks
         // TODO: temporary using local instance during testing
         
-        let db = await Database.getLocalInstance()
+        let db;
+        if(Config.killSwitch.debug.storeBlockedInSafeguardDatabase) {
+            db = await Database.getLocalInstance()
+        } else {
+            db = await Database.getPlatformInstance()
+        }
+        
+        
         await db.query(`
             INSERT INTO _platform_blocked (message, blocked, type, userId, gameName, jackpotGroup)
-            VALUES (?, ?, ?, ?, ?, ?);
+            VALUES (?, ?, ?, ?, ?, ?)
         `, [trigger.msg, 'YES', trigger.type, trigger.userId, trigger.gameName, trigger.jackpotGroup])
         
         

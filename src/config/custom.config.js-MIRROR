@@ -3,6 +3,10 @@
 const Config = require('./Config.js')
 const cfg = require('configurator')
 
+Config.production = false
+Config.killSwitch.enabled = true
+Config.killSwitch.debug.storeBlockedInSafeguardDatabase = false
+
 
 const HOST = '127.0.0.1'
 const USER = cfg.access.mysql.readOnly.user

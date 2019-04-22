@@ -10,6 +10,7 @@ class Log {
     async error(operator, data, startedAt = null){
         try {
             let json = JSON.stringify(data)
+            console.error(prefix(operator) + json)
             let db = await Database.getLocalInstance()
             await db.query(`INSERT INTO log (operator, status, result, timeStarted, timeEnded) VALUES (?, ?, ?, FROM_UNIXTIME(? / 1000), NOW(3))`, [operator, 'ERROR', json, startedAt || Date.now()])
         } catch (e) {
