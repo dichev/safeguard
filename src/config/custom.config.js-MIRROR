@@ -5,7 +5,7 @@ const cfg = require('configurator')
 
 Config.production = false
 Config.killSwitch.enabled = true
-Config.killSwitch.debug.storeBlockedInSafeguardDatabase = false
+Config.killSwitch.debug.storeBlockedInSafeguardDatabase = true
 
 
 const HOST = '127.0.0.1'

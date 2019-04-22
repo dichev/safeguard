@@ -85,6 +85,20 @@ class Guard {
         this.alerts.cleanup(startAt)
     }
     
+    async validateDatabasePermissions(){
+        let operator = this.operator
+        
+        let db = await Database.getPlatformInstance(operator)
+        let dbname = Config.credentials.databases.operators[operator].platform.database
+        
+        let grants = await db.query('SHOW GRANTS FOR CURRENT_USER()');
+        let expected = "GRANT SELECT, INSERT ON `" + dbname + "`.`_blocked` TO 'safeguard'@'%'"
+        let found = grants.map(row => Object.values(row)[0]).find(rule => rule === expected)
+        if (!found) {
+            console.verbose(grants.map(row => Object.values(row)[0]))
+            throw Error(`Can't find expected database permissions for ${dbname}._blocked table:\n${expected}`)
+        }
+    }
     
 }
 

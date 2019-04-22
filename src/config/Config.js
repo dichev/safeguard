@@ -7,7 +7,7 @@ const Config = {
     killSwitch: {
         enabled: true,
         debug: {
-            storeBlockedInSafeguardDatabase: false
+            storeBlockedInSafeguardDatabase: true
         },
     },
     
@@ -58,7 +58,7 @@ const Config = {
             safeguard: {
                 database: 'safeguard',
                 host: '127.0.0.1',
-                user: 'root',
+                user: 'safeguard',
                 password: ''
             },
             
