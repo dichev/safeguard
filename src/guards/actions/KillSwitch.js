@@ -31,7 +31,7 @@ class KillSwitch {
         let db = await Database.getKillSwitchInstance(this.operator);
         
         await db.query(`
-            INSERT INTO _platform_blocked (message, blocked, type, userId, gameName, jackpotGroup)
+            INSERT INTO _blocked (message, blocked, type, userId, gameName, jackpotGroup)
             VALUES (?, ?, ?, ?, ?, ?)
         `, [trigger.msg, 'YES', trigger.type, trigger.userId, trigger.gameName, trigger.jackpotGroup])
         
