@@ -50,54 +50,39 @@ class Guard {
         }
         
         if(date.isSameOrAfter(this._startDate)) {
-            await this.check(date.format('YYYY-MM-DD'))
+           date = date.format('YYYY-MM-DD')
+    
+            console.log(prefix(this.operator) +`[${date}] Checking for anomalies..`)
+            let startAt = Date.now()
+    
+            for (let test of this.tests) {
+                let triggers = await test.execHistoric(date)
+                for (let trigger of triggers) {
+                    await this.alerts.notify(trigger)
+                }
+            }
+            this.alerts.cleanup(startAt)
         }
         
     }
     
-    async check(date = false){
-        console.log(prefix(this.operator) + (date ? `[${date}] ` : '') + `Checking for anomalies..`)
+    async check(){
+        console.log(prefix(this.operator) + `Checking for anomalies..`)
         let startAt = Date.now()
         
         for (let test of this.tests) {
-            let triggers = date ? await test.execHistoric(date) : await test.exec()
+            let triggers = await test.exec()
             for(let trigger of triggers) {
-                await this._handleTrigger(trigger)
+                let isBlocked = false
+                if(trigger.action === Trigger.actions.BLOCK) {
+                    isBlocked = await this.killSwitch.block(trigger)
+                }
+                await this.alerts.notify(trigger, isBlocked)
+                this.metrics.collectTrigger(trigger)
             }
         }
         this.metrics.cleanup(startAt)
         this.alerts.cleanup(startAt)
-}
-    
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<void>}
-     * @private
-     */
-    async _handleTrigger(trigger){
-        let isBlocked = false
-    
-        switch (trigger.action) {
-        
-            case Trigger.actions.ALERT:
-                //
-                break;
-        
-            case Trigger.actions.BLOCK_USER:
-            case Trigger.actions.BLOCK_GAME:
-            case Trigger.actions.BLOCK_JACKPOT:
-            case Trigger.actions.BLOCK_OPERATOR:
-                isBlocked = await this.killSwitch.block(trigger)
-                break;
-        
-            default:
-                throw Error('Unexpected action: ' + trigger.value)
-        
-        }
-    
-        await this.alerts.notify(trigger, isBlocked)
-        this.metrics.collectTrigger(trigger)
     }
     
     

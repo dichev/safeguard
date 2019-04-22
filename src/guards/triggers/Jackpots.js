@@ -66,7 +66,7 @@ class Jackpots {
         for (let pot of found) {
             console.warn(JSON.stringify(pot))
             triggers.push(new Trigger({
-                action: Trigger.actions.BLOCK_JACKPOT,
+                action: Trigger.actions.BLOCK,
                 type: Trigger.types.JACKPOT,
                 value: pot.timedJackpotWonCount,
                 threshold: thresholds.timedJackpotWonCount.block,

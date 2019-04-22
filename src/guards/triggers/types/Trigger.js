@@ -55,10 +55,7 @@ Trigger.types = {
 
 Trigger.actions = {
     ALERT: 'ALERT',
-    BLOCK_USER: 'BLOCK_USER',
-    BLOCK_GAME: 'BLOCK_GAME',
-    BLOCK_JACKPOT: 'BLOCK_JACKPOT',
-    BLOCK_OPERATOR: 'BLOCK_OPERATOR',
+    BLOCK: 'BLOCK',
 }
 
 module.exports = Trigger

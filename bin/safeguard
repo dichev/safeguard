@@ -5,7 +5,6 @@
 require('moment-recur')
 const program = require('commander')
 const SafeGuard = require('../src/App')
-const Server = require('../src/Server')
 
 const OPERATORS = Object.keys(require('../src/config/Config').credentials.databases.operators)
 

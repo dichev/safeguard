@@ -85,7 +85,7 @@ class OperatorLoss {
         
                 if (value >= threshold.warn) {
                     triggers.push(new Trigger({
-                        action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_OPERATOR,
+                        action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK,
                         type: Trigger.types.OPERATOR,
                         value: value,
                         threshold: threshold.block,
