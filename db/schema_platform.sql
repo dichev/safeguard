@@ -16,9 +16,7 @@ CREATE TABLE IF NOT EXISTS `_blocked` (
   `resolution` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `time` (`time`),
-  KEY `userId` (`userId`),
-  KEY `gameName` (`gameName`),
-  KEY `jackpotGroup` (`jackpotGroup`)
+  KEY `blocked` (`blocked`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

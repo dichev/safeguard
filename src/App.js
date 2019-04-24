@@ -35,8 +35,8 @@ class App {
         this.metrics = new Metrics()
         
         if(debugReduceThresholds){
-            if(debugReduceThresholds > 1) throw Error(`Invalid value for debugReduceThresholds(${debugReduceThresholds}). It's expected to be between [0.0, 1.0]`)
             if(Config.production) throw Error('debugReduceThresholds is not allowed on production')
+            if(debugReduceThresholds > 1) throw Error(`Invalid value for debugReduceThresholds(${debugReduceThresholds}). It's expected to be between [0.0, 1.0]`)
             console.warn('WARNING! Running in debug mode: reducing all thresholds by ' + debugReduceThresholds);
             for(let type in Config.thresholds) for (let threshold in Config.thresholds[type]) {
                 Config.thresholds[type][threshold].warn  *= debugReduceThresholds

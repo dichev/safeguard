@@ -16,25 +16,23 @@ class KillSwitch {
      * @return {Promise<boolean>}
      */
     async block(trigger) {
-        if(Config.killSwitch.enabled) return false
-        
-        if (this._blocked.includes(trigger.uid)) return true // TODO: this should be combined with mysql checks
-        
+        if(!Config.killSwitch.enabled) return false
+
+        if (this._blocked.includes(trigger.uid)) return true // TODO: this should be combined with mysql checks to support reactivating of the user
+
         console.log(prefix(this.operator) + `[BLOCK] Disable #${trigger.uid}`)
         await this.log(trigger)
-    
-        this._blocked.push(trigger.uid)
-        
-        
-        // TODO: try catch + permissions checks
         
         let db = await Database.getKillSwitchInstance(this.operator);
         
+        // Actual kill switch:
         await db.query(`
             INSERT INTO _blocked (message, blocked, type, userId, gameName, jackpotGroup)
             VALUES (?, ?, ?, ?, ?, ?)
         `, [trigger.msg, 'YES', trigger.type, trigger.userId, trigger.gameName, trigger.jackpotGroup])
-        
+    
+    
+        this._blocked.push(trigger.uid)
         
         return true
     }
