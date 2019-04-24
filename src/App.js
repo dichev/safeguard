@@ -18,9 +18,11 @@ const THROTTLE = require('../src/config/Config').schedule.initialThrottleBetween
 class App {
     
     /**
-     * @param {Array} operators
+     * @param {Array}   operators
+     * @param {object}  [options]
+     * @param {number} [options.debugReduceThresholds]
      */
-    constructor(operators){
+    constructor(operators, { debugReduceThresholds = 0.00 } = {}){
         this.operators = operators
         
         /**@type Array<Guard> */
@@ -31,6 +33,16 @@ class App {
         
         this.log = new Log()
         this.metrics = new Metrics()
+        
+        if(debugReduceThresholds){
+            if(debugReduceThresholds > 1) throw Error(`Invalid value for debugReduceThresholds(${debugReduceThresholds}). It's expected to be between [0.0, 1.0]`)
+            if(Config.production) throw Error('debugReduceThresholds is not allowed on production')
+            console.warn('WARNING! Running in debug mode: reducing all thresholds by ' + debugReduceThresholds);
+            for(let type in Config.thresholds) for (let threshold in Config.thresholds[type]) {
+                Config.thresholds[type][threshold].warn  *= debugReduceThresholds
+                Config.thresholds[type][threshold].block *= debugReduceThresholds
+            }
+        }
     }
     
     async activate(){

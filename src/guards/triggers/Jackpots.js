@@ -64,7 +64,6 @@ class Jackpots {
     
         let triggers = []
         for (let pot of found) {
-            console.warn(JSON.stringify(pot))
             triggers.push(new Trigger({
                 action: Trigger.actions.BLOCK,
                 type: Trigger.types.JACKPOT,
