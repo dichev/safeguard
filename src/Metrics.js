@@ -17,7 +17,7 @@ class Metrics {
      * @param {string} options.msg
      * @retunr Array
      */
-    collectLogs({ operator, count, status, msg }){
+    collectLogs({ operator, count, status, msg = '' }){
         this.cleanup(Date.now()) // TODO: could be made to keep only the new records
         msg = msg.replace(/["\n]/g, '').substr(0, 100)
         this.metrics[`safeguard_logs_${status.toLowerCase()}{operator="${operator}",msg="${msg}"}`] = { value: count, time: Date.now() }

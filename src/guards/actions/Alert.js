@@ -23,14 +23,9 @@ class Alert {
     async notify(trigger, blocked = false){
         let perc = Math.round(100 * trigger.value / trigger.threshold)
         
-        let ID = trigger.userId || trigger.gameName || (trigger.jackpotGroup ? trigger.jackpotGroup + '_' + trigger.jackpotPot : '') || this.operator
-        let key = trigger.name + '_' + ID
-        if(!trigger.name || !ID) console.warn('Invalid data:', {trigger})
-    
+        let before = this.alerts[trigger.uid]
         
-        let before = this.alerts[key]
-        
-        if(before){
+        if(before && before.blocked === blocked){
             let diff = Math.abs(perc - before.perc)
             if(diff < ALERT_GAP) {
                 before.time = Date.now()
@@ -39,12 +34,12 @@ class Alert {
             }
         }
     
-        this.alerts[key] = {perc: perc, time: trigger.period.to}
+        this.alerts[trigger.uid] = {perc: perc, blocked: blocked, time: trigger.period.to}
         
         console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg)
     
         let row = {
-            name: trigger.name,
+            triggerKey: trigger.uid,
             blocked: blocked ? 'YES' : 'NO',
             type: trigger.type,
             percent: perc / 100,

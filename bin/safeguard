@@ -5,7 +5,6 @@
 require('moment-recur')
 const program = require('commander')
 const SafeGuard = require('../src/App')
-const Server = require('../src/Server')
 
 const OPERATORS = Object.keys(require('../src/config/Config').credentials.databases.operators)
 
@@ -16,6 +15,7 @@ program
     .option('--clean', `Fresh start - will clean the safeguard database logs and alerts`)
     .option('--serve', `Expose http server to provide prometheus metrics`)
     .option('--history <date|range>', `Check for anomalies in previous periods. You can define the period as date(2018-04-01) or as range(2018-04-01..2018-04-05)`)
+    .option('--debug-reduce-thresholds <percent>', `Reduce thresholds by this percent. For example if is set to 0.5, then all thresholds will be divided by 2. Useful during debugging, disabled on production`)
     
     .version(require('../package.json').version)
     .parse(process.argv)
@@ -24,7 +24,7 @@ program
 
 ;(async function () {
     let operators = program.operators && program.operators !== 'all' ? program.operators.split(',') : OPERATORS
-    let safeguard = new SafeGuard(operators)
+    let safeguard = new SafeGuard(operators, { debugReduceThresholds: parseFloat(program.debugReduceThresholds) })
     
     if(program.serve) {
         if(program.history) throw Error('The server is not supported with --history')

@@ -50,65 +50,53 @@ class Guard {
         }
         
         if(date.isSameOrAfter(this._startDate)) {
-            await this.check(date.format('YYYY-MM-DD'))
+           date = date.format('YYYY-MM-DD')
+    
+            console.log(prefix(this.operator) +`[${date}] Checking for anomalies..`)
+            let startAt = Date.now()
+    
+            for (let test of this.tests) {
+                let triggers = await test.execHistoric(date)
+                for (let trigger of triggers) {
+                    await this.alerts.notify(trigger)
+                }
+            }
+            this.alerts.cleanup(startAt)
         }
         
     }
     
-    async check(date = false){
-        console.log(prefix(this.operator) + (date ? `[${date}] ` : '') + `Checking for anomalies..`)
+    async check(){
+        console.log(prefix(this.operator) + `Checking for anomalies..`)
         let startAt = Date.now()
         
         for (let test of this.tests) {
-            let triggers = date ? await test.execHistoric(date) : await test.exec()
+            let triggers = await test.exec()
             for(let trigger of triggers) {
-                await this._handleTrigger(trigger)
+                let isBlocked = false
+                if(trigger.action === Trigger.actions.BLOCK) {
+                    isBlocked = await this.killSwitch.block(trigger)
+                }
+                await this.alerts.notify(trigger, isBlocked)
+                this.metrics.collectTrigger(trigger)
             }
         }
         this.metrics.cleanup(startAt)
         this.alerts.cleanup(startAt)
-}
-    
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<void>}
-     * @private
-     */
-    async _handleTrigger(trigger){
-        let isBlocked = false
-    
-        switch (trigger.action) {
-        
-            case Trigger.actions.ALERT:
-                //
-                break;
-        
-            case Trigger.actions.BLOCK_USER:
-                isBlocked = await this.killSwitch.blockUser(trigger)
-                break;
-        
-            case Trigger.actions.BLOCK_GAME:
-                isBlocked = await this.killSwitch.blockGame(trigger)
-                break;
-        
-            case Trigger.actions.BLOCK_JACKPOT:
-                isBlocked = await this.killSwitch.blockJackpots(trigger)
-                break;
-        
-            case Trigger.actions.BLOCK_OPERATOR:
-                isBlocked = await this.killSwitch.blockOperator(trigger)
-                break;
-        
-            default:
-                throw Error('Unexpected action: ' + trigger.value)
-        
-        }
-    
-        await this.alerts.notify(trigger, isBlocked)
-        this.metrics.collectTrigger(trigger)
     }
     
+    async validateDatabasePermissions(){
+        let operator = this.operator
+        
+        let db = await Database.getKillSwitchInstance(operator)
+        let grants = await db.query('SHOW GRANTS FOR CURRENT_USER()');
+        let expected = "GRANT SELECT, INSERT ON `" + db.dbname + "`.`_blocked` TO 'safeguard'@'%'"
+        let found = grants.map(row => Object.values(row)[0]).find(rule => rule === expected)
+        if (!found) {
+            console.verbose(grants.map(row => Object.values(row)[0]))
+            throw Error(`Can't find expected database permissions for ${db.dbname}._blocked table:\n ${expected}\nTry running with disabled kill switch (Config.killSwitch.enabled = false) or fix the db permissions`)
+        }
+    }
     
 }
 

@@ -1,113 +1,54 @@
 'use strict'
 
 const Database = require('../../lib/Database')
+const Config = require('../../config/Config')
+const Trigger = require('../../guards/triggers/types/Trigger')
 const prefix = require('../../lib/Utils').prefix
 
 class KillSwitch {
     
     constructor(operator) {
         this.operator = operator
-        this._blocked = {
-            users: [],
-            games: [],
-            jackpots: [],
-            operators: [],
+    }
+    
+    /**
+     * @param {Trigger} trigger
+     * @return {Promise<boolean>}
+     */
+    async block(trigger) {
+        if(!Config.killSwitch.enabled) return false
+        
+        
+        // first check is there already a blocking records for this trigger
+        let db = await Database.getKillSwitchInstance(this.operator)
+        let found = await db.query(`
+            SELECT id, blocked, triggerKey, time
+            FROM _blocked WHERE time > ? AND triggerKey = ?
+        `, [trigger.period.from, trigger.uid])
+        
+        if(found.length) { // could be more than 1 record
+            let isBlocked = !!found.find(row => row.blocked === 'YES') // when the admin set blocked = "NO", then we respect that and do not add new blocking rule even if the threshold is still firing
+            console.log(prefix(this.operator) + `[${isBlocked?'BLOCKED':'UNBLOCKED'}] There are already ${found.length} blocking rules for #${trigger.uid}`)
+            return isBlocked
         }
-    }
     
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<boolean>}
-     */
-    async blockUser(trigger) {
-        if(this._blocked.users.includes(trigger.userId)) return true // TODO: this should be combined with mysql checks
         
-        console.log(prefix(this.operator) + `[BLOCK] Disable user #${trigger.userId}`)
-        let SQL = `UPDATE users SET blocked = 1 WHERE id = :id`
-        this._blocked.users.push(trigger.userId)
-    
-        // console.log('   '+SQL.replace(':id', userId))
-        
-        await this.log(trigger)
-        return true
-    }
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<boolean>}
-     */
-    async blockGame(trigger) {
-        if(this._blocked.games.includes(trigger.gameName)) return true // TODO: this should be combined with mysql checks
-    
-        console.log(prefix(this.operator) + `[BLOCK] Disable game #${trigger.gameName}`)
-        let SQL = `UPDATE games SET status = 0 WHERE id = :id`
-        this._blocked.games.push(trigger.gameName)
-    
-        // console.log('   '+SQL.replace(':id', gameName))
-        
-        await this.log(trigger)
-        return true
-    }
-    
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<boolean>}
-     */
-    async blockJackpots(trigger) {
-        let ID =  trigger.jackpotGroup + '_' + trigger.jackpotPot
-        if (this._blocked.jackpots.includes(ID)) return true
-        
-        console.log(prefix(this.operator) + `[BLOCK] Disable jackpots: #${ID}`)
-        let SQL = `UPDATE settings SET value = 'false' WHERE type = 'modules.jackpots'`
-        // console.log('   '+SQL.replace(':id', user.userId))
-        this._blocked.jackpots.push(ID)
-    
-        await this.log(trigger)
-        return true
-    }
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise<boolean>}
-     */
-    async blockOperator(trigger) {
-        if (this._blocked.operators.includes(this.operator)) return true
-        
-        console.log(prefix(this.operator) + `[BLOCK] Disable operator #${this.operator}`)
-        let SQL = `UPDATE settings SET value = 'true' WHERE type = 'maintenance'`
-        // console.log('   '+SQL.replace(':id', user.userId))
-        this._blocked.operators.push(this.operator)
-        return true
-    }
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise}
-     */
-    async log(trigger) {
-        let perc = Math.round(100 * trigger.value / trigger.threshold)
-        
+        // do the actual blocking by adding record in platform database:
+        console.log(prefix(this.operator) + `[BLOCK] Disable #${trigger.uid}`)
         let row = {
-            name: trigger.name,
+            triggerKey: trigger.uid,
             blocked: 'YES',
             type: trigger.type,
-            percent: perc / 100,
-            value: trigger.value,
-            threshold: trigger.threshold,
-            operator: this.operator,
-            userId: trigger.userId,
-            gameName: trigger.gameName,
-            jackpotGroup: trigger.jackpotGroup,
+            userId: trigger.userId || null,
+            gameName: trigger.gameName || null,
+            jackpotGroup: trigger.jackpotGroup || null,
             message: trigger.msg,
-            periodFrom: trigger.period.from,
-            periodTo: trigger.period.to,
         }
         
-        let db = await Database.getLocalInstance()
-        await db.query(`INSERT INTO blocked (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
+        await db.query(`INSERT INTO _blocked (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
+        
+        return true
     }
-    
     
 }
 

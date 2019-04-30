@@ -17,7 +17,14 @@ const THROTTLE = require('../src/config/Config').schedule.initialThrottleBetween
 
 class App {
     
-    constructor(operators){
+    /**
+     * @param {Array}   operators
+     * @param {object}  [options]
+     * @param {number} [options.debugReduceThresholds]
+     */
+    constructor(operators, { debugReduceThresholds = 0.00 } = {}){
+        this.operators = operators
+        
         /**@type Array<Guard> */
         this.guards = []
         for(let operator of operators) {
@@ -26,9 +33,21 @@ class App {
         
         this.log = new Log()
         this.metrics = new Metrics()
+        
+        if(debugReduceThresholds){
+            if(Config.production) throw Error('debugReduceThresholds is not allowed on production')
+            if(debugReduceThresholds > 1) throw Error(`Invalid value for debugReduceThresholds(${debugReduceThresholds}). It's expected to be between [0.0, 1.0]`)
+            console.warn('WARNING! Running in debug mode: reducing all thresholds by ' + debugReduceThresholds);
+            for(let type in Config.thresholds) for (let threshold in Config.thresholds[type]) {
+                Config.thresholds[type][threshold].warn  *= debugReduceThresholds
+                Config.thresholds[type][threshold].block *= debugReduceThresholds
+            }
+        }
     }
     
     async activate(){
+        await this.validateSettings()
+        
         // run each operator in parallel
         await Promise.all(this.guards.map(async (guard, i) => {
             await sleep(i * THROTTLE) // throttle db connections
@@ -72,8 +91,9 @@ class App {
     }
     
     async cleanDatabaseLogs(){
+        if(Config.production) throw Error('It\'s not allowed to clear the database logs on production')
         let db = await Database.getLocalInstance()
-        await db.query('TRUNCATE alerts; TRUNCATE blocked; TRUNCATE log;')
+        await db.query('TRUNCATE alerts; TRUNCATE log;')
     }
     
     async checkDuration(guard, startAt){
@@ -102,6 +122,40 @@ class App {
         }
         
         return output
+    }
+    
+    
+    async validateSettings(){
+        try {
+            // check for wrong configuration
+            if (Config.production) {
+                if (!Config.killSwitch.enabled) {
+                    await this.log.warn('APP', {msg: `Running in PRODUCTION mode with disabled kill switch`})
+                } else {
+                    for(let operator of this.operators){
+                        let dbA = Config.credentials.databases.operators[operator].platform
+                        let dbB = Config.credentials.databases.operators[operator].killSwitch
+                        if (dbA.database !== dbB.database || dbA.host !== dbB.host || (dbA.ssh && dbA.ssh.host) !== (dbB.ssh && dbB.ssh.host)) {
+                            console.verbose(dbA.database +' ~ '+ dbB.database + '\n' + dbA.host +' ~ '+ dbB.host + '\n' + (dbA.ssh && dbA.ssh.host) +' ~ '+ (dbB.ssh && dbB.ssh.host))
+                            await this.log.warn(operator, { msg: `The killswitch database is not the same as the operator database. This will lead to fake blocking attempts in case of kill switch` })
+                        }
+                    }
+                }
+            } else {
+                await this.log.warn('APP', {msg: `INFO | Running in non-production mode with ${Config.killSwitch.enabled ? 'enabled' : 'disabled'} kill switch`})
+            }
+    
+            // check for wrong db permissions
+            if(Config.killSwitch.enabled) {
+                for (let guard of this.guards) await guard.validateDatabasePermissions()
+                Database.killAllConnections()
+            }
+            
+        } catch (err) {
+            await this.log.error('APP', {msg: err.toString()})
+            throw err
+        }
+        
     }
     
     /**

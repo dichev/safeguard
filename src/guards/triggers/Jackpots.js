@@ -64,12 +64,12 @@ class Jackpots {
     
         let triggers = []
         for (let pot of found) {
-            console.warn(JSON.stringify(pot))
             triggers.push(new Trigger({
-                action: Trigger.actions.BLOCK_JACKPOT,
+                action: Trigger.actions.BLOCK,
                 type: Trigger.types.JACKPOT,
                 value: pot.timedJackpotWonCount,
                 threshold: thresholds.timedJackpotWonCount.block,
+                operator: this.operator,
                 jackpotGroup: pot.groupId,
                 jackpotPot: pot.potId,
                 msg: thresholds.timedJackpotWonCount.msg.replace('{{JACKPOT}}', `[${pot.groupId}_${pot.potId}] "${pot.name}"`).replace('{{VALUE}}', pot.timedJackpotWonCount) + ` ${pot.periodFrom}..${pot.periodEnd}`,

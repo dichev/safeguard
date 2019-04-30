@@ -86,14 +86,15 @@ class UserLoss {
                 
                 if (value >= threshold.warn) {
                     triggers.push(new Trigger({
-                        action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK_USER,
+                        action: value < threshold.block ? Trigger.actions.ALERT : Trigger.actions.BLOCK,
                         type: Trigger.types.USER,
                         value: value,
                         threshold: threshold.block,
+                        operator: this.operator,
                         userId: user.userId,
                         msg: threshold.msg.replace('{{USER}}', user.userId).replace('{{VALUE}}', value.toFixed(2)),
                         period: {from, to},
-                        name: `users_${metric}`
+                        name: `users_${metric}`,
                     }))
                 }
             }
