@@ -91,8 +91,9 @@ class App {
     }
     
     async cleanDatabaseLogs(){
+        if(Config.production) throw Error('It\'s not allowed to clear the database logs on production')
         let db = await Database.getLocalInstance()
-        await db.query('TRUNCATE alerts; TRUNCATE blocked; TRUNCATE log;')
+        await db.query('TRUNCATE alerts; TRUNCATE log;')
     }
     
     async checkDuration(guard, startAt){

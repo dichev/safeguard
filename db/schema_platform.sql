@@ -12,11 +12,13 @@ CREATE TABLE IF NOT EXISTS `_blocked` (
   `userId` int(10) unsigned DEFAULT NULL,
   `gameName` varchar(100) DEFAULT NULL,
   `jackpotGroup` varchar(100) DEFAULT NULL,
+  `triggerKey` varchar(255) NOT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `resolution` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `time` (`time`),
-  KEY `blocked` (`blocked`),
+  KEY `triggerKey` (`triggerKey`),
+  KEY `blocked` (`blocked`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

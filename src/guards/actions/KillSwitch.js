@@ -2,13 +2,13 @@
 
 const Database = require('../../lib/Database')
 const Config = require('../../config/Config')
+const Trigger = require('../../guards/triggers/types/Trigger')
 const prefix = require('../../lib/Utils').prefix
 
 class KillSwitch {
     
     constructor(operator) {
         this.operator = operator
-        this._blocked = []
     }
     
     /**
@@ -17,53 +17,38 @@ class KillSwitch {
      */
     async block(trigger) {
         if(!Config.killSwitch.enabled) return false
-
-        if (this._blocked.includes(trigger.uid)) return true // TODO: this should be combined with mysql checks to support reactivating of the user
-
+        
+        
+        // first check is there already a blocking records for this trigger
+        let db = await Database.getKillSwitchInstance(this.operator)
+        let found = await db.query(`
+            SELECT id, blocked, triggerKey, time
+            FROM _blocked WHERE time > ? AND triggerKey = ?
+        `, [trigger.period.from, trigger.uid])
+        
+        if(found.length) { // could be more than 1 record
+            let isBlocked = !!found.find(row => row.blocked === 'YES') // when the admin set blocked = "NO", then we respect that and do not add new blocking rule even if the threshold is still firing
+            console.log(prefix(this.operator) + `[${isBlocked?'BLOCKED':'UNBLOCKED'}] There are already ${found.length} blocking rules for #${trigger.uid}`)
+            return isBlocked
+        }
+    
+        
+        // do the actual blocking by adding record in platform database:
         console.log(prefix(this.operator) + `[BLOCK] Disable #${trigger.uid}`)
-        await this.log(trigger)
+        let row = {
+            triggerKey: trigger.uid,
+            blocked: 'YES',
+            type: trigger.type,
+            userId: trigger.userId || null,
+            gameName: trigger.gameName || null,
+            jackpotGroup: trigger.jackpotGroup || null,
+            message: trigger.msg,
+        }
         
-        let db = await Database.getKillSwitchInstance(this.operator);
-        
-        // Actual kill switch:
-        await db.query(`
-            INSERT INTO _blocked (message, blocked, type, userId, gameName, jackpotGroup)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `, [trigger.msg, 'YES', trigger.type, trigger.userId, trigger.gameName, trigger.jackpotGroup])
-    
-    
-        this._blocked.push(trigger.uid)
+        await db.query(`INSERT INTO _blocked (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
         
         return true
     }
-    
-    /**
-     * @param {Trigger} trigger
-     * @return {Promise}
-     */
-    async log(trigger) {
-        let perc = Math.round(100 * trigger.value / trigger.threshold)
-        
-        let row = {
-            name: trigger.name,
-            blocked: 'YES',
-            type: trigger.type,
-            percent: perc / 100,
-            value: trigger.value,
-            threshold: trigger.threshold,
-            operator: this.operator,
-            userId: trigger.userId,
-            gameName: trigger.gameName,
-            jackpotGroup: trigger.jackpotGroup,
-            message: trigger.msg,
-            periodFrom: trigger.period.from,
-            periodTo: trigger.period.to,
-        }
-        
-        let db = await Database.getLocalInstance()
-        await db.query(`INSERT INTO blocked (${db.toKeys(row)}) VALUES ?`, db.toValues(row))
-    }
-    
     
 }
 

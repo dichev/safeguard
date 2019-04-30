@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `alerts` (
   `percent` decimal(10,2) NOT NULL,
   `value` decimal(10,2) NOT NULL,
   `threshold` decimal(10,2) NOT NULL,
-  `name` varchar(50) NOT NULL,
+  `triggerKey` varchar(255) NOT NULL,
   `operator` varchar(15) NOT NULL,
   `userId` int(10) unsigned DEFAULT NULL,
   `gameName` varchar(100) DEFAULT NULL,
@@ -22,28 +22,8 @@ CREATE TABLE IF NOT EXISTS `alerts` (
   `periodTo` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `time` (`time`),
-  KEY `periodFrom_periodTo` (`periodFrom`,`periodTo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
-
-CREATE TABLE IF NOT EXISTS `blocked` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `message` varchar(255) NOT NULL,
-  `blocked` enum('YES','NO') NOT NULL,
-  `type` enum('USER','GAME','JACKPOT','OPERATOR') NOT NULL,
-  `percent` decimal(10,2) NOT NULL,
-  `value` decimal(10,2) NOT NULL,
-  `threshold` decimal(10,2) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `operator` varchar(15) NOT NULL,
-  `userId` int(10) unsigned DEFAULT NULL,
-  `gameName` varchar(100) DEFAULT NULL,
-  `jackpotGroup` varchar(100) DEFAULT NULL,
-  `periodFrom` datetime NOT NULL,
-  `periodTo` datetime NOT NULL,
-  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `time` (`time`),
-  KEY `periodFrom_periodTo` (`periodFrom`,`periodTo`)
+  KEY `periodFrom_periodTo` (`periodFrom`,`periodTo`),
+  KEY `blocked` (`blocked`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
 CREATE TABLE IF NOT EXISTS `log` (

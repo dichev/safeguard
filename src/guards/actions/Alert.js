@@ -25,7 +25,7 @@ class Alert {
         
         let before = this.alerts[trigger.uid]
         
-        if(before){
+        if(before && before.blocked === blocked){
             let diff = Math.abs(perc - before.perc)
             if(diff < ALERT_GAP) {
                 before.time = Date.now()
@@ -34,12 +34,12 @@ class Alert {
             }
         }
     
-        this.alerts[trigger.uid] = {perc: perc, time: trigger.period.to}
+        this.alerts[trigger.uid] = {perc: perc, blocked: blocked, time: trigger.period.to}
         
         console.log(prefix(this.operator) + `[ALERT ${perc}%]`, trigger.msg)
     
         let row = {
-            name: trigger.name,
+            triggerKey: trigger.uid,
             blocked: blocked ? 'YES' : 'NO',
             type: trigger.type,
             percent: perc / 100,

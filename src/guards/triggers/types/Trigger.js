@@ -13,7 +13,9 @@ class Trigger {
      * @param {number} value
      * @param {number} threshold
      * @param {string} msg
-     * @param {string} period
+     * @param {object} period
+     * @param {string} period.from
+     * @param {string} period.to
      * @param {string} name //TODO: rename to metric
      */
     constructor({action, type, userId = null, gameName = null, jackpotGroup = null, jackpotPot = null, operator, value, threshold, msg, period, name}) {
