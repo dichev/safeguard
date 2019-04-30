@@ -60,6 +60,7 @@ class Jackpots {
         `
     
         let found = await db.query(SQL)
+        await Database.killConnection(db) // optimization - only this trigger uses that connection so it's safe to be killed early
         if (!found) return []
     
         let triggers = []

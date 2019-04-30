@@ -96,6 +96,7 @@ class Guard {
             console.verbose(grants.map(row => Object.values(row)[0]))
             throw Error(`Can't find expected database permissions for ${db.dbname}._blocked table:\n ${expected}\nTry running with disabled kill switch (Config.killSwitch.enabled = false) or fix the db permissions`)
         }
+        await Database.killConnection(db)
     }
     
 }

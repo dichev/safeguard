@@ -148,7 +148,7 @@ class App {
             // check for wrong db permissions
             if(Config.killSwitch.enabled) {
                 for (let guard of this.guards) await guard.validateDatabasePermissions()
-                Database.killAllConnections()
+                await Database.killAllConnections()
             }
             
         } catch (err) {
