@@ -1,5 +1,7 @@
 'use strict'
 
+
+const Trigger = require('../../guards/triggers/types/Trigger')
 const Config = require('../../config/Config')
 
 
@@ -17,13 +19,13 @@ class Metrics {
      */
     collectTrigger(trigger){
         let name = ''
-        if(trigger.userId){
+        if(trigger.type === Trigger.types.USER){
             name = `safeguard_${trigger.name}{operator="${this.operator}",user="${trigger.userId}"}`
         }
-        else if(trigger.gameName){
+        else if(trigger.type === Trigger.types.GAME){
             name = `safeguard_${trigger.name}{operator="${this.operator}",game="${trigger.gameName}"}`
         }
-        else if(trigger.jackpotGroup){
+        else if(trigger.type === Trigger.types.JACKPOT){
             name = `safeguard_${trigger.name}{operator="${this.operator}",jackpot="${trigger.jackpotGroup}_${trigger.jackpotPot}"}`
         }
         else {
