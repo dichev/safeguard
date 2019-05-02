@@ -67,7 +67,7 @@ class Guard {
     }
     
     async check(){
-        console.log(prefix(this.operator) + `Checking for anomalies..`)
+        if(Config.logs.showInfoMessages) console.log(prefix(this.operator) + `Checking for anomalies..`)
         let startAt = Date.now()
         
         for (let test of this.tests) {

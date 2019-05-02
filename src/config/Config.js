@@ -85,6 +85,7 @@ const Config = {
     
     logs: {
         prefixTimestamp: true,
+        showInfoMessages: true,
         warnIfDurationAbove: 2100 // ms
     },
     
