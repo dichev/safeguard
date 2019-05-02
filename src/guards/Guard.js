@@ -78,7 +78,7 @@ class Guard {
                     isBlocked = await this.killSwitch.block(trigger)
                 }
                 await this.alerts.notify(trigger, isBlocked)
-                this.metrics.collectTrigger(trigger)
+                this.metrics.collectTrigger(trigger, isBlocked)
             }
         }
         this.metrics.cleanup(startAt)

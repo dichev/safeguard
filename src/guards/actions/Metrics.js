@@ -16,8 +16,9 @@ class Metrics {
     
     /**
      * @param {Trigger} trigger
+     * @param {boolean} blocked
      */
-    collectTrigger(trigger){
+    collectTrigger(trigger, blocked){
         let name = ''
         if(trigger.type === Trigger.types.USER){
             name = `safeguard_${trigger.name}{operator="${this.operator}",user="${trigger.userId}"}`
@@ -32,6 +33,10 @@ class Metrics {
             name = `safeguard_${trigger.name}{operator="${this.operator}"}`
         }
         this.metrics[name] = { value: trigger.value, time: Date.now() }
+    
+        if (trigger.action === Trigger.actions.BLOCK) {
+            this.metrics[`safeguard_blocked{operator="${this.operator}",type="${trigger.type.toLowerCase()}",trigger="${trigger.uid}",blocked="${blocked}"}`] = { value: 1, time: Date.now() }
+        }
     }
     
     /**
