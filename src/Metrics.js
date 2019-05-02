@@ -47,6 +47,7 @@ class Metrics {
                 output += `safeguard_${type}_${name}_threshold_block ${block}\n`
             }
         }
+        output += `safeguard_danger_threshold_warn ${Config.killSwitch.dangerRatio}\n`
 
         // export logs
         for(let [metric, {value, time}] of Object.entries(this.metrics)){

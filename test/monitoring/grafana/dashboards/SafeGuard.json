@@ -316,6 +316,157 @@
           {
             "evaluator": {
               "params": [
+                0.7
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "max"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "keep_state",
+        "for": "0m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "[DANGER] Too close to blocking threshold alert",
+        "noDataState": "keep_state",
+        "notifications": []
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "Here we catch any risky metrics above certain percent of their thresholds. The idea is to simplify the simplify the dash maintenance by having single place for alerts of all charts bellow.",
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "id": 48,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 3,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/.*/",
+          "color": "#bf1b00"
+        },
+        {
+          "alias": "=== warn threshold ===",
+          "color": "#629e51"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_danger",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} | Blocked {{type}} ({{trigger}})",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "safeguard_danger_threshold_warn",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== warn threshold ===",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.7
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "[DANGER] Too close to blocking",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": false,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "percentunit",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
                 0
               ],
               "type": "gt"
@@ -341,7 +492,7 @@
         "for": "0m",
         "frequency": "1m",
         "handler": 1,
-        "name": "[DANGER] Blocked alert",
+        "name": "[CRITICAL] Blocked alert",
         "noDataState": "keep_state",
         "notifications": []
       },
@@ -355,7 +506,7 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 16,
+        "x": 20,
         "y": 1
       },
       "id": 47,
@@ -420,7 +571,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "[DANGER] Blocked",
+      "title": "[CRITICAL] Blocked",
       "tooltip": {
         "shared": false,
         "sort": 2,
@@ -620,7 +771,7 @@
           "expr": "safeguard_users_lossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} #{{user}}",
+          "legendFormat": "{{operator}} | user #{{user}}",
           "refId": "A",
           "target": ""
         },
@@ -978,7 +1129,7 @@
           "expr": "safeguard_users_cappedLossFromGames_gbp",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} #{{user}}",
+          "legendFormat": "{{operator}} | user #{{user}}",
           "refId": "A",
           "target": ""
         },
@@ -1333,7 +1484,7 @@
           "expr": "safeguard_users_pureLossFromGames_x",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} #{{user}}",
+          "legendFormat": "{{operator}} | user #{{user}}",
           "refId": "A",
           "target": ""
         },
@@ -1688,7 +1839,7 @@
           "expr": "safeguard_users_lossFromJackpots_gbp",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} #{{user}}",
+          "legendFormat": "{{operator}} | user #{{user}}",
           "refId": "A",
           "target": ""
         },
@@ -2043,7 +2194,7 @@
           "expr": "safeguard_users_lossFromBonuses_pays_gbp",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} #{{user}} (bonus pays)",
+          "legendFormat": "{{operator}} | user #{{user}} (bonus pays)",
           "refId": "A",
           "target": ""
         },
@@ -2065,7 +2216,7 @@
           "expr": "safeguard_users_lossFromBonuses_bets_gbp",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} #{{user}} (bonus bets)",
+          "legendFormat": "{{operator}} | user #{{user}} (bonus bets)",
           "refId": "D",
           "target": ""
         }
@@ -2492,7 +2643,7 @@
     "list": []
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -2523,5 +2674,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 59
+  "version": 64
 }

@@ -6,6 +6,7 @@ const Config = {
     
     killSwitch: {
         enabled: true,
+        dangerRatio: 0.60 // the ratio of value/threshold - above it the threshold will be considered as danger and the monitoring system should alert us to check it
     },
     
     schedule: {

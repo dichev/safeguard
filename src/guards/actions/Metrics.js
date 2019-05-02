@@ -34,8 +34,11 @@ class Metrics {
         }
         this.metrics[name] = { value: trigger.value, time: Date.now() }
     
-        if (trigger.action === Trigger.actions.BLOCK) {
+        if(trigger.action === Trigger.actions.BLOCK) {
             this.metrics[`safeguard_blocked{operator="${this.operator}",type="${trigger.type.toLowerCase()}",trigger="${trigger.uid}",blocked="${blocked}"}`] = { value: 1, time: Date.now() }
+        }
+        if(trigger.value / trigger.threshold >= Config.killSwitch.dangerRatio){
+            this.metrics[`safeguard_danger{operator="${this.operator}",type="${trigger.type.toLowerCase()}",trigger="${trigger.uid}"}`] = { value: trigger.value / trigger.threshold, time: Date.now() }
         }
     }
     
