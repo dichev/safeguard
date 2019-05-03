@@ -8,26 +8,25 @@ class Metrics {
         this.metrics = {}
     }
     
-    
     /**
-     * @param options
-     * @param {string} options.operator
-     * @param {int} options.count
-     * @param {string} options.status
-     * @param {string} options.msg
-     * @retunr Array
+     * @param {array} logs
+     * @return Array
      */
-    collectLogs({ operator, count, status, msg = '' }){
-        this.cleanup(Date.now()) // TODO: could be made to keep only the new records
-        msg = msg.replace(/["\n]/g, '').substr(0, 100)
-        this.metrics[`safeguard_logs_${status.toLowerCase()}{operator="${operator}",msg="${msg}"}`] = { value: count, time: Date.now() }
+    collectLogs(logs) {
+        let now = Date.now()
+        for(let {operator, count, status, msg = ''} of logs) {
+             msg = msg.replace(/["\n]/g, '').substr(0, 100)
+             this.metrics[`safeguard_logs_${status.toLowerCase()}{operator="${operator}",msg="${msg}"}`] = { value: count, time: now }
+        }
+        this._cleanup(now)
     }
+    
     
     /**
      * Clean up metrics which didn't triggered
      * @param {Number} timestamp - all metrics before this timestamp will be cleaned
      */
-    cleanup(timestamp){
+    _cleanup(timestamp){
         for(let metric in this.metrics) if(this.metrics.hasOwnProperty(metric)){
             if(this.metrics[metric].time < timestamp){
                 // console.warn(`clean metric ${metric}`, this.metrics[metric])

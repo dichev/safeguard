@@ -113,7 +113,7 @@ class App {
         let output = ''
         try {
             let logs = await this.log.collectLogs()
-            logs.map(log => this.metrics.collectLogs(log))
+            this.metrics.collectLogs(logs)
     
             output = this.metrics.export()
             output += this.guards.map(guard => guard.metrics.export()).join('')

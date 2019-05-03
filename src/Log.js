@@ -29,8 +29,8 @@ class Log {
     async collectLogs(){
         let db = await Database.getLocalInstance()
         let rows = await db.query(`
-            SELECT COUNT(*) AS count, status, operator, JSON_EXTRACT(result, "$.msg") AS msg FROM log
-            WHERE timeStarted > NOW() - INTERVAL 1 HOUR
+            SELECT COUNT(*) AS count, status, operator, JSON_EXTRACT(result, '$.msg') AS msg FROM log
+            WHERE timeStarted > NOW() - INTERVAL 5 MINUTE
             GROUP BY STATUS, operator, msg
         `)
     
