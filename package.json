@@ -1,6 +1,6 @@
 {
   "name": "safeguard",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "private": true,
   "scripts": {
     "version-patch": "npm version patch -m \"Release v%s\" ",
