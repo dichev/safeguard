@@ -125,13 +125,47 @@
       }
     },
     {
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                0
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "sum"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "keep_state",
+        "for": "0m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Safeguard - Total Warnings in last 5 minutes alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Safeguard",
       "description": "",
-      "fill": 0,
+      "fill": 1,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -150,7 +184,7 @@
         "total": false,
         "values": false
       },
-      "lines": false,
+      "lines": true,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
@@ -167,18 +201,26 @@
         {
           "expr": "safeguard_logs_warn",
           "format": "time_series",
-          "interval": "20m",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | {{msg}}",
           "refId": "A",
           "target": ""
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total warnings in last 1 hour",
+      "title": "Total Warnings in last 5 minutes",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -218,6 +260,40 @@
       }
     },
     {
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                0
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "sum"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "keep_state",
+        "for": "0m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Total Errors in last 5 minutes alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -260,18 +336,26 @@
         {
           "expr": "safeguard_logs_error",
           "format": "time_series",
-          "interval": "20m",
+          "interval": "",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | {{msg}}",
           "refId": "A",
           "target": ""
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Total Errors in last 1 hour",
+      "title": "Total Errors in last 5 minutes",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -341,7 +425,7 @@
         "for": "0m",
         "frequency": "1m",
         "handler": 1,
-        "name": "[DANGER] Too close to blocking threshold alert",
+        "name": "SafeGuard - [DANGER] Too close to be blocked alert",
         "noDataState": "keep_state",
         "notifications": []
       },
@@ -403,7 +487,7 @@
           "target": ""
         },
         {
-          "expr": "safeguard_danger_threshold_warn",
+          "expr": "min(safeguard_danger_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "=== warn threshold ===",
@@ -422,7 +506,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "[DANGER] Too close to blocking",
+      "title": "[DANGER] Too close to be blocked",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -483,7 +567,7 @@
             },
             "reducer": {
               "params": [],
-              "type": "max"
+              "type": "sum"
             },
             "type": "query"
           }
@@ -492,8 +576,8 @@
         "for": "0m",
         "frequency": "1m",
         "handler": 1,
-        "name": "[CRITICAL] Blocked alert",
-        "noDataState": "keep_state",
+        "name": "SafeGuard - [CRITICAL] Blocked alert",
+        "noDataState": "no_data",
         "notifications": []
       },
       "aliasColors": {},
@@ -613,6 +697,61 @@
       }
     },
     {
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                1
+              ],
+              "type": "lt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "sum"
+            },
+            "type": "query"
+          },
+          {
+            "evaluator": {
+              "params": [],
+              "type": "no_value"
+            },
+            "operator": {
+              "type": "or"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "sum"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "1m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Safeguard - Can not track all operators",
+        "noDataState": "no_data",
+        "notifications": []
+      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -661,7 +800,15 @@
           "target": ""
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 1
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -2643,7 +2790,7 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -2674,5 +2821,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 64
+  "version": 68
 }
