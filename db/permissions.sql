@@ -8,4 +8,4 @@ GRANT SELECT, INSERT ON `safeguard`.`_blocked` TO 'safeguard'@'%';
 GRANT SELECT, SHOW DATABASES, SHOW VIEW ON *.* TO 'safeguard'@'%';
 
 -- grant to all operator databases: --
-GRANT SELECT, INSERT ON `{{OPERATR_PREFIX}}_platform`.`_blocked` TO 'safeguard'@'%'
+GRANT SELECT, INSERT ON `{{OPERATOR_PREFIX}}platform`.`_blocked` TO 'safeguard'@'%'
