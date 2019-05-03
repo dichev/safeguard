@@ -59,7 +59,7 @@ class App {
                     await guard.check()
                     await this.checkDuration(guard, startAt)
                 } catch (err) {
-                    await this.log.error(guard.operator, {msg: err.toString()}, startAt)
+                    await this.log.error(guard.operator, {msg: err.toString()})
                     throw err
                 }
                 
@@ -99,7 +99,7 @@ class App {
     async checkDuration(guard, startAt){
         let duration = Date.now() - startAt
         if (duration > Config.logs.warnIfDurationAbove) {
-            await this.log.warn(guard.operator, {msg: `Too long execution time (above ${Config.logs.warnIfDurationAbove}ms)`, duration: `${duration}ms`}, startAt)
+            await this.log.warn(guard.operator, {msg: `Too long execution time (above ${Config.logs.warnIfDurationAbove}ms)`, duration: `${duration}ms`})
         }
     }
     

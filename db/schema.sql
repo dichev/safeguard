@@ -31,12 +31,10 @@ CREATE TABLE IF NOT EXISTS `log` (
   `operator` varchar(20) NOT NULL,
   `status` enum('INFO','ERROR','WARN') NOT NULL,
   `result` json DEFAULT NULL,
-  `timeStarted` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `timeEnded` datetime(3) DEFAULT NULL,
+  `time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
-  KEY `timeStarted` (`timeStarted`),
   KEY `status` (`status`),
-  KEY `operator_timeStarted` (`operator`,`timeStarted`)
+  KEY `time` (`time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
