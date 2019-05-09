@@ -98,7 +98,8 @@ class App {
     
     async checkDuration(guard, startAt){
         let duration = Date.now() - startAt
-        if (duration > Config.logs.warnIfDurationAbove) {
+        let warnLimit = Config.logs.warnIfDurationAbove[guard.operator] || Config.logs.warnIfDurationAbove.default
+        if (duration > warnLimit) {
             await this.log.warn(guard.operator, {msg: `Too long execution time (above ${Config.logs.warnIfDurationAbove}ms)`, duration: `${duration}ms`})
         }
     }
