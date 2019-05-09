@@ -100,7 +100,7 @@ class App {
         let duration = Date.now() - startAt
         let warnLimit = Config.logs.warnIfDurationAbove[guard.operator] || Config.logs.warnIfDurationAbove.default
         if (duration > warnLimit) {
-            await this.log.warn(guard.operator, {msg: `Too long execution time (above ${Config.logs.warnIfDurationAbove}ms)`, duration: `${duration}ms`})
+            await this.log.warn(guard.operator, {msg: `Too long execution time (above ${warnLimit}ms)`, duration: `${duration}ms`})
         }
     }
     
