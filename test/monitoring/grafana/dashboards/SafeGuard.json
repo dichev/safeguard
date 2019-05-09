@@ -204,7 +204,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} | {{msg}}",
+          "legendFormat": "{{operator}} ({{alias}}) | {{msg}}",
           "refId": "A",
           "target": ""
         }
@@ -340,7 +340,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} | {{msg}}",
+          "legendFormat": "{{operator}} ({{alias}}) | {{msg}}",
           "refId": "A",
           "target": ""
         }
@@ -2825,5 +2825,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 62
+  "version": 64
 }
