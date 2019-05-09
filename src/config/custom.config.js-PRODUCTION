@@ -7,7 +7,7 @@ Config.production = true
 Config.schedule.intervalBetweenIterations = 5 // sec
 Config.logs.prefixTimestamp = false // journalctl adds them anyway
 Config.logs.showInfoMessages = false // saves noise in production logs
-Config.logs.envPrefix = 'APP' // set it to the env name
+
 
 
 const HOST = '127.0.0.1'
