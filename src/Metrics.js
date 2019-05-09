@@ -15,8 +15,9 @@ class Metrics {
     collectLogs(logs) {
         let now = Date.now()
         for(let {operator, count, status, msg = ''} of logs) {
-             msg = msg.replace(/["\n]/g, '').substr(0, 100)
-             this.metrics[`safeguard_logs_${status.toLowerCase()}{operator="${operator}",msg="${msg}"}`] = { value: count, time: now }
+            if(operator === 'APP') operator = Config.logs.envPrefix // requested by the support team
+            msg = msg.replace(/["\n]/g, '').substr(0, 100)
+            this.metrics[`safeguard_logs_${status.toLowerCase()}{operator="${operator}",msg="${msg}"}`] = { value: count, time: now }
         }
         this._cleanup(now)
     }

@@ -84,6 +84,7 @@ const Config = {
     },
     
     logs: {
+        envPrefix: 'APP', // used on production to indicate where safeguard is deployed
         prefixTimestamp: true,
         showInfoMessages: true,
         warnIfDurationAbove: {
