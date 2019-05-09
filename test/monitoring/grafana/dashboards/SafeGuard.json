@@ -15,6 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 1,
+  "id": 74,
   "links": [],
   "panels": [
     {
@@ -214,7 +215,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0
+          "value": 0,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -290,17 +292,17 @@
         "for": "0m",
         "frequency": "1m",
         "handler": 1,
-        "name": "Total Errors in last 5 minutes alert",
+        "name": "SafeGuard - Total Errors in last 5 minutes alert",
         "noDataState": "no_data",
         "notifications": []
       },
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Safeguard",
       "description": "",
-      "fill": 0,
+      "fill": 1,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -319,7 +321,7 @@
         "total": false,
         "values": false
       },
-      "lines": false,
+      "lines": true,
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
@@ -349,7 +351,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0
+          "value": 0,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -469,7 +472,7 @@
           "color": "#bf1b00"
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#629e51"
         }
       ],
@@ -490,7 +493,7 @@
           "expr": "min(safeguard_danger_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "B"
         }
       ],
@@ -500,7 +503,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0.7
+          "value": 0.7,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -528,7 +532,7 @@
           "label": "",
           "logBase": 1,
           "max": null,
-          "min": "0",
+          "min": "0.55",
           "show": true
         },
         {
@@ -906,7 +910,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -933,7 +937,7 @@
           "expr": "min(safeguard_users_lossFromGames_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1022,7 +1026,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1049,7 +1053,7 @@
           "expr": "min(safeguard_games_lossFromGames_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1136,7 +1140,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1163,7 +1167,7 @@
           "expr": "min(safeguard_operators_lossFromGames_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1264,7 +1268,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1291,7 +1295,7 @@
           "expr": "min(safeguard_users_cappedLossFromGames_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1378,7 +1382,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1405,7 +1409,7 @@
           "expr": "min(safeguard_games_cappedLossFromGames_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1492,7 +1496,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1519,7 +1523,7 @@
           "expr": "min(safeguard_operators_cappedLossFromGames_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1619,7 +1623,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1646,7 +1650,7 @@
           "expr": "min(safeguard_users_pureLossFromGames_x_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1733,7 +1737,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1760,7 +1764,7 @@
           "expr": "min(safeguard_games_pureLossFromGames_x_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1847,7 +1851,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -1874,7 +1878,7 @@
           "expr": "min(safeguard_operators_pureLossFromGames_x_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -1974,7 +1978,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -2001,7 +2005,7 @@
           "expr": "min(safeguard_users_lossFromJackpots_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -2088,7 +2092,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -2115,7 +2119,7 @@
           "expr": "min(safeguard_games_lossFromJackpots_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -2202,7 +2206,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -2229,7 +2233,7 @@
           "expr": "min(safeguard_operators_lossFromJackpots_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -2329,7 +2333,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -2356,7 +2360,7 @@
           "expr": "min(safeguard_users_lossFromBonuses_pays_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         },
         {
@@ -2453,7 +2457,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -2480,7 +2484,7 @@
           "expr": "min(safeguard_games_lossFromBonuses_pays_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         },
         {
@@ -2574,7 +2578,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#37872D"
         }
       ],
@@ -2601,7 +2605,7 @@
           "expr": "min(safeguard_operators_lossFromBonuses_pays_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         },
         {
@@ -2708,7 +2712,7 @@
           "fill": 0
         },
         {
-          "alias": "=== warn threshold ===",
+          "alias": "=== watch threshold ===",
           "color": "#508642"
         }
       ],
@@ -2735,7 +2739,7 @@
           "expr": "min(safeguard_jackpots_timedJackpotWonCount_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "=== warn threshold ===",
+          "legendFormat": "=== watch threshold ===",
           "refId": "C"
         }
       ],
@@ -2783,14 +2787,14 @@
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 16,
+  "schemaVersion": 18,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -2821,5 +2825,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 68
+  "version": 62
 }
