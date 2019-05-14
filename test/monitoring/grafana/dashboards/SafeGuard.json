@@ -141,7 +141,7 @@
             "query": {
               "params": [
                 "A",
-                "5m",
+                "12h",
                 "now"
               ]
             },
@@ -157,7 +157,7 @@
         "frequency": "1m",
         "handler": 1,
         "name": "Safeguard - Total Warnings in last 5 minutes alert",
-        "noDataState": "no_data",
+        "noDataState": "ok",
         "notifications": []
       },
       "aliasColors": {},
@@ -181,9 +181,9 @@
         "hideEmpty": false,
         "max": false,
         "min": false,
-        "show": false,
-        "total": false,
-        "values": false
+        "show": true,
+        "total": true,
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -277,7 +277,7 @@
             "query": {
               "params": [
                 "A",
-                "5m",
+                "12h",
                 "now"
               ]
             },
@@ -293,7 +293,7 @@
         "frequency": "1m",
         "handler": 1,
         "name": "SafeGuard - Total Errors in last 5 minutes alert",
-        "noDataState": "no_data",
+        "noDataState": "ok",
         "notifications": []
       },
       "aliasColors": {},
@@ -351,8 +351,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0,
-          "yaxis": "left"
+          "value": 0
         }
       ],
       "timeFrom": null,
@@ -413,7 +412,7 @@
             "query": {
               "params": [
                 "A",
-                "5m",
+                "12h",
                 "now"
               ]
             },
@@ -503,8 +502,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0.7,
-          "yaxis": "left"
+          "value": 0.7
         }
       ],
       "timeFrom": null,
@@ -580,9 +578,13 @@
         "for": "0m",
         "frequency": "1m",
         "handler": 1,
-        "name": "SafeGuard - [CRITICAL] Blocked alert",
-        "noDataState": "no_data",
-        "notifications": []
+        "name": "SafeGuard - [CRITICAL] Blocked - Call Dichev - NOW!!!",
+        "noDataState": "ok",
+        "notifications": [
+          {
+            "uid": "000000003"
+          }
+        ]
       },
       "aliasColors": {},
       "bars": true,
@@ -653,13 +655,14 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0
+          "value": 0,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "[CRITICAL] Blocked",
+      "title": "[CRITICAL] Blocked - Safeguard - Call Dichev - NOW!",
       "tooltip": {
         "shared": false,
         "sort": 2,
@@ -2825,5 +2828,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 64
+  "version": 75
 }
