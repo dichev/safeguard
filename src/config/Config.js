@@ -18,6 +18,7 @@ const Config = {
         
         jackpots: {
             timedJackpotWonCount:     { block:       2, warn:    1.1,                     msg: 'Timed jackpot {{JACKPOT}} was won {{VALUE}} times, but is expected to be won just once during its period' },
+            tooHighJackpotSize_gbp:   { block: 2000000, warn: 100000,                     msg: 'Detected operator ${this.operator} with too high jackpot pot size of ${value.toFixed(2)} - when it is won there is a risk the lucky user to be blocked' },
         },
         
         users: {

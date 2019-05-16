@@ -21,7 +21,12 @@ class Jackpots {
      * @return {Promise<Array<Trigger>>}
      */
     async exec(){
-        return await this.testTimedJackpotWonTwoTimeSameDay()
+        let triggers = [].concat(
+            await this.testTimedJackpotWonTwoTimeSameDay(),
+            await this.testJackpotSize(),
+        )
+        await Database.killConnection(await Database.getJackpotInstance(this.operator)) // optimization - only this trigger uses that connection so it's safe to be killed early
+        return triggers
     }
     
     /**
@@ -60,7 +65,6 @@ class Jackpots {
         `
     
         let found = await db.query(SQL)
-        await Database.killConnection(db) // optimization - only this trigger uses that connection so it's safe to be killed early
         if (!found) return []
     
         let triggers = []
@@ -77,6 +81,48 @@ class Jackpots {
                 period: {from: pot.periodFrom, to: pot.periodEnd},
                 name: 'jackpots_timedJackpotWonCount',
             }))
+        }
+    
+        return triggers
+    }
+    
+    
+    async testJackpotSize() {
+        const thresholds = Config.thresholds.jackpots.tooHighJackpotSize_gbp
+        let db = await Database.getJackpotInstance(this.operator) // TODO: control connections
+        
+        let SQL = `
+            SELECT
+                NOW() as period,
+                p.potId,
+                g.groupId,
+                g.name,
+                p.pot
+            FROM _jackpot_pots p
+            LEFT JOIN _jackpot_group_pots g USING(potId)
+            WHERE state = 'active'
+              AND pot > 100000
+        `
+        
+        let found = await db.query(SQL, [])
+        if (!found.length) return []
+    
+        let triggers = []
+        for (let row of found) {
+            let value = parseFloat(row.pot)
+    
+            if (value >= thresholds.warn) {
+                triggers.push(new Trigger({
+                    action: Trigger.actions.ALERT, // NEVER block here
+                    type: Trigger.types.OPERATOR,
+                    value: value,
+                    threshold: thresholds.block,
+                    operator: this.operator,
+                    msg: `Detected operator ${this.operator} with too high jackpot pot size of ${value.toFixed(2)} - when it is won there is a risk the lucky user to be blocked`,
+                    period: {from: row.period, to: row.period},
+                    name: `jackpots_tooHighJackpotSize_gbp`,
+                }))
+            }
         }
     
         return triggers
