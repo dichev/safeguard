@@ -54,10 +54,8 @@ class App {
     
             // noinspection InfiniteLoopJS
             while (true) {
-                let startAt = Date.now()
                 try {
                     await guard.check()
-                    await this.checkDuration(guard, startAt)
                 } catch (err) {
                     await this.log.error(guard.operator, {msg: err.toString()})
                     throw err
@@ -94,14 +92,6 @@ class App {
         if(Config.production) throw Error('It\'s not allowed to clear the database logs on production')
         let db = await Database.getLocalInstance()
         await db.query('TRUNCATE alerts; TRUNCATE log;')
-    }
-    
-    async checkDuration(guard, startAt){
-        let duration = Date.now() - startAt
-        let warnLimit = Config.logs.warnIfDurationAbove[guard.operator] || Config.logs.warnIfDurationAbove.default
-        if (duration > warnLimit) {
-            await this.log.warn(guard.operator, {msg: `Too long execution time (above ${warnLimit}ms)`, duration: `${duration}ms`})
-        }
     }
     
     async serve(){

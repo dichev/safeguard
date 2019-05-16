@@ -41,7 +41,7 @@
       "fill": 0,
       "gridPos": {
         "h": 2,
-        "w": 8,
+        "w": 13,
         "x": 0,
         "y": 1
       },
@@ -131,6 +131,161 @@
           {
             "evaluator": {
               "params": [
+                1
+              ],
+              "type": "lt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "sum"
+            },
+            "type": "query"
+          },
+          {
+            "evaluator": {
+              "params": [],
+              "type": "no_value"
+            },
+            "operator": {
+              "type": "or"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "sum"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "1m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "Safeguard - Can not track all operators",
+        "noDataState": "no_data",
+        "notifications": []
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 0,
+      "gridPos": {
+        "h": 2,
+        "w": 11,
+        "x": 13,
+        "y": 1
+      },
+      "id": 33,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null as zero",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 3,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_tracking",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}}",
+          "refId": "A",
+          "target": ""
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "lt",
+          "value": 1
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "",
+      "tooltip": {
+        "shared": true,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": false,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "none",
+          "label": "STATUS",
+          "logBase": 1,
+          "max": "1",
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
                 0
               ],
               "type": "gt"
@@ -170,8 +325,8 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 8,
-        "y": 1
+        "x": 0,
+        "y": 3
       },
       "id": 45,
       "legend": {
@@ -306,8 +461,8 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 12,
-        "y": 1
+        "x": 4,
+        "y": 3
       },
       "id": 46,
       "legend": {
@@ -317,9 +472,9 @@
         "hideEmpty": false,
         "max": false,
         "min": false,
-        "show": false,
-        "total": false,
-        "values": false
+        "show": true,
+        "total": true,
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -351,7 +506,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0
+          "value": 0,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -441,8 +597,8 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 16,
-        "y": 1
+        "x": 8,
+        "y": 3
       },
       "id": 48,
       "legend": {
@@ -596,8 +752,8 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 20,
-        "y": 1
+        "x": 12,
+        "y": 3
       },
       "id": 47,
       "legend": {
@@ -704,80 +860,22 @@
       }
     },
     {
-      "alert": {
-        "conditions": [
-          {
-            "evaluator": {
-              "params": [
-                1
-              ],
-              "type": "lt"
-            },
-            "operator": {
-              "type": "and"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "sum"
-            },
-            "type": "query"
-          },
-          {
-            "evaluator": {
-              "params": [],
-              "type": "no_value"
-            },
-            "operator": {
-              "type": "or"
-            },
-            "query": {
-              "params": [
-                "A",
-                "5m",
-                "now"
-              ]
-            },
-            "reducer": {
-              "params": [],
-              "type": "sum"
-            },
-            "type": "query"
-          }
-        ],
-        "executionErrorState": "alerting",
-        "for": "1m",
-        "frequency": "1m",
-        "handler": 1,
-        "name": "Safeguard - Can not track all operators",
-        "noDataState": "no_data",
-        "notifications": []
-      },
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "Safeguard",
-      "description": "",
       "fill": 0,
       "gridPos": {
-        "h": 2,
+        "h": 4,
         "w": 8,
-        "x": 0,
+        "x": 16,
         "y": 3
       },
-      "id": 33,
+      "id": 50,
       "legend": {
-        "alignAsTable": false,
         "avg": false,
         "current": false,
-        "hideEmpty": false,
         "max": false,
         "min": false,
         "show": false,
@@ -787,10 +885,9 @@
       "lines": true,
       "linewidth": 1,
       "links": [],
-      "nullPointMode": "null as zero",
-      "paceLength": 10,
+      "nullPointMode": "null",
       "percentage": false,
-      "pointradius": 3,
+      "pointradius": 2,
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
@@ -799,48 +896,37 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_tracking",
+          "expr": "safeguard_duration_ms > 800",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
-          "refId": "A",
-          "target": ""
+          "refId": "A"
         }
       ],
-      "thresholds": [
-        {
-          "colorMode": "critical",
-          "fill": true,
-          "line": true,
-          "op": "lt",
-          "value": 1
-        }
-      ],
+      "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "",
+      "title": "Execution duration too long",
       "tooltip": {
         "shared": true,
-        "sort": 1,
+        "sort": 2,
         "value_type": "individual"
       },
-      "transparent": true,
       "type": "graph",
       "xaxis": {
         "buckets": null,
         "mode": "time",
         "name": null,
-        "show": false,
+        "show": true,
         "values": []
       },
       "yaxes": [
         {
-          "decimals": 0,
-          "format": "none",
-          "label": "STATUS",
+          "format": "ms",
+          "label": null,
           "logBase": 1,
-          "max": "1",
+          "max": null,
           "min": null,
           "show": true
         },
@@ -850,7 +936,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": false
+          "show": true
         }
       ],
       "yaxis": {
@@ -864,7 +950,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 5
+        "y": 7
       },
       "id": 25,
       "panels": [],
@@ -883,7 +969,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 6
+        "y": 8
       },
       "id": 5,
       "legend": {
@@ -997,7 +1083,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 6
+        "y": 8
       },
       "id": 10,
       "legend": {
@@ -1113,7 +1199,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 6
+        "y": 8
       },
       "id": 16,
       "legend": {
@@ -1221,7 +1307,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 13
       },
       "id": 23,
       "panels": [],
@@ -1240,7 +1326,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 12
+        "y": 14
       },
       "hideTimeOverride": false,
       "id": 2,
@@ -1355,7 +1441,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 12
+        "y": 14
       },
       "id": 12,
       "legend": {
@@ -1469,7 +1555,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 12
+        "y": 14
       },
       "id": 17,
       "legend": {
@@ -1577,7 +1663,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 19
       },
       "id": 21,
       "panels": [],
@@ -1596,7 +1682,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 18
+        "y": 20
       },
       "id": 11,
       "legend": {
@@ -1710,7 +1796,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 18
+        "y": 20
       },
       "id": 3,
       "legend": {
@@ -1824,7 +1910,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 18
+        "y": 20
       },
       "id": 18,
       "legend": {
@@ -1932,7 +2018,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 25
       },
       "id": 27,
       "panels": [],
@@ -1951,7 +2037,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 24
+        "y": 26
       },
       "id": 4,
       "legend": {
@@ -2065,7 +2151,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 24
+        "y": 26
       },
       "id": 13,
       "legend": {
@@ -2179,7 +2265,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 24
+        "y": 26
       },
       "id": 19,
       "legend": {
@@ -2287,7 +2373,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 31
       },
       "id": 37,
       "panels": [],
@@ -2306,7 +2392,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 30
+        "y": 32
       },
       "id": 41,
       "legend": {
@@ -2428,7 +2514,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 30
+        "y": 32
       },
       "id": 42,
       "legend": {
@@ -2551,7 +2637,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 30
+        "y": 32
       },
       "id": 43,
       "legend": {
@@ -2666,7 +2752,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 37
       },
       "id": 29,
       "panels": [],
@@ -2685,7 +2771,7 @@
         "h": 4,
         "w": 8,
         "x": 0,
-        "y": 36
+        "y": 38
       },
       "id": 30,
       "legend": {

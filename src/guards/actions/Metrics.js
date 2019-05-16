@@ -43,6 +43,14 @@ class Metrics {
     }
     
     /**
+     * @param {int} startAt - timestamp
+     * @param {int} endAt - timestamp
+     */
+    collectExecutionTime(startAt, endAt){ // TODO: some max durations will be missed due prometheus pull model
+        this.metrics[`safeguard_duration_ms{operator="${this.operator}"}`] = { value: endAt - startAt, time: Date.now() }
+    }
+    
+    /**
      * Clean up metrics which didn't triggered
      * @param {Number} timestamp - all metrics before this timestamp will be cleaned
      */

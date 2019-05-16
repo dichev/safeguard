@@ -81,6 +81,7 @@ class Guard {
                 this.metrics.collectTrigger(trigger, isBlocked)
             }
         }
+        this.metrics.collectExecutionTime(startAt, Date.now())
         this.metrics.cleanup(startAt)
         this.alerts.cleanup(startAt)
     }
