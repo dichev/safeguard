@@ -1,6 +1,7 @@
 'use strict'
 
 const Trigger = require('./types/Trigger')
+const Currencies = require('./helpers/Currencies')
 const Database = require('../../lib/Database')
 const Config = require('../../config/Config')
 const prefix = require('../../lib/Utils').prefix
@@ -14,6 +15,8 @@ class Jackpots {
      */
     constructor(operator) {
         this.operator = operator
+        this.currencies = new Currencies(operator)
+        this.jackpotGroups = []
     }
     
     /**
@@ -21,6 +24,9 @@ class Jackpots {
      * @return {Promise<Array<Trigger>>}
      */
     async exec(){
+        this.jackpotGroups = await this.getJackpotGroups()
+        if(!this.jackpotGroups.length) return  []
+        
         let triggers = [].concat(
             await this.testTimedJackpotWonTwoTimeSameDay(),
             await this.testJackpotSize(),
@@ -41,13 +47,17 @@ class Jackpots {
         }
         return []
     }
-
+    
+    
+    async getJackpotGroups() {
+        let db = await Database.getPlatformInstance(this.operator)
+        let rows = await db.query(`SELECT groupName FROM jackpot_groups WHERE playMode IS NULL OR playMode = 'real'`) // TODO: need enabled flag also
+        await Database.killConnection(db)
+        return rows.map(r => r.groupName)
+    }
     
     async testTimedJackpotWonTwoTimeSameDay(){
-        console.verbose(prefix(this.operator))
-        
         const thresholds = Config.thresholds.jackpots
-    
         let db = await Database.getJackpotInstance(this.operator)
     
         let SQL = `
@@ -58,13 +68,14 @@ class Jackpots {
                 timePeriods - interval c.repeatOffsetSeconds SECOND AS periodFrom,
                 p.timePeriods AS periodEnd,
                 (SELECT COUNT(*) FROM _jackpot_history h WHERE h.potId = p.potId AND h.timeWon > periodFrom) AS timedJackpotWonCount
-            FROM _jackpot_pots p
-            JOIN _jackpot_config c ON(c.id = p.potId and c.type = 'time' AND state != 'disabled')
-            LEFT JOIN _jackpot_group_pots g ON(g.potId = p.potId)
+            FROM _jackpot_group_pots g
+            JOIN _jackpot_config c ON(c.id = g.potId and c.type = 'time')
+            JOIN _jackpot_pots p ON (p.potId = g.potId and p.state != 'disabled')
+            WHERE g.groupId IN (?)
             HAVING timedJackpotWonCount >= ${thresholds.timedJackpotWonCount.block}
         `
     
-        let found = await db.query(SQL)
+        let found = await db.query(SQL, [this.jackpotGroups])
         if (!found) return []
     
         let triggers = []
@@ -89,7 +100,7 @@ class Jackpots {
     
     async testJackpotSize() {
         const thresholds = Config.thresholds.jackpots.tooHighJackpotSize_gbp
-        let db = await Database.getJackpotInstance(this.operator) // TODO: control connections
+        let db = await Database.getJackpotInstance(this.operator)
         
         let SQL = `
             SELECT
@@ -97,14 +108,27 @@ class Jackpots {
                 p.potId,
                 g.groupId,
                 g.name,
+                gg.currency,
                 p.pot
-            FROM _jackpot_pots p
-            LEFT JOIN _jackpot_group_pots g USING(potId)
-            WHERE state = 'active'
-              AND pot > 100000
+            FROM _jackpot_group_pots g
+            JOIN _jackpot_groups gg ON (gg.id = g.groupId AND gg.id IN (?))
+            JOIN _jackpot_pots p ON (p.potId = g.potId AND p.state = 'active')
         `
+        let rows = await db.query(SQL, [this.jackpotGroups])
+        if(!rows.length) return []
         
-        let found = await db.query(SQL, [])
+        let found = []
+        for(let row of rows) {
+            row.pot = parseFloat(row.pot)
+            if(!row.currency) throw Error(`Found jackpot without currency: ` + JSON.stringify(row))
+            if(row.currency === 'DEC') continue // exclude pokerstars custom currency: DEC
+            let currencyRatio = await this.currencies.getRatio(row.currency, Config.defaultCurrency)
+            row.pot *= currencyRatio
+            
+            if(row.pot >= thresholds.warn) {
+                found.push(row)
+            }
+        }
         if (!found.length) return []
     
         let triggers = []
@@ -114,11 +138,13 @@ class Jackpots {
             if (value >= thresholds.warn) {
                 triggers.push(new Trigger({
                     action: Trigger.actions.ALERT, // NEVER block here
-                    type: Trigger.types.OPERATOR,
+                    type: Trigger.types.JACKPOT,
                     value: value,
                     threshold: thresholds.block,
                     operator: this.operator,
-                    msg: `Detected operator ${this.operator} with too high jackpot pot size of ${value.toFixed(2)} - when it is won there is a risk the lucky user to be blocked`,
+                    jackpotGroup: row.groupId,
+                    jackpotPot: row.potId,
+                    msg: thresholds.msg.replace('{{VALUE}}', row.pot).replace('{{OPERATOR}}', this.operator).replace('{{JACKPOT}}', `[${row.groupId}_${row.potId}] "${row.name}"`),
                     period: {from: row.period, to: row.period},
                     name: `jackpots_tooHighJackpotSize_gbp`,
                 }))

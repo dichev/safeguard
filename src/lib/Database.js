@@ -29,6 +29,13 @@ class Database extends DatabasePool {
     /**
      * @return {Promise<MySQL>}
      */
+    static async getPlatformInstance(operator){
+        return this.getInstance(operator, Config.credentials.databases.operators[operator].platform)
+    }
+    
+    /**
+     * @return {Promise<MySQL>}
+     */
     static async getKillSwitchInstance(operator){
         return this.getInstance(operator, Config.credentials.databases.operators[operator].killSwitch)
     }

@@ -3,6 +3,7 @@
 const Config = {
     
     production: false,
+    defaultCurrency: 'GBP',
     
     killSwitch: {
         enabled: true,
@@ -12,13 +13,14 @@ const Config = {
     schedule: {
         intervalBetweenIterations: 60, // sec
         initialThrottleBetweenOperators: 0.5, // sec
+        currencyRatioInvalidateCache: 60 * 60 // sec
     },
     
     thresholds: {
         
         jackpots: {
             timedJackpotWonCount:     { block:       2, warn:    1.1,                     msg: 'Timed jackpot {{JACKPOT}} was won {{VALUE}} times, but is expected to be won just once during its period' },
-            tooHighJackpotSize_gbp:   { block: 2000000, warn: 100000,                     msg: 'Detected operator ${this.operator} with too high jackpot pot size of ${value.toFixed(2)} - when it is won there is a risk the lucky user to be blocked' },
+            tooHighJackpotSize_gbp:   { block: 2000000, warn: 800000,                     msg: 'Detected operator {{OPERATOR}} with jackpot {{JACKPOT}} with too high pot size of {{VALUE}} - when it is won there is a risk the lucky user to be blocked' },
         },
         
         users: {
