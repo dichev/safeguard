@@ -41,7 +41,7 @@
       "fill": 0,
       "gridPos": {
         "h": 2,
-        "w": 13,
+        "w": 12,
         "x": 0,
         "y": 1
       },
@@ -190,8 +190,8 @@
       "fill": 0,
       "gridPos": {
         "h": 2,
-        "w": 11,
-        "x": 13,
+        "w": 12,
+        "x": 12,
         "y": 1
       },
       "id": 33,
@@ -281,6 +281,91 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "fill": 0,
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 3
+      },
+      "id": 50,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_duration_ms",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "{{operator}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Execution duration too long",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "alert": {
         "conditions": [
           {
@@ -296,7 +381,7 @@
             "query": {
               "params": [
                 "A",
-                "12h",
+                "1h",
                 "now"
               ]
             },
@@ -325,7 +410,7 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 0,
+        "x": 4,
         "y": 3
       },
       "id": 45,
@@ -370,8 +455,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0,
-          "yaxis": "left"
+          "value": 0
         }
       ],
       "timeFrom": null,
@@ -432,7 +516,7 @@
             "query": {
               "params": [
                 "A",
-                "12h",
+                "1h",
                 "now"
               ]
             },
@@ -461,7 +545,7 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 4,
+        "x": 8,
         "y": 3
       },
       "id": 46,
@@ -506,8 +590,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0,
-          "yaxis": "left"
+          "value": 0
         }
       ],
       "timeFrom": null,
@@ -583,7 +666,7 @@
         "for": "0m",
         "frequency": "1m",
         "handler": 1,
-        "name": "SafeGuard - [DANGER] Too close to be blocked alert",
+        "name": "SafeGuard - [ALERT] Too close to be blocked alert",
         "noDataState": "keep_state",
         "notifications": []
       },
@@ -597,7 +680,7 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 8,
+        "x": 12,
         "y": 3
       },
       "id": 48,
@@ -664,7 +747,162 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "[DANGER] Too close to be blocked",
+      "title": "[Alert] Too close to be blocked",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": false,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "decimals": 0,
+          "format": "percentunit",
+          "label": "",
+          "logBase": 1,
+          "max": null,
+          "min": "0.55",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                0.9
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "keep_state",
+        "for": "0m",
+        "frequency": "1m",
+        "handler": 1,
+        "name": "SafeGuard - [DANGER] Too close to be blocked alert (>90%)",
+        "noDataState": "ok",
+        "notifications": [
+          {
+            "uid": "000000003"
+          }
+        ]
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "Here we catch any risky metrics above certain percent of their thresholds. The idea is to simplify the simplify the dash maintenance by having single place for alerts of all charts bellow.",
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 3
+      },
+      "id": 51,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 3,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "/.*/",
+          "color": "#bf1b00"
+        },
+        {
+          "alias": "=== watch threshold ===",
+          "color": "#629e51"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_danger",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} | Blocked {{type}} ({{trigger}})",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "min(safeguard_danger_threshold_warn)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== watch threshold ===",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 0.9
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "[DANGER] Too close to be blocked (>90%)",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -752,7 +990,7 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 12,
+        "x": 20,
         "y": 3
       },
       "id": 47,
@@ -811,8 +1049,7 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0,
-          "yaxis": "left"
+          "value": 0
         }
       ],
       "timeFrom": null,
@@ -852,91 +1089,6 @@
           "max": null,
           "min": null,
           "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Safeguard",
-      "fill": 0,
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 16,
-        "y": 3
-      },
-      "id": 50,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_duration_ms > 800",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Execution duration too long",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "ms",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
         }
       ],
       "yaxis": {
@@ -2914,5 +3066,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 75
+  "version": 80
 }
