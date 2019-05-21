@@ -3031,6 +3031,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
+      "datasource": "Safeguard",
       "description": "If the pot size is too high then when it is won the user AND the operator will be blocked because the jackpot thresholds will be reached. This must be avoided, so in this situation please increase all jackpot thresholds",
       "fill": 1,
       "gridPos": {
@@ -3080,14 +3081,14 @@
           "refId": "A"
         },
         {
-          "expr": "safeguard_jackpots_tooHighJackpotSize_gbp_threshold_block",
+          "expr": "min(safeguard_jackpots_tooHighJackpotSize_gbp_threshold_block)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "=== block threshold ===",
           "refId": "B"
         },
         {
-          "expr": "safeguard_jackpots_tooHighJackpotSize_gbp_threshold_warn",
+          "expr": "min(safeguard_jackpots_tooHighJackpotSize_gbp_threshold_warn)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "=== watch threshold ===",
@@ -3175,5 +3176,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 80
+  "version": 82
 }
