@@ -2172,361 +2172,6 @@
         "x": 0,
         "y": 25
       },
-      "id": 27,
-      "panels": [],
-      "title": "Extreme jackpot net loss in last 24 hours (cummulative)",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Safeguard",
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 0,
-        "y": 26
-      },
-      "id": 4,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "=== block threshold ===",
-          "color": "#C4162A",
-          "fill": 0
-        },
-        {
-          "alias": "=== watch threshold ===",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_users_lossFromJackpots_gbp",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}} | user #{{user}}",
-          "refId": "A",
-          "target": ""
-        },
-        {
-          "expr": "min(safeguard_users_lossFromJackpots_gbp_threshold_block)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== block threshold ===",
-          "refId": "B"
-        },
-        {
-          "expr": "min(safeguard_users_lossFromJackpots_gbp_threshold_warn)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== watch threshold ===",
-          "refId": "C"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "jackpots loss from users",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "currencyGBP",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Safeguard",
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 8,
-        "y": 26
-      },
-      "id": 13,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "=== block threshold ===",
-          "color": "#C4162A",
-          "fill": 0
-        },
-        {
-          "alias": "=== watch threshold ===",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_games_lossFromJackpots_gbp",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}} {{game}}",
-          "refId": "A",
-          "target": ""
-        },
-        {
-          "expr": "min(safeguard_games_lossFromJackpots_gbp_threshold_block)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== block threshold ===",
-          "refId": "B"
-        },
-        {
-          "expr": "min(safeguard_games_lossFromJackpots_gbp_threshold_warn)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== watch threshold ===",
-          "refId": "C"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "jackpots loss from games",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "currencyGBP",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Safeguard",
-      "description": "",
-      "fill": 1,
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 16,
-        "y": 26
-      },
-      "id": 19,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "alias": "=== block threshold ===",
-          "color": "#C4162A",
-          "fill": 0
-        },
-        {
-          "alias": "=== watch threshold ===",
-          "color": "#37872D"
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "safeguard_operators_lossFromJackpots_gbp",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{operator}}",
-          "refId": "A",
-          "target": ""
-        },
-        {
-          "expr": "min(safeguard_operators_lossFromJackpots_gbp_threshold_block)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== block threshold ===",
-          "refId": "B"
-        },
-        {
-          "expr": "min(safeguard_operators_lossFromJackpots_gbp_threshold_warn)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "=== watch threshold ===",
-          "refId": "C"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "jackpots loss from operators",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "currencyGBP",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": "0",
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 31
-      },
       "id": 37,
       "panels": [],
       "title": "Extreme gross loss from bonuses in last 24 hours",
@@ -2544,7 +2189,7 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 32
+        "y": 26
       },
       "id": 41,
       "legend": {
@@ -2666,7 +2311,7 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 32
+        "y": 26
       },
       "id": 42,
       "legend": {
@@ -2789,7 +2434,7 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 32
+        "y": 26
       },
       "id": 43,
       "legend": {
@@ -2882,6 +2527,361 @@
           "logBase": 1,
           "max": null,
           "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 27,
+      "panels": [],
+      "title": "Extreme jackpot net loss in last 24 hours (cummulative)",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 32
+      },
+      "id": 4,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== watch threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_users_lossFromJackpots_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} | user #{{user}}",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "min(safeguard_users_lossFromJackpots_gbp_threshold_block)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "min(safeguard_users_lossFromJackpots_gbp_threshold_warn)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== watch threshold ===",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "jackpots loss from users",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 32
+      },
+      "id": 13,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== watch threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_games_lossFromJackpots_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}} {{game}}",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "min(safeguard_games_lossFromJackpots_gbp_threshold_block)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "min(safeguard_games_lossFromJackpots_gbp_threshold_warn)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== watch threshold ===",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "jackpots loss from games",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "Safeguard",
+      "description": "",
+      "fill": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 32
+      },
+      "id": 19,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== watch threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_operators_lossFromJackpots_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{operator}}",
+          "refId": "A",
+          "target": ""
+        },
+        {
+          "expr": "min(safeguard_operators_lossFromJackpots_gbp_threshold_block)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "min(safeguard_operators_lossFromJackpots_gbp_threshold_warn)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== watch threshold ===",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "jackpots loss from operators",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": "0",
           "show": true
         },
         {
@@ -3019,6 +3019,115 @@
           "max": null,
           "min": null,
           "show": false
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "description": "If the pot size is too high then when it is won the user AND the operator will be blocked because the jackpot thresholds will be reached. This must be avoided, so in this situation please increase all jackpot thresholds",
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 38
+      },
+      "id": 53,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "=== block threshold ===",
+          "color": "#C4162A",
+          "fill": 0
+        },
+        {
+          "alias": "=== watch threshold ===",
+          "color": "#37872D"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "safeguard_jackpots_tooHighJackpotSize_gbp",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{jackpot}} | {{operator}}",
+          "refId": "A"
+        },
+        {
+          "expr": "safeguard_jackpots_tooHighJackpotSize_gbp_threshold_block",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== block threshold ===",
+          "refId": "B"
+        },
+        {
+          "expr": "safeguard_jackpots_tooHighJackpotSize_gbp_threshold_warn",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "=== watch threshold ===",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Jackpot pots size",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyGBP",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
         }
       ],
       "yaxis": {
