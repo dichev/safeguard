@@ -723,7 +723,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} | Blocked {{type}} ({{trigger}})",
+          "legendFormat": "{{operator}} | Alerting {{type}} ({{trigger}})",
           "refId": "A",
           "target": ""
         },
@@ -878,7 +878,7 @@
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{operator}} | Blocked {{type}} ({{trigger}})",
+          "legendFormat": "{{operator}} | Alerting {{type}} ({{trigger}})",
           "refId": "A",
           "target": ""
         },
@@ -1049,7 +1049,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 0
+          "value": 0,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -1069,7 +1070,7 @@
         "name": null,
         "show": false,
         "values": [
-          "total"
+          "current"
         ]
       },
       "yaxes": [
@@ -3145,7 +3146,7 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -3176,5 +3177,5 @@
   "timezone": "utc",
   "title": "SafeGuard",
   "uid": "fTDwVwEik",
-  "version": 82
+  "version": 84
 }
