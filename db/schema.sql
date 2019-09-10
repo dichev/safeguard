@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
   `operator` varchar(20) NOT NULL,
   `status` enum('INFO','ERROR','WARN') NOT NULL,
-  `result` json DEFAULT NULL,
+  `result` TEXT NULL,
   `time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   PRIMARY KEY (`id`),
   KEY `status` (`status`),
