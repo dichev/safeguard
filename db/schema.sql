@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `alerts` (
   `value` decimal(10,2) NOT NULL,
   `threshold` decimal(10,2) NOT NULL,
   `triggerKey` varchar(255) NOT NULL,
-  `operator` varchar(15) NOT NULL,
+  `operator` varchar(50) NOT NULL,
   `userId` int(10) unsigned DEFAULT NULL,
   `gameName` varchar(100) DEFAULT NULL,
   `jackpotGroup` varchar(100) DEFAULT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `alerts` (
 
 CREATE TABLE IF NOT EXISTS `log` (
   `id` int(1) unsigned NOT NULL AUTO_INCREMENT,
-  `operator` varchar(20) NOT NULL,
+  `operator` varchar(50) NOT NULL,
   `status` enum('INFO','ERROR','WARN') NOT NULL,
   `result` TEXT NULL,
   `time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
