@@ -24,7 +24,7 @@ for(let operator of Object.values(cfg.operators)){
 
     if(operator.sharedJackpot) {
         operators[operator.name]['jackpot'].database = operator.sharedJackpot
-        operators[operator.name]['jackpot'].ssh = { host: databases.jackpots, username: 'dopamine',  agent: 'pageant',  agentForward: true }
+        operators[operator.name]['jackpot'].ssh = { host: databases[operator.sharedJackpot], username: 'dopamine',  agent: 'pageant',  agentForward: true }
     }
 }
 
