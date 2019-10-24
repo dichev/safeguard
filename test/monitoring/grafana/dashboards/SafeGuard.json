@@ -39,6 +39,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 0,
+      "fillGradient": 0,
       "gridPos": {
         "h": 2,
         "w": 12,
@@ -61,7 +62,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null as zero",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 2,
@@ -293,6 +296,7 @@
       "dashes": false,
       "datasource": "Safeguard",
       "fill": 0,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -313,7 +317,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -324,7 +330,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_duration_ms",
+          "expr": "safeguard_duration_ms{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{operator}}",
@@ -414,6 +420,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -436,7 +443,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 3,
@@ -448,7 +457,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_logs_warn",
+          "expr": "safeguard_logs_warn{operator!=\"bots\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -550,6 +559,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -572,7 +582,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 3,
@@ -584,7 +596,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_logs_error",
+          "expr": "safeguard_logs_error{operator!=\"bots\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -660,7 +672,7 @@
             "query": {
               "params": [
                 "A",
-                "12h",
+                "1h",
                 "now"
               ]
             },
@@ -686,6 +698,7 @@
       "datasource": "Safeguard",
       "description": "Here we catch any risky metrics above certain percent of their thresholds. The idea is to simplify the simplify the dash maintenance by having single place for alerts of all charts bellow.",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -708,7 +721,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 3,
@@ -729,7 +744,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_danger",
+          "expr": "safeguard_danger{operator!=\"bots\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -843,6 +858,7 @@
       "datasource": "Safeguard",
       "description": "Here we catch any risky metrics above certain percent of their thresholds. The idea is to simplify the simplify the dash maintenance by having single place for alerts of all charts bellow.",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -865,7 +881,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 3,
@@ -886,7 +904,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_danger",
+          "expr": "safeguard_danger{operator!=\"bots\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -999,6 +1017,7 @@
       "datasource": "Safeguard",
       "description": "When some metric reach its block threshold then the user/game/jackpot/operator will be blocked from the system. Later when it is unblocked it will still be displayed here but bellow the zero point",
       "fill": 3,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 4,
@@ -1021,7 +1040,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 3,
@@ -1038,7 +1059,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_blocked{blocked=\"true\"}",
+          "expr": "safeguard_blocked{blocked=\"true\",operator!=\"bots\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1047,7 +1068,7 @@
           "target": ""
         },
         {
-          "expr": "-safeguard_blocked{blocked=\"false\"}",
+          "expr": "-safeguard_blocked{blocked=\"false\",operator!=\"bots\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -1131,6 +1152,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1153,7 +1175,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1175,7 +1199,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromGames_gbp",
+          "expr": "safeguard_users_lossFromGames_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | user #{{user}}",
@@ -1246,6 +1270,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1270,7 +1295,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1292,7 +1319,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromGames_gbp",
+          "expr": "safeguard_games_lossFromGames_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -1363,6 +1390,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1385,7 +1413,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1407,7 +1437,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromGames_gbp",
+          "expr": "safeguard_operators_lossFromGames_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -1491,6 +1521,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1514,7 +1545,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1536,7 +1569,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_cappedLossFromGames_gbp",
+          "expr": "safeguard_users_cappedLossFromGames_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | user #{{user}}",
@@ -1607,6 +1640,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1629,7 +1663,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1651,7 +1687,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_cappedLossFromGames_gbp",
+          "expr": "safeguard_games_cappedLossFromGames_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{game}} ({{operator}})",
@@ -1722,6 +1758,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1744,7 +1781,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1766,7 +1805,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_cappedLossFromGames_gbp",
+          "expr": "safeguard_operators_cappedLossFromGames_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -1850,6 +1889,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1872,7 +1912,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -1894,7 +1936,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_pureLossFromGames_x",
+          "expr": "safeguard_users_pureLossFromGames_x{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | user #{{user}}",
@@ -1965,6 +2007,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -1987,7 +2030,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2009,7 +2054,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_pureLossFromGames_x",
+          "expr": "safeguard_games_pureLossFromGames_x{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -2080,6 +2125,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -2102,7 +2148,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2124,7 +2172,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_pureLossFromGames_x",
+          "expr": "safeguard_operators_pureLossFromGames_x{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -2208,6 +2256,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -2230,7 +2279,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2252,7 +2303,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromBonuses_pays_gbp",
+          "expr": "safeguard_users_lossFromBonuses_pays_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | user #{{user}} (bonus pays)",
@@ -2274,7 +2325,7 @@
           "refId": "C"
         },
         {
-          "expr": "safeguard_users_lossFromBonuses_bets_gbp",
+          "expr": "safeguard_users_lossFromBonuses_bets_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | user #{{user}} (bonus bets)",
@@ -2331,6 +2382,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -2355,7 +2407,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2377,7 +2431,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromBonuses_pays_gbp",
+          "expr": "safeguard_games_lossFromBonuses_pays_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}} (bonus pays)",
@@ -2399,7 +2453,7 @@
           "refId": "C"
         },
         {
-          "expr": "safeguard_games_lossFromBonuses_bets_gbp",
+          "expr": "safeguard_games_lossFromBonuses_bets_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}} (bonus bets)",
@@ -2455,6 +2509,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -2477,7 +2532,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2499,7 +2556,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromBonuses_pays_gbp",
+          "expr": "safeguard_operators_lossFromBonuses_pays_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} (bonus pays)",
@@ -2521,7 +2578,7 @@
           "refId": "C"
         },
         {
-          "expr": "safeguard_operators_lossFromBonuses_bets_gbp",
+          "expr": "safeguard_operators_lossFromBonuses_bets_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} (bonus bets)",
@@ -2590,6 +2647,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -2612,7 +2670,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2634,7 +2694,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_users_lossFromJackpots_gbp",
+          "expr": "safeguard_users_lossFromJackpots_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} | user #{{user}}",
@@ -2705,6 +2765,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -2727,7 +2788,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2749,7 +2812,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_games_lossFromJackpots_gbp",
+          "expr": "safeguard_games_lossFromJackpots_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} {{game}}",
@@ -2820,6 +2883,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 8,
@@ -2842,7 +2906,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2864,7 +2930,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_operators_lossFromJackpots_gbp",
+          "expr": "safeguard_operators_lossFromJackpots_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}}",
@@ -2948,6 +3014,7 @@
       "datasource": "Safeguard",
       "description": "",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 8,
@@ -2970,7 +3037,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "paceLength": 10,
       "percentage": false,
       "pointradius": 5,
@@ -2992,7 +3061,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_jackpots_timedJackpotWonCount",
+          "expr": "safeguard_jackpots_timedJackpotWonCount{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{operator}} #{{jackpot}}",
@@ -3064,6 +3133,7 @@
       "datasource": "Safeguard",
       "description": "If the pot size is too high then when it is won the user AND the operator will be blocked because the jackpot thresholds will be reached. This must be avoided, so in this situation please increase all jackpot thresholds",
       "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
         "h": 4,
         "w": 8,
@@ -3084,7 +3154,9 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {},
+      "options": {
+        "dataLinks": []
+      },
       "percentage": false,
       "pointradius": 2,
       "points": false,
@@ -3105,7 +3177,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "safeguard_jackpots_tooHighJackpotSize_gbp",
+          "expr": "safeguard_jackpots_tooHighJackpotSize_gbp{operator!=\"bots\"}",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{jackpot}} | {{operator}}",
