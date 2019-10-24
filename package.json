@@ -9,7 +9,7 @@
     "dev-link": "npm link configurator dopamine-toolbox"
   },
   "dependencies": {
-    "dopamine-toolbox": "git+ssh://git@gitlab.dopamine.bg:devops/toolbox.git",
+    "dopamine-toolbox": "git+ssh://git@gitlab.dopamine.bg:devops/toolbox.git#v2.1.0",
     "moment": "^2.22.2",
     "moment-recur": "^1.0.7"
   },
