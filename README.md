@@ -1,7 +1,30 @@
-# Safe Guard
+# SafeGuard
 
-### Install & run
+A service that watches for anomalies in game transactions, and blocks (or alerts) anything that goes over configurable limits (based on historical data and simulations). 
 
+### Usage
+
+```bash
+node bin/safeguard --help
+node bin/safeguard -o bede,rank
+node bin/safeguard -o bede,rank --serve
+node bin/safeguard -o bede,rank --history 2019-04-01..2019-04-18
+
+```
+
+
+### Monitoring
+Safeguard could be tracked from three places:
+1) everything is exposed in stdout/stderr, so it is recommended to be redirected to a log file
+2) safeguard stores logs/alerts/bans details in its own local mysql database
+3) safeguard exposes prometheus metrics via simple http server here
+```bash
+curl http://localhost:4444/heartbeat
+curl http://localhost:4444/metrics
+```
+If you want to run locally Prometheus server with Grafana, see [test/monitoring/README.md](test/monitoring/README.md) 
+
+### Install
 ```bash
 npm install
 
@@ -19,27 +42,6 @@ mysql -uroot safeguard < db/permissions.sql
 cp src/config/custom.config.js-MIRROR src/config/custom.config.js
 ```
 
-Now you should be able to run it simply like that:
-```bash
-node bin/safeguard --help
-node bin/safeguard -o bede,rank
-node bin/safeguard -o bede,rank --serve
-node bin/safeguard -o bede,rank --history 2019-04-01..2019-04-18
-
-```
-
-
-### Monitoring
-Safeguard could be tracked from 3 places
-1) everything is exposed in stdout/stderr, so is recommended to be redirected to log file
-2) safeguard stores logs/alerts/bans details in its own local mysql database
-3) safeguard exposes prometheus metrics via simple http server here
-```bash
-curl http://localhost:4444/heartbeat
-curl http://localhost:4444/metrics
-```
-If you want to run locally Prometheus server with Grafana, see [test/monitoring/README.md](test/monitoring/README.md) 
-
 
 ### Deploy
 ```bash
@@ -56,7 +58,7 @@ journalctl -f -u safeguard
 ```
 
 ### Scope
-Here is a draft of the protection scope. The values are chosen randomly, they will tuned based on history data and potentials
+Here is a draft of the protection scope. The values are chosen randomly, they will tune based on history data and potentials
 
 #### v1 (current)
 ##### Limits
@@ -154,8 +156,8 @@ differences between our transaction data and actual operator data
 #### TODO list
 
 ##### Safeguard
-- currently when there are extreme jackpots loss are blocked users/games/operators, but will be better to block the jackpots
-- currently when there are extreme bonus loss are blocked users/games/operators, but will be better to block the bonus campaign
+- currently, when there are extreme jackpots loss are blocked users/games/operators, but it will be better to block the jackpots
+- currently when there are extreme bonus losses are blocked users/games/operators, but it will be better to block the bonus campaign
 - protect from the tournaments (currently may be the fit in bonus checks)
 - detect when there is no data in segments and mark the guard as inactive
 - there are 2 cayetano games with maxMplr = 50000 causing potential issue with the thresholds
