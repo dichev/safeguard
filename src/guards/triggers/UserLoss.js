@@ -49,7 +49,7 @@ class UserLoss {
                        userId,
                        SUM(payout)-SUM(bets) AS profit,
                        SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) AS lossFromGames_gbp,
-                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - IFNULL(h.hugeWins, 0) AS cappedLossFromGames_gbp,
+                       SUM(payout-jackpotPayout) - SUM(bets-jackpotBets) - SUM(IFNULL(h.hugeWins, 0)) AS cappedLossFromGames_gbp,
                        SUM(jackpotPayout - jackpotBets) AS lossFromJackpots_gbp,
                        SUM(bonusBets) AS lossFromBonuses_bets_gbp,
                        SUM(bonusPayout) AS lossFromBonuses_pays_gbp,
